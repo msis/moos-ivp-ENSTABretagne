@@ -17,17 +17,17 @@ Autonomy system. This includes a MOOS application and an IvP behavior.
 #=============================================================================
 The directory structure for the moos-ivp-extend is decribed below:
 
-bin                   - Directory for generated executable files
-build                 - Directory for build object files
-build-ivp-kfish.sh    - Script for building moos-ivp-extend
-CMakeLists.txt        - CMake configuration file for the project
-data                  - Directory for storing data
-docs                  - Directory for storing documents
-lib                   - Directory for generated library files
-missions              - Directory for mission files
-README                - Contains helpful information - (this file).
-scripts               - Directory for script files
-src                   - Directory for source code
+bin                           - Directory for generated executable files
+build                         - Directory for build object files
+build-ivp-ENSTABretagne.sh    - Script for building moos-ivp-extend
+CMakeLists.txt                - CMake configuration file for the project
+data                          - Directory for storing data
+docs                          - Directory for storing documents
+lib                           - Directory for generated library files
+missions                      - Directory for mission files
+README                        - Contains helpful information - (this file).
+scripts                       - Directory for script files
+src                           - Directory for source code
 
 
 #=============================================================================
