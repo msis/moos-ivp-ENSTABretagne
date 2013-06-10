@@ -27,9 +27,13 @@ InertialMeasurementUnit::InertialMeasurementUnit()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
+	m_yaw		 = 0;
+	m_pitch		 = 0;
+	m_roll		 = 0;
 
 	try
 	{
+		cout << "Initialisation de Razor..." << endl;
 		razor = new RazorAHRS(serial_port_name, 
 								bind(&InertialMeasurementUnit::on_data, this, placeholders::_1),
 								bind(&InertialMeasurementUnit::on_error, this, placeholders::_1),
@@ -41,6 +45,28 @@ InertialMeasurementUnit::InertialMeasurementUnit()
 		cout << "  " << (string("Could not create tracker: ") + string(e.what())) << endl;
 		cout << "  " << "Did you set a correct serial port ?" << endl;
 	}
+}
+
+/**
+ * \fn
+ * \brief Callback : lorsqu'il y a erreur à la réception de données
+ */
+ 
+void InertialMeasurementUnit::on_error(const string &msg)
+{
+	cout << "  " << "Erreur: " << msg << endl;
+}
+
+/**
+ * \fn
+ * \brief Callback : lorsqu'il y a réception de données
+ */
+ 
+void InertialMeasurementUnit::on_data(const float data[])
+{
+	m_yaw = data[0];
+	m_pitch = data[1];
+	m_roll = data[2];
 }
 
 /**
@@ -106,6 +132,12 @@ bool InertialMeasurementUnit::OnConnectToServer()
 bool InertialMeasurementUnit::Iterate()
 {
 	m_iterations++;
+	
+	cout << this->m_roll << " " << this->m_pitch << " " << this->m_yaw << endl;
+	m_Comms.Notify("VVV_NAV_RX_MEASURED", this->m_roll);
+	m_Comms.Notify("VVV_NAV_RY_MEASURED", this->m_pitch);
+	m_Comms.Notify("VVV_NAV_RZ_MEASURED", this->m_yaw);
+		
 	return(true);
 }
 

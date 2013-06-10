@@ -22,17 +22,6 @@ class InertialMeasurementUnit : public CMOOSApp
 	public:
 		InertialMeasurementUnit();
 		~InertialMeasurementUnit();
-		
-		void on_error(const string &msg)
-		{
-			cout << "  " << "ERROR: " << msg << endl;
-		}
-
-		void on_data(const float data[])
-		{
-			cout << "  " << fixed << setprecision(1) 
-			<< "Yaw = " << setw(6) << data[0] << "      Pitch = " << setw(6) << data[1] << "      Roll = " << setw(6) << data[2] << endl;
-		}
 
 	protected:
 		bool OnNewMail(MOOSMSG_LIST &NewMail);
@@ -40,12 +29,15 @@ class InertialMeasurementUnit : public CMOOSApp
 		bool OnConnectToServer();
 		bool OnStartUp();
 		void RegisterVariables();
+		void on_error(const string &msg);
+		void on_data(const float data[]);
 
 	private: // Configuration variables
 
 	private: // State variables
 		unsigned int	m_iterations;
 		double			m_timewarp;
+		double 			m_yaw, m_pitch, m_roll;
 		
 		RazorAHRS *razor;
 };
