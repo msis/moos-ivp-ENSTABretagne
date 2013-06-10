@@ -10,9 +10,13 @@
 
 #include <iterator>
 #include "MBUtils.h"
+#include <iostream>
+#include <iomanip>
+#include <stdexcept>
 #include "InertialMeasurementUnit.h"
 
 using namespace std;
+const string serial_port_name = "/dev/ttyUSB0";
 
 /**
  * \fn
@@ -23,6 +27,20 @@ InertialMeasurementUnit::InertialMeasurementUnit()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
+
+	try
+	{
+		razor = new RazorAHRS(serial_port_name, 
+								bind(&InertialMeasurementUnit::on_data, this, placeholders::_1),
+								bind(&InertialMeasurementUnit::on_error, this, placeholders::_1),
+								RazorAHRS::YAW_PITCH_ROLL);
+	}
+	
+	catch(runtime_error &e)
+	{
+		cout << "  " << (string("Could not create tracker: ") + string(e.what())) << endl;
+		cout << "  " << "Did you set a correct serial port ?" << endl;
+	}
 }
 
 /**

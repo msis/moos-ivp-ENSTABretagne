@@ -29,6 +29,8 @@ class TemperatureCPU : public CMOOSApp
 		bool OnConnectToServer();
 		bool OnStartUp();
 		void RegisterVariables();
+		double getTemperatureProcesseur();
+		double getPresentRateBattery();
 
 	private: // Configuration variables
 

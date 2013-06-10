@@ -504,6 +504,16 @@ double AUV::getTensionBatterie1()
 
 /**
  * \fn
+ * \brief Méthode retournant la consommation de la batterie 1 (extérieure) de l'AUV
+ */
+
+double AUV::getConsommationBatterie1()
+{
+	return this->mb->getCapBat1();
+}
+
+/**
+ * \fn
  * \brief Méthode retournant l'intensité de la batterie 2 (extérieure) de l'AUV
  */
 
@@ -520,6 +530,16 @@ double AUV::getIntensiteBatterie2()
 double AUV::getTensionBatterie2()
 {
 	return this->mb->getU2() / 1000.0;
+}
+
+/**
+ * \fn
+ * \brief Méthode retournant la consommation de la batterie 2 (extérieure) de l'AUV
+ */
+
+double AUV::getConsommationBatterie2()
+{
+	return this->mb->getCapBat2();
 }
 
 /**

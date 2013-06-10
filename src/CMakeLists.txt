@@ -20,12 +20,10 @@ ADD_SUBDIRECTORY(pControler)
 ADD_SUBDIRECTORY(pSonar)
 ADD_SUBDIRECTORY(pEchoSonder)
 ADD_SUBDIRECTORY(pModem)
-ADD_SUBDIRECTORY(pBottomCamera)
-ADD_SUBDIRECTORY(pFrontCamera)
+ADD_SUBDIRECTORY(pCamera)
 ADD_SUBDIRECTORY(pHydrophone)
 ADD_SUBDIRECTORY(pTemperatureCPU)
 ADD_SUBDIRECTORY(pInertialMeasurementUnit)
-ADD_SUBDIRECTORY(pMission)
 ADD_SUBDIRECTORY(pLogs)
 
 ##############################################################################

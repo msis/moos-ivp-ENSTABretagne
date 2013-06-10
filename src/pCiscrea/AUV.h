@@ -60,8 +60,10 @@ class AUV
 		double getCap();
 		double getIntensiteBatterie1();
 		double getTensionBatterie1();
+		double getConsommationBatterie1();
 		double getIntensiteBatterie2();
 		double getTensionBatterie2();
+		double getConsommationBatterie2();
 		
 		Matrice* getVecteurConsigneAUV();
 		Matrice* getForcesPropulseurs();

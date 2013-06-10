@@ -166,6 +166,8 @@ bool Ciscrea::Iterate()
 		m_Comms.Notify("VVV_CURRENT_EXTERNAL_BATTERY_2", m_auv_ciscrea->getIntensiteBatterie2());
 		m_Comms.Notify("VVV_VOLTAGE_EXTERNAL_BATTERY_1", m_auv_ciscrea->getTensionBatterie1());
 		m_Comms.Notify("VVV_VOLTAGE_EXTERNAL_BATTERY_2", m_auv_ciscrea->getTensionBatterie2());
+		m_Comms.Notify("VVV_CONSUMPTION_EXTERNAL_BATTERY_1", m_auv_ciscrea->getConsommationBatterie1());
+		m_Comms.Notify("VVV_CONSUMPTION_EXTERNAL_BATTERY_2", m_auv_ciscrea->getConsommationBatterie2());
 	}
 	
 	return(true);

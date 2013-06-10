@@ -71,11 +71,6 @@ bool TemperatureCPU::OnNewMail(MOOSMSG_LIST &NewMail)
  
 bool TemperatureCPU::OnConnectToServer()
 {
-	// register for variables here
-	// possibly look at the mission file?
-	// m_MissionReader.GetConfigurationParam("Name", <string>);
-	// m_Comms.Register("VARNAME", 0);
-
 	RegisterVariables();
 	return(true);
 }
@@ -89,7 +84,46 @@ bool TemperatureCPU::OnConnectToServer()
 bool TemperatureCPU::Iterate()
 {
 	m_iterations++;
+	m_Comms.Notify("VVV_TEMPERATURE_CPU", getTemperatureProcesseur());
 	return(true);
+}
+
+/**
+ * \fn
+ * \brief Méthode retournant la température du processeur
+ */
+ 
+double TemperatureCPU::getTemperatureProcesseur()
+{
+	string data;
+	ifstream fichier("/sys/bus/acpi/devices/LNXTHERM\:00/thermal_zone/temp");
+	if(!fichier)
+	{
+		cout << "Erreur d'ouverture des donnees de temperature\n";
+		return -1;
+	}
+	
+	if(!(fichier >> data))
+	{
+		cout << "Erreur de lecture des donnees de temperature\n";
+		return -2;
+	}
+	
+	return atoi(data.c_str()) / 1000.0;
+}
+
+/**
+ * \fn
+ * \brief Méthode retournant l'état de la batterie
+ */
+ 
+double TemperatureCPU::getPresentRateBattery()
+{
+	// Piste : /proc/acpi/battery/BAT0/state
+		// present rate
+		// remaining capacity
+		// present voltage
+	return 0.0;
 }
 
 /**
@@ -135,5 +169,5 @@ bool TemperatureCPU::OnStartUp()
  
 void TemperatureCPU::RegisterVariables()
 {
-	// m_Comms.Register("FOOBAR", 0);
+	
 }

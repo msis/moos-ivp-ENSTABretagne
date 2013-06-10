@@ -31,6 +31,9 @@ Logs::Logs()
 	this->m_fichier_logs_cree	= false;
 	this->m_generer_logs		= false;
 	this->m_nom_fichier			= string(REPERTOIRE_LOGS) + "/" + string(PREFIXE_FICHIER_LOGS);
+	this->m_position_auv_x		= 0;
+	this->m_position_auv_y		= 0;
+	this->m_position_auv_z		= 0;
 	
 	// Enregistrement des variables de la MOOSDB à suivre
 	this->m_listeVariablesSuivies.push_back("VVV_NAV_X");
@@ -66,6 +69,15 @@ bool Logs::OnNewMail(MOOSMSG_LIST &NewMail)
 		
 		if(msg.GetKey() == "VVV_ON_MISSION")
 			this->m_generer_logs = (msg.GetDouble() == 1.0);
+		
+		if(msg.GetKey() == "VVV_NAV_X")
+			m_position_auv_x = msg.GetDouble();
+		
+		if(msg.GetKey() == "VVV_NAV_Y")
+			m_position_auv_y = msg.GetDouble();
+		
+		if(msg.GetKey() == "VVV_NAV_Z")
+			m_position_auv_z = msg.GetDouble();
 		
 		if(msg.GetKey() == "VVV_AUV_NAME")
 		{
@@ -123,27 +135,35 @@ bool Logs::Iterate()
 	{
 		if(!this->m_fichier_logs_cree)
 		{
-			if(creerFichierLogs())
-			{
-				// Enregistrement des lignes de log
-				ofstream fichier((char*)this->m_nom_fichier.c_str(), ios::out | ios::app); // Ouverture : mode écriture à la suite
-
-				if(fichier)
-				{
-					fichier << "Logs 1..." << endl;
-					fichier.close();
-				}
-				
-				else
-					cout << "Impossible d'ouvrir le fichier de logs" << endl;
-			}
-			
-			else
+			if(!creerFichierLogs())
 				cout << "Impossible de creer le fichier de logs" << endl;
 		}
+		
+		else
+			if(!enregistrerPositionLogs())
+				cout << "Impossible d'ouvrir le fichier de logs" << endl;
 	}
 	
 	return(true);
+}
+
+/**
+ * \fn
+ * \brief Méthode enregistrant la position de l'AUV dans les logs
+ */
+ 
+bool Logs::enregistrerPositionLogs()
+{
+	ofstream fichier((char*)this->m_nom_fichier.c_str(), ios::out | ios::app); // Ouverture : mode écriture à la suite
+
+	if(fichier)
+	{
+		fichier << this->m_position_auv_x << ", " << this->m_position_auv_y << ", " << this->m_position_auv_z << endl;
+		fichier.close();
+		return true;
+	}
+	
+	return false;
 }
 
 /**
@@ -155,13 +175,11 @@ bool Logs::creerFichierLogs()
 {
 	ofstream fichier((char*)this->m_nom_fichier.c_str(), ios::out | ios::trunc); // Ouverture : mode écriture + effacement du fichier ouvert
 
-cout << (char*)this->m_nom_fichier.c_str() << endl;
 	if(fichier.is_open())
 	{
-		fichier << "Test";
 		fichier.close();
 		this->m_fichier_logs_cree = true;
-		cout << "Fichier de logs créé : \"" << this->m_nom_fichier << "\"" << endl;
+		cout << "Fichierdddd de logs créé : \"" << this->m_nom_fichier << "\"" << endl;
 		return true;
 	}
 	

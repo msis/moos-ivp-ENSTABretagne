@@ -11,7 +11,7 @@
 
 #ifndef InertialMeasurementUnit_INFO_HEADER
 #define InertialMeasurementUnit_INFO_HEADER
-
+		
 void showSynopsis();
 void showHelpAndExit();
 void showExampleConfigAndExit();

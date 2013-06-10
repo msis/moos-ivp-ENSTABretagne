@@ -12,12 +12,10 @@ ProcessConfig = ANTLER
 	Run = pSonar					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pEchoSonder				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pModem					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pBottomCamera				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pFrontCamera				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+	Run = pCamera					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pHydrophone				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pTemperatureCPU			@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pInertialMeasurementUnit	@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pMission					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pLogs						@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	
 	TemoinTests = -tests

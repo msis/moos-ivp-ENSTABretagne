@@ -24,6 +24,7 @@ class Logs : public CMOOSApp
 		Logs();
 		~Logs();
 		bool creerFichierLogs();
+		bool enregistrerPositionLogs();
 		bool supprimerFichierLogs();
 
 	protected:
@@ -42,6 +43,9 @@ class Logs : public CMOOSApp
 		unsigned int	m_iterations;
 		double			m_timewarp;
 		string 			m_nom_fichier;
+		int				m_position_auv_x;
+		int				m_position_auv_y;
+		int				m_position_auv_z;
 
 	private: // State variables
 };

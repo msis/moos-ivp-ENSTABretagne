@@ -42,12 +42,8 @@ Matrice::Matrice(int nombre_lignes, int nombre_colonnes, string nom)
 void Matrice::initialisation()
 {
 	for(int a = 0 ; a < lignes ; a ++)
-	{
 		for(int b = 0 ; b < colonnes ; b ++)
-		{
 			tableau[a][b] = 0;
-		}
-	}
 }
 
 /**
@@ -83,19 +79,15 @@ Matrice Matrice::operator * (const Matrice &X)
 	Matrice produit(lignes, X.colonnes, "Produit temporaire");
 
 	for(int i = 0 ; i < produit.lignes ; i ++)
-	{
 		for(int j = 0 ; j < produit.colonnes ; j ++)
 		{
 			somme = 0;
 
 			for(int k = 0 ; k < produit.lignes ; k ++)
-			{
 				somme += tableau[i][k] * X.tableau[k][j];
-			}
 
 			produit[i][j] = somme;
 		}
-	}
 
 	return produit;
 }
@@ -117,12 +109,8 @@ Matrice Matrice::operator + (const Matrice &X)
 	Matrice somme(lignes, colonnes, "Somme temporaire");
 
 	for(int i = 0 ; i < lignes ; i++)
-	{
 		for(int j = 0 ; j < colonnes ; j++)
-		{
 			somme.tableau[i][j] = tableau[i][j] + X.tableau[i][j];
-		}
-	}
 
 	return somme;
 }
