@@ -1,6 +1,6 @@
 /**
- * \file FrontCamera_Info.h
- * \brief Informations sur l'application pFrontCamera
+ * \file Camera_Info.h
+ * \brief Informations sur l'application pCamera
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
  * \date Jun 5th 2013
@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef FrontCamera_INFO_HEADER
-#define FrontCamera_INFO_HEADER
+#ifndef Camera_INFO_HEADER
+#define Camera_INFO_HEADER
 
 void showSynopsis();
 void showHelpAndExit();

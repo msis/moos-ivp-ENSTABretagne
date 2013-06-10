@@ -1,6 +1,6 @@
 /**
- * \file FrontCamera_Info.cpp
- * \brief Informations sur l'application pFrontCamera
+ * \file Camera_Info.cpp
+ * \brief Informations sur l'application pCamera
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
  * \date Jun 5th 2013
@@ -11,7 +11,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include "FrontCamera_Info.h"
+#include "Camera_Info.h"
 #include "ColorParse.h"
 #include "ReleaseInfo.h"
 
@@ -26,7 +26,7 @@ void showSynopsis()
 {
   blk("SYNOPSIS:                                                       ");
   blk("------------------------------------                            ");
-  blk("  The pFrontCamera application is used for               ");
+  blk("  The pCamera application is used for               ");
   blk("                                                                ");
   blk("                                                                ");
   blk("                                                                ");
@@ -42,15 +42,15 @@ void showHelpAndExit()
 {
   blk("                                                                ");
   blu("=============================================================== ");
-  blu("Usage: pFrontCamera file.moos [OPTIONS]                   ");
+  blu("Usage: pCamera file.moos [OPTIONS]                   ");
   blu("=============================================================== ");
   blk("                                                                ");
   showSynopsis();
   blk("                                                                ");
   blk("Options:                                                        ");
   mag("  --alias","=<ProcessName>                                      ");
-  blk("      Launch pFrontCamera with the given process name         ");
-  blk("      rather than pFrontCamera.                           ");
+  blk("      Launch pCamera with the given process name         ");
+  blk("      rather than pCamera.                           ");
   mag("  --example, -e                                                 ");
   blk("      Display example MOOS configuration block.                 ");
   mag("  --help, -h                                                    ");
@@ -58,7 +58,7 @@ void showHelpAndExit()
   mag("  --interface, -i                                               ");
   blk("      Display MOOS publications and subscriptions.              ");
   mag("  --version,-v                                                  ");
-  blk("      Display the release version of pFrontCamera.        ");
+  blk("      Display the release version of pCamera.        ");
   blk("                                                                ");
   blk("Note: If argv[2] does not otherwise match a known option,       ");
   blk("      then it will be interpreted as a run alias. This is       ");
@@ -76,10 +76,10 @@ void showExampleConfigAndExit()
 {
   blk("                                                                ");
   blu("=============================================================== ");
-  blu("pFrontCamera Example MOOS Configuration                   ");
+  blu("pCamera Example MOOS Configuration                   ");
   blu("=============================================================== ");
   blk("                                                                ");
-  blk("ProcessConfig = pFrontCamera                              ");
+  blk("ProcessConfig = pCamera                              ");
   blk("{                                                               ");
   blk("  AppTick   = 4                                                 ");
   blk("  CommsTick = 4                                                 ");
@@ -99,7 +99,7 @@ void showInterfaceAndExit()
 {
   blk("                                                                ");
   blu("=============================================================== ");
-  blu("pFrontCamera INTERFACE                                    ");
+  blu("pCamera INTERFACE                                    ");
   blu("=============================================================== ");
   blk("                                                                ");
   showSynopsis();
@@ -123,7 +123,7 @@ void showInterfaceAndExit()
 
 void showReleaseInfoAndExit()
 {
-  showReleaseInfo("pFrontCamera", "gpl");
+  showReleaseInfo("pCamera", "gpl");
   exit(0);
 }
 

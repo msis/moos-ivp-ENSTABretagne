@@ -1,6 +1,6 @@
 /**
- * \file FrontCamera.cpp
- * \brief Classe FrontCamera
+ * \file Camera.cpp
+ * \brief Classe Camera
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
  * \date Jun 5th 2013
@@ -11,7 +11,7 @@
 
 #include <iterator>
 #include "MBUtils.h"
-#include "FrontCamera.h"
+#include "Camera.h"
 
 using namespace std;
 
@@ -20,7 +20,7 @@ using namespace std;
  * \brief Constructeur de l'application MOOS
  */
  
-FrontCamera::FrontCamera()
+Camera::Camera()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
@@ -31,7 +31,7 @@ FrontCamera::FrontCamera()
  * \brief Destructeur de l'instance de l'application
  */
 
-FrontCamera::~FrontCamera()
+Camera::~Camera()
 {
 }
 
@@ -41,7 +41,7 @@ FrontCamera::~FrontCamera()
  * N'est appelée que si l'application s'est liée à la variable en question
  */
  
-bool FrontCamera::OnNewMail(MOOSMSG_LIST &NewMail)
+bool Camera::OnNewMail(MOOSMSG_LIST &NewMail)
 {
 	MOOSMSG_LIST::iterator p;
 
@@ -69,7 +69,7 @@ bool FrontCamera::OnNewMail(MOOSMSG_LIST &NewMail)
  * \brief Méthode appelée dès que le contact avec la MOOSDB est effectué
  */
  
-bool FrontCamera::OnConnectToServer()
+bool Camera::OnConnectToServer()
 {
 	// register for variables here
 	// possibly look at the mission file?
@@ -86,7 +86,7 @@ bool FrontCamera::OnConnectToServer()
  * Implémentation du comportement de l'application
  */
  
-bool FrontCamera::Iterate()
+bool Camera::Iterate()
 {
 	m_iterations++;
 	return(true);
@@ -97,7 +97,7 @@ bool FrontCamera::Iterate()
  * \brief Méthode appelée au lancement de l'application
  */
  
-bool FrontCamera::OnStartUp()
+bool Camera::OnStartUp()
 {
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
@@ -133,7 +133,7 @@ bool FrontCamera::OnStartUp()
  * \brief Inscription de l'application à l'évolution de certaines variables de la MOOSDB
  */
  
-void FrontCamera::RegisterVariables()
+void Camera::RegisterVariables()
 {
 	// m_Comms.Register("FOOBAR", 0);
 }

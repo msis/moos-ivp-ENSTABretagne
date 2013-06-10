@@ -1,6 +1,6 @@
 /**
- * \file FrontCamera.h
- * \brief Classe FrontCamera
+ * \file Camera.h
+ * \brief Classe Camera
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
  * \date Jun 5th 2013
@@ -9,19 +9,19 @@
  *
  */
 
-#ifndef FrontCamera_HEADER
-#define FrontCamera_HEADER
+#ifndef Camera_HEADER
+#define Camera_HEADER
 
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
 using namespace std;
 
-class FrontCamera : public CMOOSApp
+class Camera : public CMOOSApp
 {
 	public:
-		FrontCamera();
-		~FrontCamera();
+		Camera();
+		~Camera();
 
 	protected:
 		bool OnNewMail(MOOSMSG_LIST &NewMail);

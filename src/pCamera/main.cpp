@@ -1,6 +1,6 @@
 /**
  * \file main.cpp
- * \brief Programme principal de pFrontCamera
+ * \brief Programme principal de pCamera
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
  * \date Jun 5th 2013
@@ -12,9 +12,9 @@
 #include <string>
 #include "MBUtils.h"
 #include "ColorParse.h"
-#include "FrontCamera.h"
-#include "FrontCamera_Info.h"
-#include "FrontCamera_Tests.h"
+#include "Camera.h"
+#include "Camera_Info.h"
+#include "Camera_Tests.h"
 
 using namespace std;
 
@@ -65,8 +65,8 @@ int main(int argc, char *argv[])
 		cout << "Lancement de " << run_command << endl;
 		cout << termColor() << endl;
 
-		FrontCamera FrontCamera;
-		FrontCamera.Run(run_command.c_str(), mission_file.c_str());
+		Camera Camera;
+		Camera.Run(run_command.c_str(), mission_file.c_str());
 	}
 
 	return(0);

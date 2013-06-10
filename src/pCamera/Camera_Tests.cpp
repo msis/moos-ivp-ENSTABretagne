@@ -1,6 +1,6 @@
 /**
- * \file FrontCamera_Tests.cpp
- * \brief Tests de l'application pFrontCamera
+ * \file Camera_Tests.cpp
+ * \brief Tests de l'application pCamera
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
  * \date Jun 7th 2013
@@ -12,7 +12,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include "FrontCamera_Tests.h"
+#include "Camera_Tests.h"
 
 /**
  * \fn
@@ -21,6 +21,6 @@
 
 void launchTestsAndExitIfOk()
 {
-	Tests sessionDeTests("pFrontCamera");
+	Tests sessionDeTests("pCamera");
 	sessionDeTests.afficherConclusionTests();
 }

@@ -1,22 +1,22 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pFrontCamera
+# The CMakeLists.txt for:                       pCamera
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
 # FILE(GLOB SRC *.cpp)
 
 SET(SRC
-  FrontCamera.cpp
-  FrontCamera_Info.cpp
-  FrontCamera_Tests.cpp
+  Camera.cpp
+  Camera_Info.cpp
+  Camera_Tests.cpp
   main.cpp
 )
 
 
 
-ADD_EXECUTABLE(pFrontCamera ${SRC})
+ADD_EXECUTABLE(pCamera ${SRC})
 
-TARGET_LINK_LIBRARIES(pFrontCamera
+TARGET_LINK_LIBRARIES(pCamera
    MOOS
    mbutil
    m
