@@ -1,9 +1,0 @@
-//------------------------------------------------
-// pBottomCamera config block
-
-ProcessConfig = pBottomCamera
-{
-   AppTick   = 4
-   CommsTick = 4
-}
-
