@@ -1,22 +1,32 @@
 ##############################################################################
-# FILE:        moos-ivp-ENSTABretagne/src/CMakeLists.txt
-# DATE:        2013/06/07
-# DESCRIPTION: CMakeLists.txt file for the moos-ivp-ENSTABretagne source directory
+# FILE:        moos-ivp-extend/src/CMakeLists.txt
+# DATE:        2010/09/07
+# DESCRIPTION: CMakeLists.txt file for the moos-ivp-extend source directory
 ##############################################################################
 
 
 #============================================================================
 # Add the libraries in the current directory to the include path
 #============================================================================
-FILE(GLOB LOCAL_LIBRARY_DIRS ./lib_* ../lib)
-INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS})
-LINK_DIRECTORIES(${LOCAL_LIBRARY_DIRS})
+FILE(GLOB LOCAL_LIBRARY_DIRS ./lib_* /usr/local/lib)
+INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS} /usr/local/include/opencv)
 
 #============================================================================
 # List the subdirectories to build...
 #============================================================================
-
-#ADD_SUBDIRECTORY(name_of_directory)
+ADD_SUBDIRECTORY(pCiscrea)
+ADD_SUBDIRECTORY(pLocalization)
+ADD_SUBDIRECTORY(pControler)
+ADD_SUBDIRECTORY(pSonar)
+ADD_SUBDIRECTORY(pEchoSonder)
+ADD_SUBDIRECTORY(pModem)
+ADD_SUBDIRECTORY(pBottomCamera)
+ADD_SUBDIRECTORY(pFrontCamera)
+ADD_SUBDIRECTORY(pHydrophone)
+ADD_SUBDIRECTORY(pTemperatureCPU)
+ADD_SUBDIRECTORY(pInertialMeasurementUnit)
+ADD_SUBDIRECTORY(pMission)
+ADD_SUBDIRECTORY(pLogs)
 
 ##############################################################################
 #                           END of CMakeLists.txt

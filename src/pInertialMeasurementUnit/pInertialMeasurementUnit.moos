@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pInertialMeasurementUnit config block
+
+ProcessConfig = pInertialMeasurementUnit
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

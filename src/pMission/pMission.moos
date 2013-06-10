@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pMission config block
+
+ProcessConfig = pMission
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

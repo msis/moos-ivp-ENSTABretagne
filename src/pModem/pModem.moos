@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pModem config block
+
+ProcessConfig = pModem
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

@@ -1,0 +1,62 @@
+ServerHost = localhost
+ServerPort = 9000
+Community = ciscreaSaucE
+
+/*	
+	Variables partagées :
+
+	VVV_NAV_X, VVV_NAV_Y, VVV_NAV_Z, VVV_NAV_CAP
+	VVV_NAV_VX, VVV_NAV_VY, VVV_NAV_VZ, VVV_NAV_RZ
+	VVV_NAV_AX, VVV_NAV_AY, VVV_NAV_AZ
+	VVV_SPOTLIGHTS
+	VVV_CURRENT_EXTERNAL_BATTERY_1, VVV_VOLTAGE_EXTERNAL_BATTERY_1
+	VVV_CURRENT_EXTERNAL_BATTERY_2, VVV_VOLTAGE_EXTERNAL_BATTERY_2
+	VVV_AUV_IDENTIFIER, VVV_AUV_NAME
+	VVV_ON_MISSION
+*/
+
+ProcessConfig = ANTLER
+{
+	MSBetweenLaunches = 200
+	
+	Run = MOOSDB					@ NewConsole = false
+	Run = uXMS						@ NewConsole = true
+	Run = pCiscrea					@ NewConsole = true, ExtraProcessParams=ParametreIdentificationAUV
+	Run = pLocalization				@ NewConsole = false
+	Run = pControler				@ NewConsole = false
+	Run = pSonar					@ NewConsole = false
+	Run = pEchoSonder				@ NewConsole = false
+	Run = pModem					@ NewConsole = false
+	Run = pBottomCamera				@ NewConsole = false
+	Run = pFrontCamera				@ NewConsole = false
+	Run = pHydrophone				@ NewConsole = false
+	Run = pTemperatureCPU			@ NewConsole = false
+	Run = pInertialMeasurementUnit	@ NewConsole = false
+	Run = pMission					@ NewConsole = true, ExtraProcessParams=ParametreFichierMission
+	Run = pLogs						@ NewConsole = true
+	
+	ParametreIdentificationAUV = --auv=2
+	ParametreFichierMission = --fichierMission=mission_preparation_sauce.xml
+}
+
+ProcessConfig = pLogs
+{
+	// Frequence d'enregistrement des logs :
+	AppTick       = 1
+}
+
+ProcessConfig = uXMS
+{
+	VAR				= VVV_NAV_X, VVV_NAV_Y, VVV_NAV_Z, VVV_NAV_CAP
+	VAR				= VVV_NAV_VX, VVV_NAV_VY, VVV_NAV_VZ, VVV_NAV_RZ
+	VAR				= VVV_NAV_AX, VVV_NAV_AY, VVV_NAV_AZ
+	VAR				= VVV_SPOTLIGHTS
+	VAR				= VVV_CURRENT_EXTERNAL_BATTERY_1, VVV_CURRENT_EXTERNAL_BATTERY_2
+	VAR				= VVV_VOLTAGE_EXTERNAL_BATTERY_1, VVV_VOLTAGE_EXTERNAL_BATTERY_2
+	VAR				= VVV_AUV_IDENTIFIER, VVV_AUV_NAME
+	VAR				= VVV_ON_MISSION
+	COLOR_MAP		= VVV_NAV_VX, red
+	COLOR_MAP		= VVV_NAV_VY, blue
+	COLOR_MAP		= VVV_NAV_VZ, green
+	// HISTORY_VAR	= VVV_NAV_VX
+}

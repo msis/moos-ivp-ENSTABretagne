@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pLogs config block
+
+ProcessConfig = pLogs
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

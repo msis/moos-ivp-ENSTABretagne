@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pCiscrea config block
+
+ProcessConfig = pCiscrea
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

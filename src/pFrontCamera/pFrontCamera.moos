@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pFrontCamera config block
+
+ProcessConfig = pFrontCamera
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

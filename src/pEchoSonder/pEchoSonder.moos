@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pEchoSonder config block
+
+ProcessConfig = pEchoSonder
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

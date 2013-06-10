@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pHydrophone config block
+
+ProcessConfig = pHydrophone
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

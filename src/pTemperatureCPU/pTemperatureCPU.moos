@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pTemperatureCPU config block
+
+ProcessConfig = pTemperatureCPU
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
