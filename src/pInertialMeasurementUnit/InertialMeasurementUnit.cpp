@@ -27,9 +27,15 @@ InertialMeasurementUnit::InertialMeasurementUnit()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
-	m_yaw		 = 0;
-	m_pitch		 = 0;
-	m_roll		 = 0;
+	this->m_rx	 = 0;
+	this->m_ry	 = 0;
+	this->m_rz	 = 0;
+	this->m_vrx	 = 0;
+	this->m_vry	 = 0;
+	this->m_vrz	 = 0;
+	this->m_rx	 = 0;
+	this->m_ry	 = 0;
+	this->m_rz	 = 0;
 
 	try
 	{
@@ -37,13 +43,13 @@ InertialMeasurementUnit::InertialMeasurementUnit()
 		razor = new RazorAHRS(serial_port_name, 
 								bind(&InertialMeasurementUnit::on_data, this, placeholders::_1),
 								bind(&InertialMeasurementUnit::on_error, this, placeholders::_1),
-								RazorAHRS::YAW_PITCH_ROLL);
+								RazorAHRS::ACC_MAG_GYR_CALIBRATED);
 	}
 	
 	catch(runtime_error &e)
 	{
 		cout << "  " << (string("Could not create tracker: ") + string(e.what())) << endl;
-		cout << "  " << "Did you set a correct serial port ?" << endl;
+		cout << "  " << "Did you set a correct serial port ? (check permissions root)" << endl;
 	}
 }
 
@@ -64,9 +70,18 @@ void InertialMeasurementUnit::on_error(const string &msg)
  
 void InertialMeasurementUnit::on_data(const float data[])
 {
-	m_yaw = data[0];
-	m_pitch = data[1];
-	m_roll = data[2];
+	this->m_rz = data[2];
+	this->m_ry = data[1];
+	this->m_rx = data[0];
+	
+	/* TO DO :
+	this->m_az = data[3];
+	this->m_ay = data[4];
+	this->m_ax = data[5];
+	
+	this->m_vrz = data[6];
+	this->m_vry = data[7];
+	this->m_vrx = data[8];*/
 }
 
 /**
@@ -132,11 +147,31 @@ bool InertialMeasurementUnit::OnConnectToServer()
 bool InertialMeasurementUnit::Iterate()
 {
 	m_iterations++;
+	cout.precision(4);
 	
-	cout << this->m_roll << " " << this->m_pitch << " " << this->m_yaw << endl;
-	m_Comms.Notify("VVV_NAV_RX_MEASURED", this->m_roll);
-	m_Comms.Notify("VVV_NAV_RY_MEASURED", this->m_pitch);
-	m_Comms.Notify("VVV_NAV_RZ_MEASURED", this->m_yaw);
+	// 3 champs : accelerometre, magnetometre et gyroscope
+	
+	// Boussole : angle de rotation
+	cout << "Magnetometre\t RX : " << this->m_rx << "\t RY : " << this->m_ry << "\t RZ : " << this->m_rz << endl;
+	
+	m_Comms.Notify("VVV_NAV_RX", this->m_rx);
+	m_Comms.Notify("VVV_NAV_RY", this->m_ry);
+	m_Comms.Notify("VVV_NAV_RZ", this->m_rz);
+	
+	/* TO DO :
+	// Accélération
+	cout << "Accelerometre\t AX : " << this->m_ax << "\t AY : " << this->m_ay << "\t AZ : " << this->m_az << endl;
+	
+	m_Comms.Notify("VVV_NAV_AX", this->m_ax);
+	m_Comms.Notify("VVV_NAV_AY", this->m_ay);
+	m_Comms.Notify("VVV_NAV_AZ", this->m_az);
+	
+	// Vitesse angulaire
+	cout << "Gyroscope\t VRX : " << this->m_vrx << "\t VRY : " << this->m_vry << "\t VRZ : " << this->m_vrz << endl << endl;
+	
+	m_Comms.Notify("VVV_NAV_VRX", this->m_vrx);
+	m_Comms.Notify("VVV_NAV_VRY", this->m_vry);
+	m_Comms.Notify("VVV_NAV_VRZ", this->m_vrz);*/
 		
 	return(true);
 }

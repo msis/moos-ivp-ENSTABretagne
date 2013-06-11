@@ -160,8 +160,8 @@ bool Ciscrea::Iterate()
 	// Informations sur l'AUV
 	if(this->m_auv_ciscrea != NULL)
 	{
-		m_Comms.Notify("VVV_NAV_Z", m_auv_ciscrea->getProfondeur());
 		m_Comms.Notify("VVV_NAV_CAP", m_auv_ciscrea->getCap());
+		m_Comms.Notify("VVV_NAV_Z", m_auv_ciscrea->getProfondeur());
 		m_Comms.Notify("VVV_CURRENT_EXTERNAL_BATTERY_1", m_auv_ciscrea->getIntensiteBatterie1());
 		m_Comms.Notify("VVV_CURRENT_EXTERNAL_BATTERY_2", m_auv_ciscrea->getIntensiteBatterie2());
 		m_Comms.Notify("VVV_VOLTAGE_EXTERNAL_BATTERY_1", m_auv_ciscrea->getTensionBatterie1());

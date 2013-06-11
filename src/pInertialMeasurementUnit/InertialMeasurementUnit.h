@@ -37,7 +37,9 @@ class InertialMeasurementUnit : public CMOOSApp
 	private: // State variables
 		unsigned int	m_iterations;
 		double			m_timewarp;
-		double 			m_yaw, m_pitch, m_roll;
+		double 			m_rx, m_ry, m_rz;
+		double 			m_vrx, m_vry, m_vrz;
+		double 			m_ax, m_ay, m_az;
 		
 		RazorAHRS *razor;
 };
