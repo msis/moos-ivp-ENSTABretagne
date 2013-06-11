@@ -39,14 +39,15 @@ ProcessConfig = ANTLER
 	Run = pSonar					@ NewConsole = false
 	Run = pEchoSonder				@ NewConsole = false
 	Run = pModem					@ NewConsole = false
-	Run = pCamera					@ NewConsole = false
+	Run = pCamera					@ NewConsole = true
 	Run = pHydrophone				@ NewConsole = false
 	Run = pTemperatureCPU			@ NewConsole = false
-	Run = pInertialMeasurementUnit	@ NewConsole = true
+	Run = pInertialMeasurementUnit	@ NewConsole = true, ExtraProcessParams=ParametreSerialPortName
 	Run = pLogs						@ NewConsole = false
 	
+	// Paramètres de configuration
 	ParametreIdentificationAUV = --auv=2
-	ParametreFichierMission = --fichierMission=mission_preparation_sauce.xml
+	ParametreSerialPortName = --serialPortName=/dev/ttyUSB0
 }
 
 ProcessConfig = pLogs

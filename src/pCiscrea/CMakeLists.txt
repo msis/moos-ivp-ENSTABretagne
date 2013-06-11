@@ -24,7 +24,7 @@ TARGET_LINK_LIBRARIES(pCiscrea
    m
    modbus
    pthread
-      opencv_core
+   opencv_core
    opencv_imgproc
    opencv_highgui
    opencv_ml

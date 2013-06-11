@@ -22,8 +22,8 @@
 
 void launchTestsAndExitIfOk()
 {
-	Logs logs;
 	Tests sessionDeTests("pLogs");
+	Logs logs;
 	sessionDeTests.tester(logs.creerFichierLogs(), "Creation/ouverture du fichier de logs");
 	sessionDeTests.tester(logs.enregistrerPositionLogs(), "Enregistrement de positions fictives");
 	sessionDeTests.tester(logs.supprimerFichierLogs(), "Suppression du fichier de logs");

@@ -14,7 +14,7 @@ ProcessConfig = ANTLER
 	Run = pModem					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pCamera					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pHydrophone				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pTemperatureCPU			@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+	Run = pTemperatureCPU			@ NewConsole = true, 	ExtraProcessParams=TemoinTests 
 	Run = pInertialMeasurementUnit	@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pLogs						@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	

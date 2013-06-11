@@ -21,6 +21,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	string mission_file;
+	string serialPortName;
 	bool lancer_tests = false;
 	string run_command = argv[0];
 
@@ -42,6 +43,9 @@ int main(int argc, char *argv[])
 			
 		else if((argi == "-tests"))
 			lancer_tests = true;
+			
+		else if(strBegins(argi, "--serialPortName="))
+			serialPortName = argi.substr(17);
 		
 		else if(strEnds(argi, ".moos") || strEnds(argi, ".moos++"))
 			mission_file = argv[i];
@@ -57,7 +61,7 @@ int main(int argc, char *argv[])
 		showHelpAndExit();
 
 	if(lancer_tests)
-		launchTestsAndExitIfOk();
+		launchTestsAndExitIfOk("/dev/ttyUSB0");
 	
 	else
 	{
@@ -65,7 +69,7 @@ int main(int argc, char *argv[])
 		cout << "Lancement de " << run_command << endl;
 		cout << termColor() << endl;
 
-		InertialMeasurementUnit InertialMeasurementUnit;
+		InertialMeasurementUnit InertialMeasurementUnit(serialPortName, true);
 		InertialMeasurementUnit.Run(run_command.c_str(), mission_file.c_str());
 	}
 

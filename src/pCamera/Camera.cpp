@@ -13,8 +13,6 @@
 #include "MBUtils.h"
 #include "Camera.h"
 
-using namespace std;
-
 /**
  * \fn
  * \brief Constructeur de l'application MOOS
@@ -49,6 +47,13 @@ bool Camera::OnNewMail(MOOSMSG_LIST &NewMail)
 	{
 		CMOOSMsg &msg = *p;
 
+		if(p->IsName("Image"))
+		{
+			cerr << "bytes : " << p->GetBinaryDataSize() << "\tlatency : " <<
+			setprecision(3) << (MOOSLocalTime() - p->GetTime()) * 1e3 << "ms\r";
+			memcpy(m_image.data, p->GetBinaryData(), p->GetBinaryDataSize());
+		}
+
 		#if 0 // Keep these around just for template
 		string key   = msg.GetKey();
 		string comm  = msg.GetCommunity();
@@ -60,7 +65,7 @@ bool Camera::OnNewMail(MOOSMSG_LIST &NewMail)
 		bool   mstr  = msg.IsString();
 		#endif
 	}
-
+	
 	return(true);
 }
 
@@ -77,6 +82,8 @@ bool Camera::OnConnectToServer()
 	// m_Comms.Register("VARNAME", 0);
 
 	RegisterVariables();
+	Register("Image", 0.0);
+	
 	return(true);
 }
 
@@ -88,7 +95,14 @@ bool Camera::OnConnectToServer()
  
 bool Camera::Iterate()
 {
-	m_iterations++;
+	m_vc >> m_capture_frame;
+	cvtColor(m_capture_frame, m_bw_image, CV_BGR2GRAY);
+	resize(m_bw_image, m_image, m_image.size(), 0, 0, INTER_NEAREST);
+	Notify("Image", (void*)m_image.data, m_image.size().area(), MOOSLocalTime());
+	
+	imshow("display", m_image);
+	waitKey(10);
+
 	return(true);
 }
 
@@ -124,6 +138,15 @@ bool Camera::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
+	SetAppFreq(20, 400);
+	SetIterateMode(COMMS_DRIVEN_ITERATE_AND_MAIL);
+	m_image = Mat(378, 512, CV_8UC1);
+
+	if(!m_vc.open(1))
+		return false;
+		
+	namedWindow("display", 1);
+	
 	RegisterVariables();	
 	return(true);
 }

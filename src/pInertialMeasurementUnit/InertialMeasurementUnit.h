@@ -20,8 +20,9 @@ using namespace std;
 class InertialMeasurementUnit : public CMOOSApp
 {
 	public:
-		InertialMeasurementUnit();
+		InertialMeasurementUnit(string serial_port_name, bool initialisationAutomatique);
 		~InertialMeasurementUnit();
+		bool initialiserRazorAHRS();
 
 	protected:
 		bool OnNewMail(MOOSMSG_LIST &NewMail);
@@ -40,6 +41,7 @@ class InertialMeasurementUnit : public CMOOSApp
 		double 			m_rx, m_ry, m_rz;
 		double 			m_vrx, m_vry, m_vrz;
 		double 			m_ax, m_ay, m_az;
+		string			m_serial_port_name;
 		
 		RazorAHRS *razor;
 };

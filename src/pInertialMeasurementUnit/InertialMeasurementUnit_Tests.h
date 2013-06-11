@@ -18,7 +18,7 @@
 
 using namespace std;
 
-void launchTestsAndExitIfOk();
+void launchTestsAndExitIfOk(string param);
 
 #endif
 

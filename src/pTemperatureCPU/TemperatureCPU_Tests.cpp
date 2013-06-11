@@ -12,6 +12,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include "TemperatureCPU.h"
 #include "TemperatureCPU_Tests.h"
 
 /**
@@ -21,6 +22,9 @@
 
 void launchTestsAndExitIfOk()
 {
+	TemperatureCPU temp;
 	Tests sessionDeTests("pTemperatureCPU");
+	sessionDeTests.tester(temp.getTemperatureProcesseur() != -1, "Ouverture des données de température");
+	sessionDeTests.tester(temp.getTemperatureProcesseur() != -2, "Lecture des données de température");
 	sessionDeTests.afficherConclusionTests();
 }

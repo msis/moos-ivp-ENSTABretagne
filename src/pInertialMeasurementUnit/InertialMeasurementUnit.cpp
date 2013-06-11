@@ -16,14 +16,13 @@
 #include "InertialMeasurementUnit.h"
 
 using namespace std;
-const string serial_port_name = "/dev/ttyUSB0";
 
 /**
  * \fn
  * \brief Constructeur de l'application MOOS
  */
  
-InertialMeasurementUnit::InertialMeasurementUnit()
+InertialMeasurementUnit::InertialMeasurementUnit(string serial_port_name, bool initialisationAutomatique)
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
@@ -36,11 +35,28 @@ InertialMeasurementUnit::InertialMeasurementUnit()
 	this->m_rx	 = 0;
 	this->m_ry	 = 0;
 	this->m_rz	 = 0;
+	this->m_serial_port_name = serial_port_name;
+	
+	cout << "Initialisation sur " << serial_port_name << "..." << endl;
+	
+	if(initialisationAutomatique)
+	{
+		if(initialiserRazorAHRS())
+			cout << "Capteur initialise !" << endl;
+		
+		else
+			cout << "Erreur d'initialisation !" << endl;
+	}
+}
 
+bool InertialMeasurementUnit::initialiserRazorAHRS()
+{
+	bool resultat_initialisation = true;
+	
 	try
 	{
 		cout << "Initialisation de Razor..." << endl;
-		razor = new RazorAHRS(serial_port_name, 
+		razor = new RazorAHRS(this->m_serial_port_name, 
 								bind(&InertialMeasurementUnit::on_data, this, placeholders::_1),
 								bind(&InertialMeasurementUnit::on_error, this, placeholders::_1),
 								RazorAHRS::ACC_MAG_GYR_CALIBRATED);
@@ -50,7 +66,10 @@ InertialMeasurementUnit::InertialMeasurementUnit()
 	{
 		cout << "  " << (string("Could not create tracker: ") + string(e.what())) << endl;
 		cout << "  " << "Did you set a correct serial port ? (check permissions root)" << endl;
+		resultat_initialisation = false;
 	}
+	
+	return resultat_initialisation;
 }
 
 /**
