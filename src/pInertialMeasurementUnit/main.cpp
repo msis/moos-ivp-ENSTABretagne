@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 		cout << "Lancement de " << run_command << endl;
 		cout << termColor() << endl;
 
-		InertialMeasurementUnit InertialMeasurementUnit(serialPortName, true);
+		InertialMeasurementUnit InertialMeasurementUnit(serialPortName);
 		InertialMeasurementUnit.Run(run_command.c_str(), mission_file.c_str());
 	}
 

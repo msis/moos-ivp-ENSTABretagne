@@ -21,8 +21,9 @@ using namespace std;
  * \brief Constructeur de l'application MOOS
  */
  
-Modem::Modem()
+Modem::Modem(string nomPortSerie, bool initialisationAutomatique)
 {
+	this->m_nom_port = nomPortSerie;
 	this->m_iterations = 0;
 	this->m_timewarp   = 1;
 	this->m_anomalie_detectee = false;
@@ -39,6 +40,24 @@ Modem::Modem()
 	this->m_listeVariablesSuivies.push_back("VVV_ANOMALY_Y");
 	this->m_listeVariablesSuivies.push_back("VVV_ANOMALY_Z");
 	this->m_listeVariablesSuivies.push_back("VVV_ANOMALY_STATE");
+	
+	if(initialisationAutomatique && initialiserPortSerie())
+		cout << "Port série initialisé !" << endl;
+}
+
+/**
+ * \fn
+ * \brief Méthode initialisant le port série
+ */
+ 
+bool Modem::initialiserPortSerie()
+{
+	int baud = 9600;
+	
+	// Instanciation de l'objet de communication avec le port série
+	cout << "Initialisation de \"" << this->m_nom_port << "\" (" << baud << ")" << endl;
+	this->m_moos_serial_port = CMOOSLinuxSerialPort();
+	return this->m_moos_serial_port.Create((char*)this->m_nom_port.c_str(), baud);
 }
 
 /**
@@ -48,6 +67,7 @@ Modem::Modem()
 
 Modem::~Modem()
 {
+	this->m_moos_serial_port.Close();
 }
 
 /**
@@ -57,7 +77,7 @@ Modem::~Modem()
 
 bool Modem::envoyerMessage(char* message)
 {
-	return true;
+	return this->m_moos_serial_port.Write(message, NOMBRE_BITS_TOTAL);
 }
 
 /**
@@ -69,13 +89,12 @@ bool Modem::attendreConfirmationBonneReception()
 {
 	bool confirmation = false;
 	int type_message, data;
-	char reponse_captee[32];
+	char reponse_captee[NOMBRE_BITS_TOTAL];
 	
 	while(!confirmation)
 	{
-		/*		A remplacer par le code de réception du message		*/
-		sprintf(reponse_captee, "00000000000000000000000000000000");
-		/*		-----------------------------------------------		*/
+		this->m_moos_serial_port.ReadNWithTimeOut(reponse_captee, NOMBRE_BITS_TOTAL);
+		//sprintf(reponse_captee, "00000000000000000000000000000000"); // Réponse type de confirmation
 		
 		if(!Communication::decoderMessage(reponse_captee, &type_message, &data))
 			continue;
@@ -164,7 +183,7 @@ bool Modem::Iterate()
 	
 	if(this->m_anomalie_detectee)
 	{
-		char message[32];
+		char message[NOMBRE_BITS_TOTAL];
 		
 		// Information sur X
 		if(!this->m_position_x_anomalie_recue)

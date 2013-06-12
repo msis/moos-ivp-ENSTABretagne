@@ -20,7 +20,7 @@ using namespace std;
 class InertialMeasurementUnit : public CMOOSApp
 {
 	public:
-		InertialMeasurementUnit(string serial_port_name, bool initialisationAutomatique);
+		InertialMeasurementUnit(string serial_port_name, bool initialisationAutomatique = true);
 		~InertialMeasurementUnit();
 		bool initialiserRazorAHRS();
 

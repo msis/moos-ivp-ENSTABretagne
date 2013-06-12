@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string.h>
+#include "Modem.h"
 #include "Modem_Tests.h"
 #include "Communication.h"
 
@@ -23,7 +24,7 @@
 
 void launchTestsAndExitIfOk()
 {
-	char chaine[32];
+	char chaine[NOMBRE_BITS_TOTAL];
 	Tests sessionDeTests("pModem");
 	
 	// Logique binaire - décimale
@@ -45,7 +46,7 @@ void launchTestsAndExitIfOk()
 	sessionDeTests.tester(Communication::encoderConfirmationReception(chaine) && strcmp(chaine, "00000000000000000000000000000000") == 0, "Encodage d'une confirmation de réception");
 	sessionDeTests.tester(Communication::encoderEtatAnomalie(true, chaine) && strcmp(chaine, "00011111111111110001111111111111") == 0, "Encodage d'une information sur la bouée (allumée)");
 	sessionDeTests.tester(Communication::encoderEtatAnomalie(false, chaine) && strcmp(chaine, "00010000000000000001000000000000") == 0, "Encodage d'une information sur la bouée (éteinte)");
-	sessionDeTests.tester(strlen(chaine) == 32, "Taille de la chaine encodée (32 bits)");
+	sessionDeTests.tester(strlen(chaine) == NOMBRE_BITS_TOTAL, "Taille de la chaine encodée (32 bits)");
 	
 	// Vérifications - recherche d'erreurs
 	sessionDeTests.tester(Communication::messageValide((char*)"11010010011011001101001001101100"), "Message valide");
@@ -80,6 +81,10 @@ void launchTestsAndExitIfOk()
 	Communication::decoderMessage(chaine, &type_message, &data);
 	sessionDeTests.tester(Communication::decoderMessage(chaine, &type_message, &data), "Décodage sans erreur");
 	sessionDeTests.tester(type_message == TYPE_AUTRE_CONFIRMATION_RECEPTION, "Décodage du type du message (confirmation réception)");
+	
+	// Initialisation du modem
+	Modem modem("/dev/ttyUSB0", false);
+	sessionDeTests.tester(modem.initialiserPortSerie(), "Initialisation du modem (port série)");
 	
 	sessionDeTests.afficherConclusionTests();
 }

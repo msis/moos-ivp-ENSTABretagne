@@ -147,7 +147,7 @@ bool Camera::OnStartUp()
 		
 	namedWindow("display", 1);
 	
-	RegisterVariables();	
+	RegisterVariables();
 	return(true);
 }
 

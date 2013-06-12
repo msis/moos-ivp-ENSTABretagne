@@ -255,7 +255,7 @@ bool Communication::encoderMessage(int type_message, int data, char* resultat)
 
 long Communication::conversionEnBinaire(int nombre_decimal)
 {
-	char resultat[32];
+	char resultat[NOMBRE_BITS_TOTAL];
 	int i = 0, t[40], j = 0;
 	
 	while(nombre_decimal > 0)
@@ -280,7 +280,7 @@ long Communication::conversionEnBinaire(int nombre_decimal)
 
 int Communication::conversionEnDecimal(long nombre_binaire)
 {
-	char resultat[32];
+	char resultat[NOMBRE_BITS_TOTAL];
 	sprintf(resultat, "%ld", nombre_binaire);
 	return strtol(resultat, NULL, 2);
 }
