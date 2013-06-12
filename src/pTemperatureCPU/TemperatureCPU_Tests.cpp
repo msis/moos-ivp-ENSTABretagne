@@ -25,6 +25,6 @@ void launchTestsAndExitIfOk()
 	TemperatureCPU temp;
 	Tests sessionDeTests("pTemperatureCPU");
 	sessionDeTests.tester(temp.getTemperatureProcesseur() != -1, "Ouverture des données de température");
-	sessionDeTests.tester(temp.getTemperatureProcesseur() != -2, "Lecture des données de température");
+	sessionDeTests.tester(temp.getTemperatureProcesseur() != -2 && temp.getTemperatureProcesseur() != -1, "Lecture des données de température");
 	sessionDeTests.afficherConclusionTests();
 }

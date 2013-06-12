@@ -12,6 +12,7 @@
 #include <iterator>
 #include "MBUtils.h"
 #include "Modem.h"
+#include "Communication.h"
 
 using namespace std;
 

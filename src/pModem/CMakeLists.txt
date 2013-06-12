@@ -9,6 +9,7 @@ SET(SRC
   Modem.cpp
   Modem_Info.cpp
   Modem_Tests.cpp
+  Communication.cpp
   main.cpp
 )
 

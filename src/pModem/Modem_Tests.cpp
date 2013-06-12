@@ -12,7 +12,9 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <string.h>
 #include "Modem_Tests.h"
+#include "Communication.h"
 
 /**
  * \fn
@@ -21,6 +23,43 @@
 
 void launchTestsAndExitIfOk()
 {
+	char chaine[32];
 	Tests sessionDeTests("pModem");
+	
+	// Logique binaire - décimale
+	sessionDeTests.tester(Communication::conversionEnBinaire(4) == 100, "Conversion binaire de 4");
+	sessionDeTests.tester(Communication::conversionEnBinaire(46131) == 1011010000110011, "Conversion binaire de 46131");
+	sessionDeTests.tester(Communication::conversionEnBinaire(429487) == 1101000110110101111, "Conversion binaire 429487");
+	sessionDeTests.tester(Communication::conversionEnDecimal(1000101110101010) == 35754, "Conversion binaire de 01000101110101010");
+	sessionDeTests.tester(Communication::conversionEnDecimal(1001) == 9, "Conversion binaire de 01001");
+	sessionDeTests.tester(Communication::conversionEnDecimal(1110101) == 117, "Conversion binaire 1110101");
+	
+	// Encodages
+	sessionDeTests.tester(Communication::encoderX(4, chaine) && strcmp(chaine, "01000000000001000100000000000100") == 0, "Encodage d'une position selon X : 4");
+	sessionDeTests.tester(Communication::encoderX(2545, chaine) && strcmp(chaine, "01001001111100010100100111110001") == 0, "Encodage d'une position selon X : 2545");
+	sessionDeTests.tester(Communication::encoderY(691, chaine) && strcmp(chaine, "10000010101100111000001010110011") == 0, "Encodage d'une position selon Y : 691");
+	sessionDeTests.tester(Communication::encoderY(742, chaine) && strcmp(chaine, "10000010111001101000001011100110") == 0, "Encodage d'une position selon Y : 742");
+	sessionDeTests.tester(Communication::encoderZ(4716, chaine) && strcmp(chaine, "11010010011011001101001001101100") == 0, "Encodage d'une position selon Z : 4716");
+	sessionDeTests.tester(Communication::encoderZ(18, chaine) && strcmp(chaine, "11000000000100101100000000010010") == 0, "Encodage d'une position selon Z : 18");
+	sessionDeTests.tester(Communication::encoderZ(169351, chaine) == false, "Encodage d'une position trop longue");
+	
+	// Vérifications - recherche d'erreurs
+	sessionDeTests.tester(Communication::messageValide((char*)"11010010011011001101001001101100"), "Message valide");
+	sessionDeTests.tester(Communication::messageValide((char*)"11110010011011001101001001101100") == false, "Message contenant une erreur");
+	sessionDeTests.tester(Communication::messageValide((char*)"11010110011011001101001001101101") == false, "Message contenant deux erreurs");
+	
+	// Décodage
+	int type_message, data;
+	sprintf(chaine, "01001001111100010100100111110001");
+	Communication::decoderMessage(chaine, &type_message, &data);
+	sessionDeTests.tester(Communication::decoderMessage(chaine, &type_message, &data), "Décodage sans erreur");
+	sessionDeTests.tester(type_message == CODE_POSITION_X, "Décodage du type du message");
+	sessionDeTests.tester(data == 2545, "Décodage des données");
+	sprintf(chaine, "11010010011011001101001001101100");
+	Communication::decoderMessage(chaine, &type_message, &data);
+	sessionDeTests.tester(Communication::decoderMessage(chaine, &type_message, &data), "Décodage sans erreur");
+	sessionDeTests.tester(type_message == CODE_POSITION_Z, "Décodage du type du message");
+	sessionDeTests.tester(data == 4716, "Décodage des données");
+	
 	sessionDeTests.afficherConclusionTests();
 }
