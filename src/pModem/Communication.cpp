@@ -20,13 +20,13 @@
  * 		14 bits pour les données (12 si autre)
  * 		16 bits de redondance (identiques aux 16 premiers)
  * 
- * 		11.. : data Z
- * 		10.. : data Y
- *  	01.. : data X
- *  	0001 : état anomalie
- * 		0000 : confirmation réception
- * 		0010 : -
- *  	0011 : -
+ *		11.. : data Z
+ *		10.. : data Y
+ *		01.. : data X
+ *		0001 : état anomalie
+ *		0000 : confirmation réception
+ *		0010 : -
+ *		0011 : -
  */
 
 #include <iostream>

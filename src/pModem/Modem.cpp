@@ -23,8 +23,22 @@ using namespace std;
  
 Modem::Modem()
 {
-	m_iterations = 0;
-	m_timewarp   = 1;
+	this->m_iterations = 0;
+	this->m_timewarp   = 1;
+	this->m_anomalie_detectee = false;
+	this->m_position_x_anomalie = -1;
+	this->m_position_y_anomalie = -1;
+	this->m_position_z_anomalie = -1;
+	this->m_position_x_anomalie_recue = false;
+	this->m_position_y_anomalie_recue = false;
+	this->m_position_z_anomalie_recue = false;
+	
+	// Enregistrement des variables de la MOOSDB à suivre
+	this->m_listeVariablesSuivies.push_back("VVV_ANOMALY_DETECTED");
+	this->m_listeVariablesSuivies.push_back("VVV_ANOMALY_X");
+	this->m_listeVariablesSuivies.push_back("VVV_ANOMALY_Y");
+	this->m_listeVariablesSuivies.push_back("VVV_ANOMALY_Z");
+	this->m_listeVariablesSuivies.push_back("VVV_ANOMALY_STATE");
 }
 
 /**
@@ -34,6 +48,42 @@ Modem::Modem()
 
 Modem::~Modem()
 {
+}
+
+/**
+ * \fn
+ * \brief Méthode envoyant un message par modem
+ */
+
+bool Modem::envoyerMessage(char* message)
+{
+	return true;
+}
+
+/**
+ * \fn
+ * \brief Méthode envoyant un message par modem
+ */
+
+bool Modem::attendreConfirmationBonneReception()
+{
+	bool confirmation = false;
+	int type_message, data;
+	char reponse_captee[32];
+	
+	while(!confirmation)
+	{
+		/*		A remplacer par le code de réception du message		*/
+		sprintf(reponse_captee, "00000000000000000000000000000000");
+		/*		-----------------------------------------------		*/
+		
+		if(!Communication::decoderMessage(reponse_captee, &type_message, &data))
+			continue;
+		
+		confirmation = (type_message == TYPE_AUTRE_CONFIRMATION_RECEPTION);
+	}
+	
+	return confirmation;
 }
 
 /**
@@ -50,15 +100,36 @@ bool Modem::OnNewMail(MOOSMSG_LIST &NewMail)
 	{
 		CMOOSMsg &msg = *p;
 
+		if(msg.GetKey() == "VVV_ANOMALY_DETECTED")
+			this->m_anomalie_detectee = (msg.GetDouble() == 1.0);
+
+		if(msg.GetKey() == "VVV_ANOMALY_X")
+		{
+			this->m_position_x_anomalie = msg.GetDouble();
+			this->m_position_x_anomalie_recue = false;
+		}
+
+		if(msg.GetKey() == "VVV_ANOMALY_Y")
+		{
+			this->m_position_y_anomalie = msg.GetDouble();
+			this->m_position_y_anomalie_recue = false;
+		}
+
+		if(msg.GetKey() == "VVV_ANOMALY_Z")
+		{
+			this->m_position_z_anomalie = msg.GetDouble();
+			this->m_position_z_anomalie_recue = false;
+		}
+			
 		#if 0 // Keep these around just for template
-		string key   = msg.GetKey();
-		string comm  = msg.GetCommunity();
-		double dval  = msg.GetDouble();
-		string sval  = msg.GetString(); 
-		string msrc  = msg.GetSource();
-		double mtime = msg.GetTime();
-		bool   mdbl  = msg.IsDouble();
-		bool   mstr  = msg.IsString();
+			string key   = msg.GetKey();
+			string comm  = msg.GetCommunity();
+			double dval  = msg.GetDouble();
+			string sval  = msg.GetString(); 
+			string msrc  = msg.GetSource();
+			double mtime = msg.GetTime();
+			bool   mdbl  = msg.IsDouble();
+			bool   mstr  = msg.IsString();
 		#endif
 	}
 
@@ -90,6 +161,39 @@ bool Modem::OnConnectToServer()
 bool Modem::Iterate()
 {
 	m_iterations++;
+	
+	if(this->m_anomalie_detectee)
+	{
+		char message[32];
+		
+		// Information sur X
+		if(!this->m_position_x_anomalie_recue)
+		{
+			cout << "Envoie de la position X de l'anomalie" << endl;
+			Communication::encoderX(this->m_position_x_anomalie, message);
+			if(this->envoyerMessage(message))
+				this->m_position_x_anomalie_recue = this->attendreConfirmationBonneReception();
+		}
+		
+		// Information sur Y
+		if(!this->m_position_y_anomalie_recue)
+		{
+			cout << "Envoie de la position Y de l'anomalie" << endl;
+			Communication::encoderY(this->m_position_y_anomalie, message);
+			if(this->envoyerMessage(message))
+				this->m_position_y_anomalie_recue = this->attendreConfirmationBonneReception();
+		}
+		
+		// Information sur Z
+		if(!this->m_position_z_anomalie_recue)
+		{
+			cout << "Envoie de la position Z de l'anomalie" << endl;
+			Communication::encoderZ(this->m_position_z_anomalie, message);
+			if(this->envoyerMessage(message))
+				this->m_position_z_anomalie_recue = this->attendreConfirmationBonneReception();
+		}
+	}
+	
 	return(true);
 }
 
@@ -136,5 +240,7 @@ bool Modem::OnStartUp()
  
 void Modem::RegisterVariables()
 {
-	// m_Comms.Register("FOOBAR", 0);
+	// Variables liées à la commande de l'AUV
+	for(int i = 0 ; i < (int)this->m_listeVariablesSuivies.size() ; i++)
+		m_Comms.Register(this->m_listeVariablesSuivies[i], 0);
 }

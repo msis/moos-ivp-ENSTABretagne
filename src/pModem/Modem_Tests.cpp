@@ -45,6 +45,7 @@ void launchTestsAndExitIfOk()
 	sessionDeTests.tester(Communication::encoderConfirmationReception(chaine) && strcmp(chaine, "00000000000000000000000000000000") == 0, "Encodage d'une confirmation de réception");
 	sessionDeTests.tester(Communication::encoderEtatAnomalie(true, chaine) && strcmp(chaine, "00011111111111110001111111111111") == 0, "Encodage d'une information sur la bouée (allumée)");
 	sessionDeTests.tester(Communication::encoderEtatAnomalie(false, chaine) && strcmp(chaine, "00010000000000000001000000000000") == 0, "Encodage d'une information sur la bouée (éteinte)");
+	sessionDeTests.tester(strlen(chaine) == 32, "Taille de la chaine encodée (32 bits)");
 	
 	// Vérifications - recherche d'erreurs
 	sessionDeTests.tester(Communication::messageValide((char*)"11010010011011001101001001101100"), "Message valide");

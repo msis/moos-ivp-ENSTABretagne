@@ -12,6 +12,7 @@
 #ifndef Modem_HEADER
 #define Modem_HEADER
 
+#include <vector>
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
@@ -29,12 +30,22 @@ class Modem : public CMOOSApp
 		bool OnConnectToServer();
 		bool OnStartUp();
 		void RegisterVariables();
+		bool envoyerMessage(char* message);
+		bool attendreConfirmationBonneReception();
 
 	private: // Configuration variables
 
 	private: // State variables
 		unsigned int	m_iterations;
 		double			m_timewarp;
+		vector<string>	m_listeVariablesSuivies;
+		bool			m_anomalie_detectee;
+		double 			m_position_x_anomalie;
+		double 			m_position_y_anomalie;
+		double 			m_position_z_anomalie;
+		bool 			m_position_x_anomalie_recue;
+		bool 			m_position_y_anomalie_recue;
+		bool 			m_position_z_anomalie_recue;
 };
 
 #endif 

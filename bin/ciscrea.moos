@@ -23,6 +23,11 @@ Community = ciscreaSaucE
 	VVV_CURRENT_EXTERNAL_BATTERY_2, VVV_VOLTAGE_EXTERNAL_BATTERY_2
 	VVV_CONSUMPTION_EXTERNAL_BATTERY_1, VVV_CONSUMPTION_EXTERNAL_BATTERY_2
 	
+	// Détection de la bouée (anomalie)
+	VVV_ANOMALY_DETECTED
+	VVV_ANOMALY_X, VVV_ANOMALY_Y, VVV_ANOMALY_Z
+	VVV_ANOMALY_STATE
+	
 	// Variables globales
 	VVV_ON_MISSION
 */
@@ -38,7 +43,7 @@ ProcessConfig = ANTLER
 	Run = pControler				@ NewConsole = false
 	Run = pSonar					@ NewConsole = false
 	Run = pEchoSonder				@ NewConsole = false
-	Run = pModem					@ NewConsole = false
+	Run = pModem					@ NewConsole = true
 	Run = pCamera					@ NewConsole = true
 	Run = pHydrophone				@ NewConsole = false
 	Run = pTemperatureCPU			@ NewConsole = false
@@ -69,6 +74,9 @@ ProcessConfig = uXMS
 	VAR				= VVV_AUV_IDENTIFIER, VVV_AUV_NAME
 	VAR				= VVV_TEMPERATURE_CPU
 	VAR				= VVV_ON_MISSION
+	VAR				= VVV_ANOMALY_DETECTED
+	VAR				= VVV_ANOMALY_X, VVV_ANOMALY_Y, VVV_ANOMALY_Z
+	VAR				= VVV_ANOMALY_STATE
 	COLOR_MAP		= VVV_NAV_VX, red
 	COLOR_MAP		= VVV_NAV_VY, blue
 	COLOR_MAP		= VVV_NAV_VZ, green
