@@ -8,6 +8,26 @@
  * Classe de manipulation de codes correcteurs pour communications bruitées
  *
  */
+ 
+/*		TO DO :
+ * 		Implémenter un code correcteur (Hamming ?)
+ * 		Actuellement, le message est juste envoyé deux fois : pas de correction, juste détection
+ */
+
+/*	RÈGLES D'ENCODAGE DU MESSAGE :
+ * 		2 bits pour le type du message : posX, posY, posZ ou autre
+ * 			si autre, 2 bits supplémentaires pour repréciser le type
+ * 		14 bits pour les données (12 si autre)
+ * 		16 bits de redondance (identiques aux 16 premiers)
+ * 
+ * 		11.. : data Z
+ * 		10.. : data Y
+ *  	01.. : data X
+ *  	0001 : état anomalie
+ * 		0000 : confirmation réception
+ * 		0010 : -
+ *  	0011 : -
+ */
 
 #include <iostream>
 #include <stdio.h>
@@ -23,7 +43,7 @@
 
 bool Communication::encoderX(int data_x, char* resultat)
 {
-	return Communication::encoderMessage(CODE_POSITION_X, data_x, resultat);
+	return Communication::encoderMessage(TYPE_POSITION_X, data_x, resultat);
 }
 
 /**
@@ -33,7 +53,7 @@ bool Communication::encoderX(int data_x, char* resultat)
 
 bool Communication::encoderY(int data_y, char* resultat)
 {
-	return Communication::encoderMessage(CODE_POSITION_Y, data_y, resultat);
+	return Communication::encoderMessage(TYPE_POSITION_Y, data_y, resultat);
 }
 
 /**
@@ -43,7 +63,39 @@ bool Communication::encoderY(int data_y, char* resultat)
 
 bool Communication::encoderZ(int data_z, char* resultat)
 {
-	return Communication::encoderMessage(CODE_POSITION_Z, data_z, resultat);
+	return Communication::encoderMessage(TYPE_POSITION_Z, data_z, resultat);
+}
+
+/**
+ * \fn
+ * \brief Méthode encodant l'information sur l'état de l'anomalie à trouver sur le mur
+ * 			Il s'agit de l'état de la lumière se trouvant sur la bouée
+ */
+
+bool Communication::encoderEtatAnomalie(bool etat, char* resultat)
+{
+	return Communication::encoderMessage(TYPE_AUTRE_ETAT_ANOMALIE, (int)etat, resultat);
+}
+
+/**
+ * \fn
+ * \brief Méthode encodant une confirmation de bonne réception d'un message par ce moyen de communication
+ */
+
+bool Communication::encoderConfirmationReception(char* resultat)
+{
+	return Communication::encoderMessage(TYPE_AUTRE_CONFIRMATION_RECEPTION, 0, resultat);
+}
+
+/**
+ * \fn
+ * \brief Méthode corrigeant un message lorsque celui-ci présente une erreur
+ */
+
+bool Communication::corrigerMessage(char* message)
+{
+	// TO DO
+	return true;
 }
 
 /**
@@ -58,16 +110,61 @@ bool Communication::messageValide(char* message)
 
 /**
  * \fn
+ * \brief Méthode retournant le type du message correspondant à la chaine passée en parametre
+ */
+
+int Communication::typeDeMessageCorrespondant(char* chaine_type)
+{
+	if(strlen(chaine_type) == 4) // Cas d'un type "autre"
+	{
+		if(strcmp(chaine_type, CODE_TYPE_AUTRE_CONFIRMATION_RECEPTION) == 0)
+			return TYPE_AUTRE_CONFIRMATION_RECEPTION;
+		
+		if(strcmp(chaine_type, CODE_TYPE_AUTRE_ETAT_ANOMALIE) == 0)
+			return TYPE_AUTRE_ETAT_ANOMALIE;
+	}
+	
+	else
+	{
+		if(strcmp(chaine_type, CODE_TYPE_POSITION_X) == 0)
+			return TYPE_POSITION_X;
+		
+		if(strcmp(chaine_type, CODE_TYPE_POSITION_Y) == 0)
+			return TYPE_POSITION_Y;
+		
+		if(strcmp(chaine_type, CODE_TYPE_POSITION_Z) == 0)
+			return TYPE_POSITION_Z;
+	}
+	
+	return -1;
+}
+
+/**
+ * \fn
  * \brief Méthode décodant un message donné
  */
 
 bool Communication::decoderMessage(char* message, int* type_message, int* data)
 {
 	if(!Communication::messageValide(message))
-		return false;
+		if(!Communication::corrigerMessage(message))
+			return false;
 	
-	*type_message = Communication::conversionEnDecimal(atol(strndup(message, NOMBRE_BITS_TYPE)));
-	*data = Communication::conversionEnDecimal(atol(strndup(message + NOMBRE_BITS_TYPE, NOMBRE_BITS_DATA)));
+	char type_primaire[2];
+	sprintf(type_primaire, "%s", strndup(message, NOMBRE_BITS_TYPE));
+	
+	if(strcmp(type_primaire, CODE_TYPE_AUTRE) == 0)
+	{
+		*type_message = Communication::typeDeMessageCorrespondant(strndup(message, NOMBRE_BITS_TYPE * 2));
+		*data = Communication::conversionEnDecimal(atol(strndup(message + NOMBRE_BITS_TYPE * 2, NOMBRE_BITS_DATA - NOMBRE_BITS_TYPE)));
+	}
+	
+	else
+	{
+		*type_message = Communication::typeDeMessageCorrespondant(strndup(message, NOMBRE_BITS_TYPE));
+		*data = Communication::conversionEnDecimal(atol(strndup(message + NOMBRE_BITS_TYPE, NOMBRE_BITS_DATA)));
+	}
+	
 	return true;
 }
 
@@ -78,38 +175,35 @@ bool Communication::decoderMessage(char* message, int* type_message, int* data)
 
 bool Communication::encoderMessage(int type_message, int data, char* resultat)
 {
-	/*	RÈGLES D'ENCODAGE DU MESSAGE :
-	 * 		2 bits pour le type du message : posX, posY, posZ ou autre
-	 * 		14 bits pour les données
-	 * 		16 bits de redondance (identiques aux 16 premiers)
-	 */
-	if(data > pow(2, NOMBRE_BITS_DATA)) // Le codage ne passe plus sur 14 bits
+	if(type_message == TYPE_POSITION_X || type_message == TYPE_POSITION_Y || type_message == TYPE_POSITION_Z)
 	{
-		cout << "Encodage du message impossible !" << endl;
-		return false;
-	}
-	
-	if(type_message == CODE_POSITION_X || type_message == CODE_POSITION_Y || type_message == CODE_POSITION_Z)
-	{
+		char code_type_message[2];
+		switch(type_message)
+		{
+			case TYPE_POSITION_X:
+				sprintf(code_type_message, "%s", CODE_TYPE_POSITION_X);
+				break;
+			
+			case TYPE_POSITION_Y:
+				sprintf(code_type_message, "%s", CODE_TYPE_POSITION_Y);
+				break;
+			
+			case TYPE_POSITION_Z:
+				sprintf(code_type_message, "%s", CODE_TYPE_POSITION_Z);
+				break;
+		}
+		
+		if(data > pow(2, NOMBRE_BITS_DATA)) // Le codage ne passe plus sur 14 bits
+		{
+			cout << "Encodage du message impossible !" << endl;
+			return false;
+		}
+		
 		int i, j;
 		char temp[NOMBRE_BITS_DATA];
 		sprintf(resultat, "");
 		
-		sprintf(temp, "%ld", Communication::conversionEnBinaire(type_message)); // Type du message
-		
-		for(j = 0 ; j < NOMBRE_BITS_TYPE - (int)strlen(temp) ; j ++)
-			sprintf(resultat, "%s0", resultat);
-		for(i = 0 ; i < (int)strlen(temp) ; i ++)
-			sprintf(resultat, "%s%c", resultat, temp[i]);
-		
-		sprintf(temp, "%ld", Communication::conversionEnBinaire(data)); // Contenu du message
-		
-		for(j = 0 ; j < NOMBRE_BITS_DATA - (int)strlen(temp) ; j ++)
-			sprintf(resultat, "%s0", resultat);
-		for(i = 0 ; i < (int)strlen(temp) ; i ++)
-			sprintf(resultat, "%s%c", resultat, temp[i]);
-		
-		sprintf(temp, "%ld", Communication::conversionEnBinaire(type_message)); // Type du message
+		sprintf(temp, "%s", code_type_message); // Type du message
 		
 		for(j = 0 ; j < NOMBRE_BITS_TYPE - (int)strlen(temp) ; j ++)
 			sprintf(resultat, "%s0", resultat);
@@ -124,8 +218,32 @@ bool Communication::encoderMessage(int type_message, int data, char* resultat)
 			sprintf(resultat, "%s%c", resultat, temp[i]);
 	}
 	
+	else if(type_message == TYPE_AUTRE_ETAT_ANOMALIE || type_message == TYPE_AUTRE_CONFIRMATION_RECEPTION)
+	{
+		char char_data;
+		char code_type_message[4];
+		switch(type_message)
+		{
+			case TYPE_AUTRE_ETAT_ANOMALIE:
+				char_data = (char)(((int)'0') + data);
+				sprintf(code_type_message, "%s", CODE_TYPE_AUTRE_ETAT_ANOMALIE);
+				break;
+			
+			case TYPE_AUTRE_CONFIRMATION_RECEPTION:
+				char_data = '0';
+				sprintf(code_type_message, "%s", CODE_TYPE_AUTRE_CONFIRMATION_RECEPTION);
+				break;
+		}
+		
+		sprintf(resultat, "%s", code_type_message);
+		for(int i = 0 ; i < NOMBRE_BITS_DATA - NOMBRE_BITS_TYPE ; i ++)
+			sprintf(resultat, "%s%c", resultat, char_data);
+	}
+	
 	else
 		sprintf(resultat, "");
+	
+	sprintf(resultat, "%s%s", resultat, resultat); // Redondance
 	
 	return true;
 }

@@ -18,7 +18,7 @@
 #define	TESTS_DUREE_AFFICHAGE_MESSAGE_ERREUR	8	// en secondes
 #define	TESTS_COULEUR_MESSAGE_ERREUR			"red"
 #define TESTS_COULEUR_MESSAGE_VALIDE			"green"
-#define TESTS_DESACTIVER_COUT					1
+#define TESTS_DESACTIVER_COUT					0
 
 using namespace std;
 

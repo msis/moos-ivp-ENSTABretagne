@@ -42,10 +42,15 @@ void launchTestsAndExitIfOk()
 	sessionDeTests.tester(Communication::encoderZ(4716, chaine) && strcmp(chaine, "11010010011011001101001001101100") == 0, "Encodage d'une position selon Z : 4716");
 	sessionDeTests.tester(Communication::encoderZ(18, chaine) && strcmp(chaine, "11000000000100101100000000010010") == 0, "Encodage d'une position selon Z : 18");
 	sessionDeTests.tester(Communication::encoderZ(169351, chaine) == false, "Encodage d'une position trop longue");
+	sessionDeTests.tester(Communication::encoderConfirmationReception(chaine) && strcmp(chaine, "00000000000000000000000000000000") == 0, "Encodage d'une confirmation de réception");
+	sessionDeTests.tester(Communication::encoderEtatAnomalie(true, chaine) && strcmp(chaine, "00011111111111110001111111111111") == 0, "Encodage d'une information sur la bouée (allumée)");
+	sessionDeTests.tester(Communication::encoderEtatAnomalie(false, chaine) && strcmp(chaine, "00010000000000000001000000000000") == 0, "Encodage d'une information sur la bouée (éteinte)");
 	
 	// Vérifications - recherche d'erreurs
 	sessionDeTests.tester(Communication::messageValide((char*)"11010010011011001101001001101100"), "Message valide");
+	sessionDeTests.tester(Communication::messageValide((char*)"00010000000000000001000000000000"), "Message valide");
 	sessionDeTests.tester(Communication::messageValide((char*)"11110010011011001101001001101100") == false, "Message contenant une erreur");
+	sessionDeTests.tester(Communication::messageValide((char*)"00001111111111110000111101111111") == false, "Message contenant une erreur");
 	sessionDeTests.tester(Communication::messageValide((char*)"11010110011011001101001001101101") == false, "Message contenant deux erreurs");
 	
 	// Décodage
@@ -53,13 +58,27 @@ void launchTestsAndExitIfOk()
 	sprintf(chaine, "01001001111100010100100111110001");
 	Communication::decoderMessage(chaine, &type_message, &data);
 	sessionDeTests.tester(Communication::decoderMessage(chaine, &type_message, &data), "Décodage sans erreur");
-	sessionDeTests.tester(type_message == CODE_POSITION_X, "Décodage du type du message");
-	sessionDeTests.tester(data == 2545, "Décodage des données");
+	sessionDeTests.tester(type_message == TYPE_POSITION_X, "Décodage du type du message (position X)");
+	sessionDeTests.tester(data == 2545, "Décodage des données (position X)");
 	sprintf(chaine, "11010010011011001101001001101100");
 	Communication::decoderMessage(chaine, &type_message, &data);
 	sessionDeTests.tester(Communication::decoderMessage(chaine, &type_message, &data), "Décodage sans erreur");
-	sessionDeTests.tester(type_message == CODE_POSITION_Z, "Décodage du type du message");
-	sessionDeTests.tester(data == 4716, "Décodage des données");
+	sessionDeTests.tester(type_message == TYPE_POSITION_Z, "Décodage du type du message (position Z)");
+	sessionDeTests.tester(data == 4716, "Décodage des données (position Z)");
+	sprintf(chaine, "00010000000000010001000000000001");
+	Communication::decoderMessage(chaine, &type_message, &data);
+	sessionDeTests.tester(Communication::decoderMessage(chaine, &type_message, &data), "Décodage sans erreur");
+	sessionDeTests.tester(type_message == TYPE_AUTRE_ETAT_ANOMALIE, "Décodage du type du message (état anomalie)");
+	sessionDeTests.tester(data == 1, "Décodage des données (état anomalie)");
+	sprintf(chaine, "00010000000000000001000000000000");
+	Communication::decoderMessage(chaine, &type_message, &data);
+	sessionDeTests.tester(Communication::decoderMessage(chaine, &type_message, &data), "Décodage sans erreur");
+	sessionDeTests.tester(type_message == TYPE_AUTRE_ETAT_ANOMALIE, "Décodage du type du message (état anomalie)");
+	sessionDeTests.tester(data == 0, "Décodage des données (état anomalie)");
+	sprintf(chaine, "00000000000000000000000000000000");
+	Communication::decoderMessage(chaine, &type_message, &data);
+	sessionDeTests.tester(Communication::decoderMessage(chaine, &type_message, &data), "Décodage sans erreur");
+	sessionDeTests.tester(type_message == TYPE_AUTRE_CONFIRMATION_RECEPTION, "Décodage du type du message (confirmation réception)");
 	
 	sessionDeTests.afficherConclusionTests();
 }

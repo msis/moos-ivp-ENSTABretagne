@@ -96,7 +96,7 @@ bool TemperatureCPU::Iterate()
 double TemperatureCPU::getTemperatureProcesseur()
 {
 	string data;
-	ifstream fichier("/sys/bus/acpi/devices/LNXTHERM\\:00/thermal_zone/temp");
+	ifstream fichier("/sys/bus/acpi/devices/LNXTHERM:00/thermal_zone/temp");
 	if(!fichier)
 	{
 		cout << "Erreur d'ouverture des donnees de temperature\n";
