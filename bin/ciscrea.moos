@@ -41,8 +41,8 @@ ProcessConfig = ANTLER
 	Run = pCiscrea					@ NewConsole = true, ExtraProcessParams=ParametreIdentificationAUV
 	Run = pLocalization				@ NewConsole = false
 	Run = pControler				@ NewConsole = false
-	Run = pSonar					@ NewConsole = false
-	Run = pEchoSonder				@ NewConsole = false
+	Run = pSonar					@ NewConsole = false, ExtraProcessParams=pSonar_SerialPortName
+	Run = pEchoSonder				@ NewConsole = false, ExtraProcessParams=pEchoSonder_SerialPortName
 	Run = pModem					@ NewConsole = true, ExtraProcessParams=pModem_SerialPortName
 	Run = pCamera					@ NewConsole = true
 	Run = pHydrophone				@ NewConsole = false
@@ -50,10 +50,13 @@ ProcessConfig = ANTLER
 	Run = pInertialMeasurementUnit	@ NewConsole = true, ExtraProcessParams=pInertialMeasurementUnit_SerialPortName
 	Run = pLogs						@ NewConsole = false
 	
-	// Paramètres de configuration
+	// Paramètres de configuration :
+	
 	ParametreIdentificationAUV = --auv=2
 	pInertialMeasurementUnit_SerialPortName = --serialPortName=/dev/ttyUSB0
-	pModem_SerialPortName = --serialPortName=/dev/ttyUSB0
+	pModem_SerialPortName = --serialPortName=/dev/ttyUSB3
+	pSonar_SerialPortName = --serialPortName=/dev/ttyUSB0
+	pEchoSonder_SerialPortName = --serialPortName=/dev/ttyUSB0
 }
 
 ProcessConfig = pLogs

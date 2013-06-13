@@ -15,18 +15,9 @@
  */
 
 /*	RÈGLES D'ENCODAGE DU MESSAGE :
- * 		2 bits pour le type du message : posX, posY, posZ ou autre
- * 			si autre, 2 bits supplémentaires pour repréciser le type
- * 		14 bits pour les données (12 si autre)
+ * 		4 bits pour le type du message
+ * 		12 bits pour les données
  * 		16 bits de redondance (identiques aux 16 premiers)
- * 
- *		11.. : data Z
- *		10.. : data Y
- *		01.. : data X
- *		0001 : état anomalie
- *		0000 : confirmation réception
- *		0010 : -
- *		0011 : -
  */
 
 #include <iostream>
@@ -41,9 +32,9 @@
  * \brief Méthode encodant une donnée sur X
  */
 
-bool Communication::encoderX(int data_x, char* resultat)
+bool Communication::encoderMesureExterneX(int data_x, char* resultat)
 {
-	return Communication::encoderMessage(TYPE_POSITION_X, data_x, resultat);
+	return Communication::encoderMessage(TYPE_MESURE_EXTERNE_X, round(data_x / PRECISION_DONNEES_ENVOYEES), resultat);
 }
 
 /**
@@ -51,9 +42,9 @@ bool Communication::encoderX(int data_x, char* resultat)
  * \brief Méthode encodant une donnée sur Y
  */
 
-bool Communication::encoderY(int data_y, char* resultat)
+bool Communication::encoderMesureExterneY(int data_y, char* resultat)
 {
-	return Communication::encoderMessage(TYPE_POSITION_Y, data_y, resultat);
+	return Communication::encoderMessage(TYPE_MESURE_EXTERNE_Y, round(data_y / PRECISION_DONNEES_ENVOYEES), resultat);
 }
 
 /**
@@ -61,9 +52,39 @@ bool Communication::encoderY(int data_y, char* resultat)
  * \brief Méthode encodant une donnée sur la profondeur
  */
 
-bool Communication::encoderZ(int data_z, char* resultat)
+bool Communication::encoderMesureExterneZ(int data_z, char* resultat)
 {
-	return Communication::encoderMessage(TYPE_POSITION_Z, data_z, resultat);
+	return Communication::encoderMessage(TYPE_MESURE_EXTERNE_Z, round(data_z / PRECISION_DONNEES_ENVOYEES), resultat);
+}
+
+/**
+ * \fn
+ * \brief Méthode encodant une donnée sur la position X de l'anomalie
+ */
+
+bool Communication::encoderPositionAnomalieX(int data_x, char* resultat)
+{
+	return Communication::encoderMessage(TYPE_ANOMALIE_X, round(data_x / PRECISION_DONNEES_ENVOYEES), resultat);
+}
+
+/**
+ * \fn
+ * \brief Méthode encodant une donnée sur la position Y de l'anomalie
+ */
+
+bool Communication::encoderPositionAnomalieY(int data_y, char* resultat)
+{
+	return Communication::encoderMessage(TYPE_ANOMALIE_Y, round(data_y / PRECISION_DONNEES_ENVOYEES), resultat);
+}
+
+/**
+ * \fn
+ * \brief Méthode encodant une donnée sur la profondeur de l'anomalie
+ */
+
+bool Communication::encoderPositionAnomalieZ(int data_z, char* resultat)
+{
+	return Communication::encoderMessage(TYPE_ANOMALIE_Z, round(data_z/ PRECISION_DONNEES_ENVOYEES), resultat);
 }
 
 /**
@@ -74,7 +95,7 @@ bool Communication::encoderZ(int data_z, char* resultat)
 
 bool Communication::encoderEtatAnomalie(bool etat, char* resultat)
 {
-	return Communication::encoderMessage(TYPE_AUTRE_ETAT_ANOMALIE, (int)etat, resultat);
+	return Communication::encoderMessage(TYPE_ETAT_ANOMALIE, (int)etat, resultat);
 }
 
 /**
@@ -84,7 +105,7 @@ bool Communication::encoderEtatAnomalie(bool etat, char* resultat)
 
 bool Communication::encoderConfirmationReception(char* resultat)
 {
-	return Communication::encoderMessage(TYPE_AUTRE_CONFIRMATION_RECEPTION, 0, resultat);
+	return Communication::encoderMessage(TYPE_CONFIRMATION_RECEPTION, 1, resultat);
 }
 
 /**
@@ -115,26 +136,53 @@ bool Communication::messageValide(char* message)
 
 int Communication::typeDeMessageCorrespondant(char* chaine_type)
 {
-	if(strlen(chaine_type) == 4) // Cas d'un type "autre"
-	{
-		if(strcmp(chaine_type, CODE_TYPE_AUTRE_CONFIRMATION_RECEPTION) == 0)
-			return TYPE_AUTRE_CONFIRMATION_RECEPTION;
+	if(strcmp(chaine_type, CODE_TYPE_MESURE_EXTERNE_X) == 0)
+		return TYPE_MESURE_EXTERNE_X;
 		
-		if(strcmp(chaine_type, CODE_TYPE_AUTRE_ETAT_ANOMALIE) == 0)
-			return TYPE_AUTRE_ETAT_ANOMALIE;
-	}
-	
-	else
-	{
-		if(strcmp(chaine_type, CODE_TYPE_POSITION_X) == 0)
-			return TYPE_POSITION_X;
+	if(strcmp(chaine_type, CODE_TYPE_MESURE_EXTERNE_Y) == 0)
+		return TYPE_MESURE_EXTERNE_Y;
 		
-		if(strcmp(chaine_type, CODE_TYPE_POSITION_Y) == 0)
-			return TYPE_POSITION_Y;
+	if(strcmp(chaine_type, CODE_TYPE_MESURE_EXTERNE_Z) == 0)
+		return TYPE_MESURE_EXTERNE_Z;
 		
-		if(strcmp(chaine_type, CODE_TYPE_POSITION_Z) == 0)
-			return TYPE_POSITION_Z;
-	}
+	if(strcmp(chaine_type, CODE_TYPE_CONSIGNE_VX) == 0)
+		return TYPE_CONSIGNE_VX;
+		
+	if(strcmp(chaine_type, CODE_TYPE_CONSIGNE_VY) == 0)	
+		return TYPE_CONSIGNE_VY;
+		
+	if(strcmp(chaine_type, CODE_TYPE_CONSIGNE_VZ) == 0)
+		return TYPE_CONSIGNE_VZ;
+		
+	if(strcmp(chaine_type, CODE_TYPE_CONSIGNE_VZ) == 0)
+		return TYPE_CONSIGNE_VZ;
+		
+	if(strcmp(chaine_type, CODE_TYPE_CONSIGNE_RZ) == 0)	
+		return TYPE_CONSIGNE_RZ;
+		
+	if(strcmp(chaine_type, CODE_TYPE_CONSIGNE_CAP) == 0)
+		return TYPE_CONSIGNE_CAP;
+		
+	if(strcmp(chaine_type, CODE_TYPE_CONSIGNE_VITESSE) == 0)
+		return TYPE_CONSIGNE_VITESSE;
+		
+	if(strcmp(chaine_type, CODE_TYPE_CONSIGNE_Z) == 0)	
+		return TYPE_CONSIGNE_Z;
+		
+	if(strcmp(chaine_type, CODE_TYPE_CONFIRMATION_RECEPTION) == 0)
+		return TYPE_CONFIRMATION_RECEPTION;
+		
+	if(strcmp(chaine_type, CODE_TYPE_ETAT_ANOMALIE) == 0)
+		return TYPE_ETAT_ANOMALIE;
+		
+	if(strcmp(chaine_type, CODE_TYPE_ANOMALIE_X) == 0)
+		return TYPE_ANOMALIE_X;
+		
+	if(strcmp(chaine_type, CODE_TYPE_ANOMALIE_Y) == 0)
+		return TYPE_ANOMALIE_Y;
+		
+	if(strcmp(chaine_type, CODE_TYPE_ANOMALIE_Z) == 0)
+		return TYPE_ANOMALIE_Z;
 	
 	return -1;
 }
@@ -150,21 +198,21 @@ bool Communication::decoderMessage(char* message, int* type_message, int* data)
 		if(!Communication::corrigerMessage(message))
 			return false;
 	
-	char type_primaire[2];
+	char type_primaire[4];
 	sprintf(type_primaire, "%s", strndup(message, NOMBRE_BITS_TYPE));
 	
-	if(strcmp(type_primaire, CODE_TYPE_AUTRE) == 0)
-	{
-		*type_message = Communication::typeDeMessageCorrespondant(strndup(message, NOMBRE_BITS_TYPE * 2));
-		*data = Communication::conversionEnDecimal(atol(strndup(message + NOMBRE_BITS_TYPE * 2, NOMBRE_BITS_DATA - NOMBRE_BITS_TYPE)));
-	}
+	*type_message = Communication::typeDeMessageCorrespondant(strndup(message, NOMBRE_BITS_TYPE));
+	*data = Communication::conversionEnDecimal(atol(strndup(message + NOMBRE_BITS_TYPE, NOMBRE_BITS_DATA)));
 	
-	else
-	{
-		*type_message = Communication::typeDeMessageCorrespondant(strndup(message, NOMBRE_BITS_TYPE));
-		*data = Communication::conversionEnDecimal(atol(strndup(message + NOMBRE_BITS_TYPE, NOMBRE_BITS_DATA)));
-	}
-	
+	// S'il s'agit d'une distance
+	if(*type_message == TYPE_MESURE_EXTERNE_X ||
+		*type_message == TYPE_MESURE_EXTERNE_Y ||
+		*type_message == TYPE_MESURE_EXTERNE_Z ||
+		*type_message == TYPE_ANOMALIE_X ||
+		*type_message == TYPE_ANOMALIE_Y ||
+		*type_message == TYPE_ANOMALIE_Z)
+		*data *= PRECISION_DONNEES_ENVOYEES;
+		
 	return true;
 }
 
@@ -175,76 +223,45 @@ bool Communication::decoderMessage(char* message, int* type_message, int* data)
 
 bool Communication::encoderMessage(int type_message, int data, char* resultat)
 {
-	if(type_message == TYPE_POSITION_X || type_message == TYPE_POSITION_Y || type_message == TYPE_POSITION_Z)
+	char code_type_message[2];
+	switch(type_message)
 	{
-		char code_type_message[2];
-		switch(type_message)
-		{
-			case TYPE_POSITION_X:
-				sprintf(code_type_message, "%s", CODE_TYPE_POSITION_X);
-				break;
-			
-			case TYPE_POSITION_Y:
-				sprintf(code_type_message, "%s", CODE_TYPE_POSITION_Y);
-				break;
-			
-			case TYPE_POSITION_Z:
-				sprintf(code_type_message, "%s", CODE_TYPE_POSITION_Z);
-				break;
-		}
-		
-		if(data > pow(2, NOMBRE_BITS_DATA)) // Le codage ne passe plus sur 14 bits
-		{
-			cout << "Encodage du message impossible !" << endl;
-			return false;
-		}
-		
-		int i, j;
-		char temp[NOMBRE_BITS_DATA];
-		sprintf(resultat, "");
-		
-		sprintf(temp, "%s", code_type_message); // Type du message
-		
-		for(j = 0 ; j < NOMBRE_BITS_TYPE - (int)strlen(temp) ; j ++)
-			sprintf(resultat, "%s0", resultat);
-		for(i = 0 ; i < (int)strlen(temp) ; i ++)
-			sprintf(resultat, "%s%c", resultat, temp[i]);
-		
-		sprintf(temp, "%ld", Communication::conversionEnBinaire(data)); // Contenu du message
-		
-		for(j = 0 ; j < NOMBRE_BITS_DATA - (int)strlen(temp) ; j ++)
-			sprintf(resultat, "%s0", resultat);
-		for(i = 0 ; i < (int)strlen(temp) ; i ++)
-			sprintf(resultat, "%s%c", resultat, temp[i]);
+		case TYPE_MESURE_EXTERNE_X: sprintf(code_type_message, "%s", CODE_TYPE_MESURE_EXTERNE_X); break;
+		case TYPE_MESURE_EXTERNE_Y: sprintf(code_type_message, "%s", CODE_TYPE_MESURE_EXTERNE_Y); break;
+		case TYPE_MESURE_EXTERNE_Z: sprintf(code_type_message, "%s", CODE_TYPE_MESURE_EXTERNE_Z); break;
+		case TYPE_CONSIGNE_VX: sprintf(code_type_message, "%s", CODE_TYPE_CONSIGNE_VX); break;
+		case TYPE_CONSIGNE_VY: sprintf(code_type_message, "%s", CODE_TYPE_CONSIGNE_VY); break;
+		case TYPE_CONSIGNE_VZ: sprintf(code_type_message, "%s", CODE_TYPE_CONSIGNE_VZ); break;
+		case TYPE_CONSIGNE_RZ: sprintf(code_type_message, "%s", CODE_TYPE_CONSIGNE_RZ); break;
+		case TYPE_CONSIGNE_CAP: sprintf(code_type_message, "%s", CODE_TYPE_CONSIGNE_CAP); break;
+		case TYPE_CONSIGNE_VITESSE: sprintf(code_type_message, "%s", CODE_TYPE_CONSIGNE_VITESSE); break;
+		case TYPE_CONSIGNE_Z: sprintf(code_type_message, "%s", CODE_TYPE_CONSIGNE_Z); break;
+		case TYPE_CONFIRMATION_RECEPTION: sprintf(code_type_message, "%s", CODE_TYPE_CONFIRMATION_RECEPTION); break;
+		case TYPE_ETAT_ANOMALIE: sprintf(code_type_message, "%s", CODE_TYPE_ETAT_ANOMALIE); break;
+		case TYPE_ANOMALIE_X: sprintf(code_type_message, "%s", CODE_TYPE_ANOMALIE_X); break;
+		case TYPE_ANOMALIE_Y: sprintf(code_type_message, "%s", CODE_TYPE_ANOMALIE_Y); break;
+		case TYPE_ANOMALIE_Z: sprintf(code_type_message, "%s", CODE_TYPE_ANOMALIE_Z); break;
+		default: return false;
 	}
 	
-	else if(type_message == TYPE_AUTRE_ETAT_ANOMALIE || type_message == TYPE_AUTRE_CONFIRMATION_RECEPTION)
+	if(data > pow(2, NOMBRE_BITS_DATA)) // Le codage ne passe plus sur 14 bits
 	{
-		char char_data;
-		char code_type_message[4];
-		switch(type_message)
-		{
-			case TYPE_AUTRE_ETAT_ANOMALIE:
-				char_data = (char)(((int)'0') + data);
-				sprintf(code_type_message, "%s", CODE_TYPE_AUTRE_ETAT_ANOMALIE);
-				break;
-			
-			case TYPE_AUTRE_CONFIRMATION_RECEPTION:
-				char_data = '0';
-				sprintf(code_type_message, "%s", CODE_TYPE_AUTRE_CONFIRMATION_RECEPTION);
-				break;
-		}
-		
-		sprintf(resultat, "%s", code_type_message);
-		for(int i = 0 ; i < NOMBRE_BITS_DATA - NOMBRE_BITS_TYPE ; i ++)
-			sprintf(resultat, "%s%c", resultat, char_data);
+		cout << "Encodage du message impossible !" << endl;
+		return false;
 	}
 	
-	else
-		sprintf(resultat, "");
+	int i, j;
+	char temp[NOMBRE_BITS_DATA];
+	sprintf(resultat, "%s", code_type_message); // Type du message
+	sprintf(temp, "%ld", Communication::conversionEnBinaire(data)); // Contenu du message
+	
+	for(i = 0 ; i < NOMBRE_BITS_DATA - (int)strlen(temp) ; i ++)
+		sprintf(resultat, "%s0", resultat);
+	
+	for(i = 0 ; i < (int)strlen(temp) ; i ++)
+		sprintf(resultat, "%s%c", resultat, temp[i]);
 	
 	sprintf(resultat, "%s%s", resultat, resultat); // Redondance
-	
 	return true;
 }
 

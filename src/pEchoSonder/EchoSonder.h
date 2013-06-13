@@ -14,13 +14,19 @@
 
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
+#ifdef _WIN32
+	#include "MOOS/libMOOS/Utils/MOOSNTSerialPort.h"
+#else
+	#include "MOOS/libMOOS/Utils/MOOSLinuxSerialPort.h"
+#endif
 
 using namespace std;
 
 class EchoSonder : public CMOOSApp
 {
 	public:
-		EchoSonder();
+		EchoSonder(string nomPortSerie, bool initialisationAutomatique = true);
+		bool initialiserPortSerie();
 		~EchoSonder();
 
 	protected:
@@ -33,8 +39,10 @@ class EchoSonder : public CMOOSApp
 	private: // Configuration variables
 
 	private: // State variables
-		unsigned int	m_iterations;
-		double			m_timewarp;
+		unsigned int			m_iterations;
+		double					m_timewarp;
+		CMOOSLinuxSerialPort	m_moos_serial_port;
+		string					m_nom_port;
 };
 
 #endif 

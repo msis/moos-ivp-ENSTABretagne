@@ -28,6 +28,7 @@ class Modem : public CMOOSApp
 	public:
 		Modem(string nomPortSerie, bool initialisationAutomatique = true);
 		bool initialiserPortSerie();
+		static void B_to_A(const char* input, char* output);
 		~Modem();
 
 	protected:
@@ -37,7 +38,7 @@ class Modem : public CMOOSApp
 		bool OnStartUp();
 		void RegisterVariables();
 		bool envoyerMessage(char* message);
-		bool attendreConfirmationBonneReception();
+		bool confirmationBonneReception();
 
 	private: // Configuration variables
 

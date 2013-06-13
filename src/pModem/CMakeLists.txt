@@ -6,10 +6,11 @@
 # FILE(GLOB SRC *.cpp)
 
 SET(SRC
+  Communication.cpp
+  ConversionsBinaireASCII.cpp
   Modem.cpp
   Modem_Info.cpp
   Modem_Tests.cpp
-  Communication.cpp
   main.cpp
 )
 

@@ -8,7 +8,8 @@
  * Application MOOS permettant le dialogue entre les AUV par modem
  *
  */
-
+ 
+#include <time.h>
 #include <iterator>
 #include "MBUtils.h"
 #include "Modem.h"
@@ -77,7 +78,10 @@ Modem::~Modem()
 
 bool Modem::envoyerMessage(char* message)
 {
-	return this->m_moos_serial_port.Write(message, NOMBRE_BITS_TOTAL);
+	char reponse_ascii[4];
+	ConversionsBinaireASCII::binaryToAscii(message, reponse_ascii);
+	cout << "Envoi du message : \"" << reponse_ascii << "\"" << endl;
+	return this->m_moos_serial_port.Write(reponse_ascii, 4);
 }
 
 /**
@@ -85,13 +89,15 @@ bool Modem::envoyerMessage(char* message)
  * \brief Méthode envoyant un message par modem
  */
 
-bool Modem::attendreConfirmationBonneReception()
+bool Modem::confirmationBonneReception()
 {
+	time_t temps_debut_reception, temps_actuel;
+	time(&temps_debut_reception);
 	bool confirmation = false;
 	int type_message, data;
 	char reponse_captee[NOMBRE_BITS_TOTAL];
 	
-	while(!confirmation)
+	/*do
 	{
 		this->m_moos_serial_port.ReadNWithTimeOut(reponse_captee, NOMBRE_BITS_TOTAL);
 		//sprintf(reponse_captee, "00000000000000000000000000000000"); // Réponse type de confirmation
@@ -100,8 +106,9 @@ bool Modem::attendreConfirmationBonneReception()
 			continue;
 		
 		confirmation = (type_message == TYPE_AUTRE_CONFIRMATION_RECEPTION);
-	}
-	
+		time(&temps_actuel);
+	} while(!confirmation && difftime(temps_actuel, temps_debut_reception) < 2);
+	*/
 	return confirmation;
 }
 
@@ -189,27 +196,29 @@ bool Modem::Iterate()
 		if(!this->m_position_x_anomalie_recue)
 		{
 			cout << "Envoie de la position X de l'anomalie" << endl;
-			Communication::encoderX(this->m_position_x_anomalie, message);
-			if(this->envoyerMessage(message))
-				this->m_position_x_anomalie_recue = this->attendreConfirmationBonneReception();
+			Communication::encoderMesureExterneX(this->m_position_x_anomalie, message);
+			this->envoyerMessage(message);
+			/*if(this->envoyerMessage(message))
+				this->m_position_x_anomalie_recue = this->confirmationBonneReception();
 		}
 		
 		// Information sur Y
 		if(!this->m_position_y_anomalie_recue)
 		{
 			cout << "Envoie de la position Y de l'anomalie" << endl;
-			Communication::encoderY(this->m_position_y_anomalie, message);
+			Communication::encoderMesureExterneY(this->m_position_y_anomalie, message);
 			if(this->envoyerMessage(message))
-				this->m_position_y_anomalie_recue = this->attendreConfirmationBonneReception();
+				this->m_position_y_anomalie_recue = this->confirmationBonneReception();
 		}
 		
 		// Information sur Z
 		if(!this->m_position_z_anomalie_recue)
 		{
 			cout << "Envoie de la position Z de l'anomalie" << endl;
-			Communication::encoderZ(this->m_position_z_anomalie, message);
+			Communication::encoderMesureExterneZ(this->m_position_z_anomalie, message);
 			if(this->envoyerMessage(message))
-				this->m_position_z_anomalie_recue = this->attendreConfirmationBonneReception();
+				this->m_position_z_anomalie_recue = this->confirmationBonneReception();*/
+				this->m_position_x_anomalie_recue = true;
 		}
 	}
 	

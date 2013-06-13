@@ -16,6 +16,9 @@
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
+#define	REPERTOIRE_LOGS							"./logs"
+#define	PREFIXE_FICHIER_LOGS					"logs_preparation_sauce"
+
 using namespace std;
 
 class Logs : public CMOOSApp

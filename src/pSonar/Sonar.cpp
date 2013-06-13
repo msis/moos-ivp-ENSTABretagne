@@ -20,10 +20,28 @@ using namespace std;
  * \brief Constructeur de l'application MOOS
  */
  
-Sonar::Sonar()
+Sonar::Sonar(string nomPortSerie, bool initialisationAutomatique)
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
+	
+	if(initialisationAutomatique && initialiserPortSerie())
+		cout << "Port série initialisé !" << endl;
+}
+
+/**
+ * \fn
+ * \brief Méthode initialisant le port série
+ */
+ 
+bool Sonar::initialiserPortSerie()
+{
+	int baud = 9600;
+	
+	// Instanciation de l'objet de communication avec le port série
+	cout << "Initialisation de \"" << this->m_nom_port << "\" (" << baud << ")" << endl;
+	this->m_moos_serial_port = CMOOSLinuxSerialPort();
+	return this->m_moos_serial_port.Create((char*)this->m_nom_port.c_str(), baud);
 }
 
 /**
