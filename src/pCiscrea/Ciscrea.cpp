@@ -191,14 +191,12 @@ bool Ciscrea::OnStartUp()
 			string param = stripBlankEnds(toupper(biteString(*p, '=')));
 			string value = stripBlankEnds(*p);
 
-			if(param == "FOO")
+			if(param == "IDENTIFIANT_AUV")
 			{
-				//handled
-			}
+				this->m_identifiant_auv_a_instancier = atoi((char*)value.c_str());
 			
-			else if(param == "BAR")
-			{
-				//handled
+				if(this->m_identifiant_auv_a_instancier != 0)
+					instancierAUV();
 			}
 		}
 	}

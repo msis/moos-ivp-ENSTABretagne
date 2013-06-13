@@ -22,7 +22,6 @@ int main(int argc, char *argv[])
 {
 	string mission_file;
 	bool lancer_tests = false;
-	int identifiant_auv = 0;
 	string run_command = argv[0];
 
 	for(int i = 1; i < argc ; i++)
@@ -43,9 +42,6 @@ int main(int argc, char *argv[])
 			
 		else if((argi == "-tests"))
 			lancer_tests = true;
-			
-		else if(strBegins(argi, "--auv="))
-			identifiant_auv = atoi((char*)argi.substr(6).c_str());
 			
 		else if(strEnds(argi, ".moos") || strEnds(argi, ".moos++"))
 			mission_file = argv[i];
@@ -69,17 +65,8 @@ int main(int argc, char *argv[])
 		cout << "Lancement de " << run_command << endl;
 		cout << termColor() << endl;
 
-		if(identifiant_auv == 0)
-		{
-			Ciscrea Ciscrea;
-			Ciscrea.Run(run_command.c_str(), mission_file.c_str());
-		}
-		
-		else
-		{
-			Ciscrea Ciscrea(identifiant_auv);
-			Ciscrea.Run(run_command.c_str(), mission_file.c_str());
-		}
+		Ciscrea Ciscrea;
+		Ciscrea.Run(run_command.c_str(), mission_file.c_str());
 	}
 
 	return(0);

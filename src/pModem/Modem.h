@@ -26,8 +26,8 @@ using namespace std;
 class Modem : public CMOOSApp
 {
 	public:
-		Modem(string nomPortSerie, bool initialisationAutomatique = true);
-		bool initialiserPortSerie();
+		Modem();
+		bool initialiserPortSerie(string nom_port);
 		static void B_to_A(const char* input, char* output);
 		~Modem();
 
@@ -38,7 +38,7 @@ class Modem : public CMOOSApp
 		bool OnStartUp();
 		void RegisterVariables();
 		bool envoyerMessage(char* message);
-		bool confirmationBonneReception();
+		bool recevoirMessage(char* message);
 
 	private: // Configuration variables
 
@@ -53,8 +53,8 @@ class Modem : public CMOOSApp
 		bool 					m_position_x_anomalie_recue;
 		bool 					m_position_y_anomalie_recue;
 		bool 					m_position_z_anomalie_recue;
+		bool					m_mode_emetteur;
 		CMOOSLinuxSerialPort	m_moos_serial_port;
-		string					m_nom_port;
 };
 
 #endif 

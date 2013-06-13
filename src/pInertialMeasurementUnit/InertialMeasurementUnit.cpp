@@ -127,14 +127,14 @@ bool InertialMeasurementUnit::OnNewMail(MOOSMSG_LIST &NewMail)
 		CMOOSMsg &msg = *p;
 
 		#if 0 // Keep these around just for template
-		string key   = msg.GetKey();
-		string comm  = msg.GetCommunity();
-		double dval  = msg.GetDouble();
-		string sval  = msg.GetString(); 
-		string msrc  = msg.GetSource();
-		double mtime = msg.GetTime();
-		bool   mdbl  = msg.IsDouble();
-		bool   mstr  = msg.IsString();
+			string key   = msg.GetKey();
+			string comm  = msg.GetCommunity();
+			double dval  = msg.GetDouble();
+			string sval  = msg.GetString(); 
+			string msrc  = msg.GetSource();
+			double mtime = msg.GetTime();
+			bool   mdbl  = msg.IsDouble();
+			bool   mstr  = msg.IsString();
 		#endif
 	}
 
@@ -171,7 +171,7 @@ bool InertialMeasurementUnit::Iterate()
 	// 3 champs : accelerometre, magnetometre et gyroscope
 	
 	// Boussole : angle de rotation
-	cout << "Magnetometre\t RX : " << this->m_rx << "\t RY : " << this->m_ry << "\t RZ : " << this->m_rz << endl;
+	//cout << "Magnetometre\t RX : " << this->m_rx << "\t RY : " << this->m_ry << "\t RZ : " << this->m_rz << endl;
 	
 	m_Comms.Notify("VVV_NAV_RX", this->m_rx);
 	m_Comms.Notify("VVV_NAV_RY", this->m_ry);

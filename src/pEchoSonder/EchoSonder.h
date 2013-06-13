@@ -25,8 +25,8 @@ using namespace std;
 class EchoSonder : public CMOOSApp
 {
 	public:
-		EchoSonder(string nomPortSerie, bool initialisationAutomatique = true);
-		bool initialiserPortSerie();
+		EchoSonder();
+		bool initialiserPortSerie(string nom_port);
 		~EchoSonder();
 
 	protected:
@@ -42,7 +42,6 @@ class EchoSonder : public CMOOSApp
 		unsigned int			m_iterations;
 		double					m_timewarp;
 		CMOOSLinuxSerialPort	m_moos_serial_port;
-		string					m_nom_port;
 };
 
 #endif 

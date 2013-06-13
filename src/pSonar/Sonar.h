@@ -25,8 +25,8 @@ using namespace std;
 class Sonar : public CMOOSApp
 {
 	public:
-		Sonar(string nomPortSerie, bool initialisationAutomatique = true);
-		bool initialiserPortSerie();
+		Sonar();
+		bool initialiserPortSerie(string nom_port);
 		~Sonar();
 
 	protected:
@@ -42,7 +42,6 @@ class Sonar : public CMOOSApp
 		unsigned int			m_iterations;
 		double					m_timewarp;
 		CMOOSLinuxSerialPort	m_moos_serial_port;
-		string					m_nom_port;
 };
 
 #endif 

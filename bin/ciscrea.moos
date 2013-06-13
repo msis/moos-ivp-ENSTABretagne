@@ -38,25 +38,50 @@ ProcessConfig = ANTLER
 	
 	Run = MOOSDB					@ NewConsole = false
 	Run = uXMS						@ NewConsole = true
-	Run = pCiscrea					@ NewConsole = true, ExtraProcessParams=ParametreIdentificationAUV
+	Run = pCiscrea					@ NewConsole = false
 	Run = pLocalization				@ NewConsole = false
 	Run = pControler				@ NewConsole = false
-	Run = pSonar					@ NewConsole = false, ExtraProcessParams=pSonar_SerialPortName
-	Run = pEchoSonder				@ NewConsole = false, ExtraProcessParams=pEchoSonder_SerialPortName
-	Run = pModem					@ NewConsole = true, ExtraProcessParams=pModem_SerialPortName
-	Run = pCamera					@ NewConsole = true
+	Run = pSonar					@ NewConsole = false
+	Run = pEchoSonder				@ NewConsole = false
+	Run = pModem					@ NewConsole = true ~ pModem_EMETTEUR
+	Run = pModem					@ NewConsole = true ~ pModem_RECEPTEUR
+	Run = pCamera					@ NewConsole = false
 	Run = pHydrophone				@ NewConsole = false
 	Run = pTemperatureCPU			@ NewConsole = false
-	Run = pInertialMeasurementUnit	@ NewConsole = true, ExtraProcessParams=pInertialMeasurementUnit_SerialPortName
+	Run = pInertialMeasurementUnit	@ NewConsole = false
 	Run = pLogs						@ NewConsole = false
-	
-	// Paramètres de configuration :
-	
-	ParametreIdentificationAUV = --auv=2
-	pInertialMeasurementUnit_SerialPortName = --serialPortName=/dev/ttyUSB0
-	pModem_SerialPortName = --serialPortName=/dev/ttyUSB3
-	pSonar_SerialPortName = --serialPortName=/dev/ttyUSB0
-	pEchoSonder_SerialPortName = --serialPortName=/dev/ttyUSB0
+}
+
+ProcessConfig = pCiscrea
+{
+	IDENTIFIANT_AUV = 2
+}
+
+ProcessConfig = pModem_EMETTEUR
+{
+	EMETTEUR = true
+	SERIAL_PORT_NAME = /dev/ttyUSB1
+}
+
+ProcessConfig = pModem_RECEPTEUR
+{
+	RECEPTEUR = true
+	SERIAL_PORT_NAME = /dev/ttyUSB2
+}
+
+ProcessConfig = pSonar
+{
+	SERIAL_PORT_NAME = /dev/ttyUSB0
+}
+
+ProcessConfig = EchoSonder
+{
+	SERIAL_PORT_NAME = /dev/ttyUSB0
+}
+
+ProcessConfig = pInertialMeasurementUnit
+{
+	SERIAL_PORT_NAME = /dev/ttyUSB0
 }
 
 ProcessConfig = pLogs

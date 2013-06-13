@@ -81,7 +81,7 @@ class Communication
 		static bool encoderPositionAnomalieZ(int data_z, char* resultat);
 		
 		static bool encoderEtatAnomalie(bool etat, char* resultat);
-		static bool encoderConfirmationReception(char* resultat);
+		static bool encoderConfirmationReception(char* resultat, bool bonne_reception);
 		
 		static bool decoderMessage(char* message, int* type_message, int* data);
 		static bool messageValide(char* message);

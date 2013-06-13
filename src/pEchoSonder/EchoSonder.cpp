@@ -20,13 +20,10 @@ using namespace std;
  * \brief Constructeur de l'application MOOS
  */
  
-EchoSonder::EchoSonder(string nomPortSerie, bool initialisationAutomatique)
+EchoSonder::EchoSonder()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
-	
-	if(initialisationAutomatique && initialiserPortSerie())
-		cout << "Port série initialisé !" << endl;
 }
 
 /**
@@ -34,14 +31,14 @@ EchoSonder::EchoSonder(string nomPortSerie, bool initialisationAutomatique)
  * \brief Méthode initialisant le port série
  */
  
-bool EchoSonder::initialiserPortSerie()
+bool EchoSonder::initialiserPortSerie(string nom_port)
 {
 	int baud = 9600;
 	
 	// Instanciation de l'objet de communication avec le port série
-	cout << "Initialisation de \"" << this->m_nom_port << "\" (" << baud << ")" << endl;
+	cout << "Initialisation de \"" << nom_port << "\" (" << baud << ")" << endl;
 	this->m_moos_serial_port = CMOOSLinuxSerialPort();
-	return this->m_moos_serial_port.Create((char*)this->m_nom_port.c_str(), baud);
+	return this->m_moos_serial_port.Create((char*)nom_port.c_str(), baud);
 }
 
 /**
@@ -128,14 +125,10 @@ bool EchoSonder::OnStartUp()
 			string param = stripBlankEnds(toupper(biteString(*p, '=')));
 			string value = stripBlankEnds(*p);
 
-			if(param == "FOO")
+			if(param == "SERIAL_PORT_NAME")
 			{
-				//handled
-			}
-			
-			else if(param == "BAR")
-			{
-				//handled
+				if(initialiserPortSerie(value))
+					cout << "Port série initialisé !" << endl;
 			}
 		}
 	}

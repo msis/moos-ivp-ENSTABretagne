@@ -25,6 +25,7 @@ class ConversionsBinaireASCII
 	public:
 		static void asciiToBinary(char* input_ascii, char* output_binary);
 		static void binaryToAscii(char* input_binary, char* output_ascii);
+		static void inverserChaine(char chaine[], int longueur);
 };
 
 #endif // CONVERSION_BINAIRE_ASCII_H
