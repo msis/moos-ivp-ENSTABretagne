@@ -8,8 +8,11 @@
  * Application MOOS récupérant les données de l'écho-sondeur
  *
  */
-
+ 
+#include <time.h>
 #include <iterator>
+#include <string.h>
+#include "ColorParse.h"
 #include "MBUtils.h"
 #include "EchoSonder.h"
 
@@ -22,8 +25,9 @@ using namespace std;
  
 EchoSonder::EchoSonder()
 {
-	m_iterations = 0;
-	m_timewarp   = 1;
+	this->m_iterations = 0;
+	this->m_timewarp   = 1;
+	this->m_port_initialise = false;
 }
 
 /**
@@ -33,12 +37,16 @@ EchoSonder::EchoSonder()
  
 bool EchoSonder::initialiserPortSerie(string nom_port)
 {
-	int baud = 9600;
-	
+	ifstream fichier(nom_port.c_str()); 
+	if(fichier.fail())
+		return false;
+    
 	// Instanciation de l'objet de communication avec le port série
-	cout << "Initialisation de \"" << nom_port << "\" (" << baud << ")" << endl;
+	cout << "Initialisation de \"" << nom_port << "\"" << endl;
+	
 	this->m_moos_serial_port = CMOOSLinuxSerialPort();
-	return this->m_moos_serial_port.Create((char*)nom_port.c_str(), baud);
+	this->m_port_initialise = this->m_moos_serial_port.Create((char*)nom_port.c_str());
+	return this->m_port_initialise;
 }
 
 /**
@@ -48,6 +56,46 @@ bool EchoSonder::initialiserPortSerie(string nom_port)
 
 EchoSonder::~EchoSonder()
 {
+	if(this->m_port_initialise)
+		this->m_moos_serial_port.Close();
+}
+
+/**
+ * \fn
+ * \brief Méthode envoyant un message par modem
+ */
+
+double EchoSonder::getDistancePremierObstacle()
+{
+	int resultat_lecture;
+	double distance;
+	
+	if(!this->m_port_initialise)
+		return -1;
+	
+	char reponse_echo[NOMBRE_CARACTERES_REPONSE_ECHOSONDEUR];
+	resultat_lecture = this->m_moos_serial_port.ReadNWithTimeOut(reponse_echo, NOMBRE_CARACTERES_REPONSE_ECHOSONDEUR);
+	
+	// Exemple de retour : "001.567m"
+	
+	if(resultat_lecture)
+	{
+		char reponse_parsee[8];
+		
+		// Enregistrement de la partie de la chaine qui nous intéresse
+		for(int i = 0 ; i < 7 ; i ++)
+			reponse_parsee[i] = reponse_echo[i];
+		reponse_parsee[7] = '\0';
+		
+		// Conversion en décimales
+		distance = atof(reponse_parsee);
+		cout << "Distance echo-sondeur : " << distance << endl;
+		
+		if(distance != 0.0)
+			return distance;
+	}
+	
+	return -1;
 }
 
 /**
@@ -65,14 +113,14 @@ bool EchoSonder::OnNewMail(MOOSMSG_LIST &NewMail)
 		CMOOSMsg &msg = *p;
 
 		#if 0 // Keep these around just for template
-		string key   = msg.GetKey();
-		string comm  = msg.GetCommunity();
-		double dval  = msg.GetDouble();
-		string sval  = msg.GetString(); 
-		string msrc  = msg.GetSource();
-		double mtime = msg.GetTime();
-		bool   mdbl  = msg.IsDouble();
-		bool   mstr  = msg.IsString();
+			string key   = msg.GetKey();
+			string comm  = msg.GetCommunity();
+			double dval  = msg.GetDouble();
+			string sval  = msg.GetString(); 
+			string msrc  = msg.GetSource();
+			double mtime = msg.GetTime();
+			bool   mdbl  = msg.IsDouble();
+			bool   mstr  = msg.IsString();
 		#endif
 	}
 
@@ -103,7 +151,20 @@ bool EchoSonder::OnConnectToServer()
  
 bool EchoSonder::Iterate()
 {
+	double distance;
 	m_iterations++;
+	
+	if(!this->m_port_initialise)
+		return false;
+
+	distance = getDistancePremierObstacle();
+	
+	if(distance != -1)
+		m_Comms.Notify("VVV_DISTANCE_ECHOSONDER", distance);
+	
+	else
+		cout << "Erreur lors de la récupération de la distance" << endl;
+		
 	return(true);
 }
 
@@ -124,11 +185,14 @@ bool EchoSonder::OnStartUp()
 			string original_line = *p;
 			string param = stripBlankEnds(toupper(biteString(*p, '=')));
 			string value = stripBlankEnds(*p);
-
+			
 			if(param == "SERIAL_PORT_NAME")
 			{
 				if(initialiserPortSerie(value))
-					cout << "Port série initialisé !" << endl;
+					cout << "Port série initialisé sur " << value << endl;
+				
+				else
+					cout << "Échec de l'initialisation du port série sur " << value << endl;
 			}
 		}
 	}
@@ -146,5 +210,7 @@ bool EchoSonder::OnStartUp()
  
 void EchoSonder::RegisterVariables()
 {
-	// m_Comms.Register("FOOBAR", 0);
+	// Variables liées à la commande de l'AUV
+	for(int i = 0 ; i < (int)this->m_listeVariablesSuivies.size() ; i++)
+		m_Comms.Register(this->m_listeVariablesSuivies[i], 0);
 }

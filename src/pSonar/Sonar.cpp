@@ -129,6 +129,9 @@ bool Sonar::OnStartUp()
 			{
 				if(initialiserPortSerie(value))
 					cout << "Port série initialisé !" << endl;
+				
+				else
+					cout << "Échec de l'initialisation du port série !" << endl;
 			}
 		}
 	}

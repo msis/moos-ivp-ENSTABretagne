@@ -54,6 +54,7 @@ class Modem : public CMOOSApp
 		bool 					m_position_y_anomalie_recue;
 		bool 					m_position_z_anomalie_recue;
 		bool					m_mode_emetteur;
+		bool					m_port_initialise;
 		CMOOSLinuxSerialPort	m_moos_serial_port;
 };
 

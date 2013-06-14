@@ -28,6 +28,9 @@ Community = ciscreaSaucE
 	VVV_ANOMALY_X, VVV_ANOMALY_Y, VVV_ANOMALY_Z
 	VVV_ANOMALY_STATE
 	
+	// Echosonder
+	VVV_DISTANCE_ECHOSONDER
+	
 	// Variables globales
 	VVV_ON_MISSION
 */
@@ -42,19 +45,30 @@ ProcessConfig = ANTLER
 	Run = pLocalization				@ NewConsole = false
 	Run = pControler				@ NewConsole = false
 	Run = pSonar					@ NewConsole = false
-	Run = pEchoSonder				@ NewConsole = false
-	Run = pModem					@ NewConsole = true ~ pModem_EMETTEUR
-	Run = pModem					@ NewConsole = true ~ pModem_RECEPTEUR
-	Run = pCamera					@ NewConsole = false
+	Run = pEchoSonder				@ NewConsole = true
+	Run = pModem					@ NewConsole = false ~ pModem_EMETTEUR
+	Run = pModem					@ NewConsole = false ~ pModem_RECEPTEUR
+	Run = pCamera					@ NewConsole = false ~ pCamera_BOTTOM
+	Run = pCamera					@ NewConsole = false ~ pCamera_FRONT
 	Run = pHydrophone				@ NewConsole = false
 	Run = pTemperatureCPU			@ NewConsole = false
-	Run = pInertialMeasurementUnit	@ NewConsole = false
+	Run = pInertialMeasurementUnit	@ NewConsole = true
 	Run = pLogs						@ NewConsole = false
 }
 
 ProcessConfig = pCiscrea
 {
 	IDENTIFIANT_AUV = 2
+}
+
+ProcessConfig = pCamera_BOTTOM
+{
+	SERIAL_PORT_NAME = /dev/ttyUSB1
+}
+
+ProcessConfig = pCamera_FRONT
+{
+	SERIAL_PORT_NAME = /dev/ttyUSB2
 }
 
 ProcessConfig = pModem_EMETTEUR
@@ -74,7 +88,7 @@ ProcessConfig = pSonar
 	SERIAL_PORT_NAME = /dev/ttyUSB0
 }
 
-ProcessConfig = EchoSonder
+ProcessConfig = pEchoSonder
 {
 	SERIAL_PORT_NAME = /dev/ttyUSB0
 }
@@ -106,6 +120,7 @@ ProcessConfig = uXMS
 	VAR				= VVV_ANOMALY_DETECTED
 	VAR				= VVV_ANOMALY_X, VVV_ANOMALY_Y, VVV_ANOMALY_Z
 	VAR				= VVV_ANOMALY_STATE
+	VAR				= VVV_DISTANCE_ECHOSONDER
 	COLOR_MAP		= VVV_NAV_VX, red
 	COLOR_MAP		= VVV_NAV_VY, blue
 	COLOR_MAP		= VVV_NAV_VZ, green

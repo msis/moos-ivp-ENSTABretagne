@@ -20,6 +20,8 @@
 	#include "MOOS/libMOOS/Utils/MOOSLinuxSerialPort.h"
 #endif
 
+#define NOMBRE_CARACTERES_REPONSE_ECHOSONDEUR	80
+
 using namespace std;
 
 class EchoSonder : public CMOOSApp
@@ -27,6 +29,7 @@ class EchoSonder : public CMOOSApp
 	public:
 		EchoSonder();
 		bool initialiserPortSerie(string nom_port);
+		double getDistancePremierObstacle();
 		~EchoSonder();
 
 	protected:
@@ -41,7 +44,9 @@ class EchoSonder : public CMOOSApp
 	private: // State variables
 		unsigned int			m_iterations;
 		double					m_timewarp;
+		vector<string>			m_listeVariablesSuivies;
 		CMOOSLinuxSerialPort	m_moos_serial_port;
+		bool					m_port_initialise;
 };
 
 #endif 

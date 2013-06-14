@@ -35,6 +35,7 @@ Modem::Modem()
 	this->m_position_y_anomalie_recue = false;
 	this->m_position_z_anomalie_recue = false;
 	this->m_mode_emetteur = true;
+	this->m_port_initialise = false;
 	
 	// Enregistrement des variables de la MOOSDB à suivre
 	this->m_listeVariablesSuivies.push_back("VVV_ANOMALY_DETECTED");
@@ -53,10 +54,16 @@ bool Modem::initialiserPortSerie(string nom_port)
 {
 	int baud = 9600;
 	
+	ifstream fichier(nom_port.c_str()); 
+	if(fichier.fail())
+		return false;
+    
 	// Instanciation de l'objet de communication avec le port série
 	cout << "Initialisation de \"" << nom_port << "\" (" << baud << ")" << endl;
+	
 	this->m_moos_serial_port = CMOOSLinuxSerialPort();
-	return this->m_moos_serial_port.Create((char*)nom_port.c_str(), baud);
+	this->m_port_initialise = this->m_moos_serial_port.Create((char*)nom_port.c_str(), baud);
+	return this->m_port_initialise;
 }
 
 /**
@@ -66,7 +73,8 @@ bool Modem::initialiserPortSerie(string nom_port)
 
 Modem::~Modem()
 {
-	this->m_moos_serial_port.Close();
+	if(this->m_port_initialise)
+		this->m_moos_serial_port.Close();
 }
 
 /**
@@ -76,6 +84,9 @@ Modem::~Modem()
 
 bool Modem::envoyerMessage(char* message)
 {
+	if(!this->m_port_initialise)
+		return false;
+		
 	char reponse_ascii[4];
 	ConversionsBinaireASCII::binaryToAscii(message, reponse_ascii);
 	cout << "Envoi du message : \"" << message << "\" [" << reponse_ascii << "]" << endl;
@@ -89,6 +100,9 @@ bool Modem::envoyerMessage(char* message)
 
 bool Modem::recevoirMessage(char* resultat_binaire)
 {
+	if(!this->m_port_initialise)
+		return false;
+		
 	char reponse_ascii[32];
 	
 	if(this->m_moos_serial_port.ReadNWithTimeOut(reponse_ascii, 4, 3))
@@ -178,6 +192,9 @@ bool Modem::Iterate()
 	int type_message, data;
 	char message[NOMBRE_BITS_TOTAL];
 	m_iterations++;
+	
+	if(!this->m_port_initialise)
+		return false;
 	
 	if(this->m_mode_emetteur)
 	{
@@ -279,6 +296,9 @@ bool Modem::OnStartUp()
 			{
 				if(initialiserPortSerie(value))
 					cout << "Port série initialisé !" << endl;
+				
+				else
+					cout << "Échec de l'initialisation du port série !" << endl;
 			}
 
 			else if(param == "EMETTEUR" && value == "true")
