@@ -113,6 +113,7 @@ bool Camera::Iterate()
  
 bool Camera::OnStartUp()
 {
+	int identifiant_camera = -1;
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
@@ -124,15 +125,8 @@ bool Camera::OnStartUp()
 			string param = stripBlankEnds(toupper(biteString(*p, '=')));
 			string value = stripBlankEnds(*p);
 
-			if(param == "FOO")
-			{
-				//handled
-			}
-			
-			else if(param == "BAR")
-			{
-				//handled
-			}
+			if(param == "IDENTIFIANT_CV_CAMERA")
+				identifiant_camera = atoi((char*)value.c_str());
 		}
 	}
 
@@ -142,7 +136,13 @@ bool Camera::OnStartUp()
 	SetIterateMode(COMMS_DRIVEN_ITERATE_AND_MAIL);
 	m_image = Mat(378, 512, CV_8UC1);
 
-	if(!m_vc.open(1))
+	if(identifiant_camera == -1)
+	{
+		cout << "Aucun identifiant de caméra reconnu" << endl;
+		return false;
+	}
+	
+	if(!m_vc.open(identifiant_camera))
 		return false;
 		
 	namedWindow("display", 1);

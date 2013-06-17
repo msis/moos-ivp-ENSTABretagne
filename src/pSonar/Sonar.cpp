@@ -104,6 +104,18 @@ bool Sonar::OnConnectToServer()
 bool Sonar::Iterate()
 {
 	m_iterations++;
+	
+	if(this->m_cissonar->isConnected())
+	{
+		vector<double> Valpha;
+		vector<double> Vdistance;
+		
+		this->m_cissonar->get_sonar_data(Valpha, Vdistance);
+	}
+	
+	/*else
+		cout << "Sonar non connecté !" << endl;*/
+	
 	return(true);
 }
 
@@ -124,17 +136,11 @@ bool Sonar::OnStartUp()
 			string original_line = *p;
 			string param = stripBlankEnds(toupper(biteString(*p, '=')));
 			string value = stripBlankEnds(*p);
-
-			if(param == "SERIAL_PORT_NAME")
-			{
-				if(initialiserPortSerie(value))
-					cout << "Port série initialisé !" << endl;
-				
-				else
-					cout << "Échec de l'initialisation du port série !" << endl;
-			}
 		}
 	}
+
+	string fichier_config = "Sonar.txt";
+	this->m_cissonar = new SonarDF((char*)fichier_config.c_str());
 
 	m_timewarp = GetMOOSTimeWarp();
 

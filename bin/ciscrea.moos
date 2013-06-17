@@ -40,20 +40,20 @@ ProcessConfig = ANTLER
 	MSBetweenLaunches = 200
 	
 	Run = MOOSDB					@ NewConsole = false
-	Run = uXMS						@ NewConsole = true
-	Run = pCiscrea					@ NewConsole = false
-	Run = pLocalization				@ NewConsole = false
-	Run = pControler				@ NewConsole = false
-	Run = pSonar					@ NewConsole = false
-	Run = pEchoSonder				@ NewConsole = true
-	Run = pModem					@ NewConsole = false ~ pModem_EMETTEUR
-	Run = pModem					@ NewConsole = false ~ pModem_RECEPTEUR
-	Run = pCamera					@ NewConsole = false ~ pCamera_BOTTOM
-	Run = pCamera					@ NewConsole = false ~ pCamera_FRONT
-	Run = pHydrophone				@ NewConsole = false
-	Run = pTemperatureCPU			@ NewConsole = false
-	Run = pInertialMeasurementUnit	@ NewConsole = true
-	Run = pLogs						@ NewConsole = false
+	//Run = uXMS						@ NewConsole = true
+	//Run = pCiscrea					@ NewConsole = false
+	//Run = pLocalization				@ NewConsole = false
+	//Run = pControler				@ NewConsole = false
+	Run = pSonar					@ NewConsole = true
+	//Run = pEchoSonder				@ NewConsole = false
+	//Run = pModem					@ NewConsole = false ~ pModem_EMETTEUR
+	//Run = pModem					@ NewConsole = false ~ pModem_RECEPTEUR
+	//Run = pCamera					@ NewConsole = false ~ pCamera_BOTTOM
+	//Run = pCamera					@ NewConsole = false ~ pCamera_FRONT
+	//Run = pHydrophone				@ NewConsole = false
+	//Run = pTemperatureCPU			@ NewConsole = false
+	//Run = pInertialMeasurementUnit	@ NewConsole = false
+	//Run = pLogs						@ NewConsole = false
 }
 
 ProcessConfig = pCiscrea
@@ -64,11 +64,13 @@ ProcessConfig = pCiscrea
 ProcessConfig = pCamera_BOTTOM
 {
 	SERIAL_PORT_NAME = /dev/ttyUSB1
+	IDENTIFIANT_CV_CAMERA = 1
 }
 
 ProcessConfig = pCamera_FRONT
 {
 	SERIAL_PORT_NAME = /dev/ttyUSB2
+	IDENTIFIANT_CV_CAMERA = 0
 }
 
 ProcessConfig = pModem_EMETTEUR

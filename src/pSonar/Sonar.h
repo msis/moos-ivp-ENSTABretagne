@@ -13,6 +13,8 @@
 #define Sonar_HEADER
 
 #include "../common/constantes.h"
+#include "SonarDF.h"
+
 #include "MOOS/libMOOS/App/MOOSApp.h"
 #ifdef _WIN32
 	#include "MOOS/libMOOS/Utils/MOOSNTSerialPort.h"
@@ -42,6 +44,7 @@ class Sonar : public CMOOSApp
 		unsigned int			m_iterations;
 		double					m_timewarp;
 		CMOOSLinuxSerialPort	m_moos_serial_port;
+		SonarDF*				m_cissonar;
 };
 
 #endif 
