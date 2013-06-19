@@ -14,13 +14,8 @@
 
 M6dbus::M6dbus(string IP, int prt)
 {
-	char* adresseIP = (char*)IP.c_str();
-
     on = false;
-    // Dans terminal : dmesg
-    //Modbus = modbus_new_rtu("/dev/ttyUSB0",9600,'N',8,1); // 9600 8N1
-
-    Modbus = modbus_new_tcp(adresseIP, prt);
+    Modbus = modbus_new_tcp((char*)IP.c_str(),prt);
     if(modbus_connect(Modbus)==-1)
     {
         cerr << "Connection failed!" << endl;

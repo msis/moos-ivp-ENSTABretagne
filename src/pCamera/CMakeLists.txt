@@ -12,8 +12,12 @@ SET(SRC
   main.cpp
 )
 
+SET(SRC_LINREG
+  regression_lineaire/linreg.cpp
+)
 
-ADD_EXECUTABLE(pCamera ${SRC})
+
+ADD_EXECUTABLE(pCamera ${SRC} ${SRC_LINREG})
 
 TARGET_LINK_LIBRARIES(pCamera
    MOOS

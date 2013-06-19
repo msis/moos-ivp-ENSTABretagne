@@ -40,15 +40,15 @@ ProcessConfig = ANTLER
 	MSBetweenLaunches = 200
 	
 	Run = MOOSDB					@ NewConsole = false
-	//Run = uXMS						@ NewConsole = true
-	//Run = pCiscrea					@ NewConsole = false
+	Run = uXMS						@ NewConsole = true
+	Run = pCiscrea					@ NewConsole = false
 	//Run = pLocalization				@ NewConsole = false
 	//Run = pControler				@ NewConsole = false
-	Run = pSonar					@ NewConsole = true
+	//Run = pSonar					@ NewConsole = true
 	//Run = pEchoSonder				@ NewConsole = false
 	//Run = pModem					@ NewConsole = false ~ pModem_EMETTEUR
 	//Run = pModem					@ NewConsole = false ~ pModem_RECEPTEUR
-	//Run = pCamera					@ NewConsole = false ~ pCamera_BOTTOM
+	//Run = pCamera					@ NewConsole = true ~ pCamera_BOTTOM
 	//Run = pCamera					@ NewConsole = false ~ pCamera_FRONT
 	//Run = pHydrophone				@ NewConsole = false
 	//Run = pTemperatureCPU			@ NewConsole = false
