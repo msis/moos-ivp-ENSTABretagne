@@ -52,7 +52,7 @@ class AUV
 		int setVz(double);
 		int setRz(double);
 		int setYaw(double);
-		int allumerProjecteurs();
+		int allumerProjecteurs(int intensite);
 		int eteindreProjecteurs();
 		
 		// Retours du Ciscrea :

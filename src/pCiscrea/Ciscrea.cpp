@@ -16,15 +16,14 @@
 
 /**
  * \fn
- * \brief Constructeur de l'application MOOS (passage de l'identifiant d'un AUV)
+ * \brief Constructeur de l'application MOOS
  */
  
-Ciscrea::Ciscrea(int identifiant_AUV)
+Ciscrea::Ciscrea(int identifiant_AUV) : m_identifiant_auv_a_instancier(identifiant_AUV)
 {
 	this->m_iterations = 0;
 	this->m_timewarp = 1;
 	this->m_auv_ciscrea = NULL;
-	this->m_identifiant_auv_a_instancier = identifiant_AUV;
 	
 	// Enregistrement des variables de la MOOSDB à suivre
 	this->m_listeVariablesSuivies.push_back("VVV_NAV_VX");
@@ -37,16 +36,6 @@ Ciscrea::Ciscrea(int identifiant_AUV)
 	this->m_listeVariablesSuivies.push_back("VVV_SPOTLIGHTS");
 	this->m_listeVariablesSuivies.push_back("VVV_AUV_IDENTIFIER");
 	this->m_listeVariablesSuivies.push_back("VVV_ON_MISSION");
-}
-
-/**
- * \fn
- * \brief Constructeur de l'application MOOS
- */
- 
-Ciscrea::Ciscrea()
-{
-	Ciscrea(0);
 }
 
 /**
@@ -88,14 +77,14 @@ bool Ciscrea::OnNewMail(MOOSMSG_LIST &NewMail)
 		
 		if(msg.GetKey() == "VVV_NAV_VZ" && this->m_auv_ciscrea != NULL)
 			m_auv_ciscrea->setVz(msg.GetDouble());
-		
-		if(msg.GetKey() == "VVV_RZ" && this->m_auv_ciscrea != NULL)
+			
+		if(msg.GetKey() == "VVV_NAV_RZ" && this->m_auv_ciscrea != NULL)
 			m_auv_ciscrea->setRz(msg.GetDouble());
 		
 		if(msg.GetKey() == "VVV_SPOTLIGHTS" && this->m_auv_ciscrea != NULL)
 		{
-			if(msg.GetDouble() == 1)
-				m_auv_ciscrea->allumerProjecteurs();
+			if(msg.GetDouble() != 0)
+				m_auv_ciscrea->allumerProjecteurs(round(msg.GetDouble()));
 			
 			else
 				m_auv_ciscrea->eteindreProjecteurs();

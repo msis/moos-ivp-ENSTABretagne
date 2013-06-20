@@ -23,8 +23,7 @@ using namespace std;
 class Ciscrea : public CMOOSApp
 {
 	public:
-		Ciscrea();
-		Ciscrea(int identifiant_auv);
+		Ciscrea(int identifiant_auv = 0);
 		~Ciscrea();
 
 	protected:

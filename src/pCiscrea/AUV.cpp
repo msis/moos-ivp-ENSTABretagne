@@ -374,16 +374,15 @@ int AUV::updatePropulseurs()
 			cout << termColor("red") << "Erreur sur propulseurs verticaux" << termColor() << endl;
 			return -1;
 		}
-
-		int err = this->mb->updateAll();
-		if(err == -1)
-			cout << termColor("red") << "Erreur sur la mise a jour des propulseurs" << termColor() << endl;
-
-		return err;
+		
+		if(this->mb->updatePropulsors() == -1)
+		{
+			cout << termColor("red") << "Erreur sur update propulseurs" << termColor() << endl;
+			return -1;
+		}
 	}
 
-	else
-		return 1;
+	return 1;
 }
 
 /**
@@ -403,9 +402,6 @@ bool AUV::getOn()
 
 int AUV::setVx(double val)
 {
-	if(this->Vx == val)
-		return 1;
-		
 	this->Vx = val;
 	return updatePropulseurs();
 }
@@ -417,9 +413,6 @@ int AUV::setVx(double val)
 
 int AUV::setVy(double val)
 {
-	if(this->Vy == val)
-		return 1;
-		
 	this->Vy = val;
 	return updatePropulseurs();
 }
@@ -431,9 +424,6 @@ int AUV::setVy(double val)
 
 int AUV::setVz(double val)
 {
-	if(this->Vz == val)
-		return 1;
-		
 	this->Vz = val;
 	return updatePropulseurs();
 }
@@ -445,9 +435,6 @@ int AUV::setVz(double val)
 
 int AUV::setRz(double val)
 {
-	if(this->Rz == val)
-		return 1;
-		
 	this->Rz = val;
 	return updatePropulseurs();
 }
@@ -547,15 +534,15 @@ double AUV::getConsommationBatterie2()
  * \brief Méthode permettant l'allumage des projecteurs frontaux de l'AUV
  */
 
-int AUV::allumerProjecteurs()
+int AUV::allumerProjecteurs(int intensite)
 {	
 	cout << "Allumage des projecteurs de l'AUV" << endl;
-	this->mb->setLight(1000);
-	/*if(this->mb->turnLightOn(1) == -1)
+	
+	if(this->mb->turnLightOn(intensite) == -1)
 	{
 		cout << "Erreur sur allumage des projecteurs" << endl;
 		return -1;
-	}*/
+	}
 	
 	return 1;
 }

@@ -11,11 +11,42 @@
  */
 
 #include "M6dbus.h"
+#include "ColorParse.h"
+#include <cerrno>
 
 M6dbus::M6dbus(string IP, int prt)
 {
     on = false;
-    Modbus = modbus_new_tcp((char*)IP.c_str(),prt);
+    //Modbus = modbus_new_tcp((char*)IP.c_str(),prt);
+    Modbus = modbus_new_rtu("/dev/ttyUSB0", 38400, 'N', 8, 1);
+    modbus_set_slave(Modbus, 16);
+    modbus_set_debug(Modbus, TRUE);
+    modbus_set_debug(Modbus, FALSE);
+    modbus_set_error_recovery(Modbus,
+        (modbus_error_recovery_mode)(MODBUS_ERROR_RECOVERY_LINK|MODBUS_ERROR_RECOVERY_PROTOCOL));
+
+	struct timeval old_response_timeout;
+	struct timeval response_timeout;
+
+	/* Save original timeout */
+	modbus_get_response_timeout(Modbus, &old_response_timeout);
+	response_timeout.tv_sec = 0;
+	response_timeout.tv_usec = 500000;
+	modbus_set_response_timeout(Modbus, &response_timeout);
+	cout << "Response timeout : " << old_response_timeout.tv_sec << "s - us : " << old_response_timeout.tv_usec << endl;
+
+	struct timeval old_byte_timeout;
+	struct timeval byte_timeout;
+
+	/* Save original timeout */
+	modbus_get_byte_timeout(Modbus, &old_byte_timeout);
+	cout << "Byte timeout : " << old_byte_timeout.tv_sec << "s - us : " << old_byte_timeout.tv_usec << endl;
+
+	/* Define a new and too short timeout! */
+	byte_timeout.tv_sec = 0;
+	byte_timeout.tv_usec = 500000;
+	modbus_set_byte_timeout(Modbus, &byte_timeout);
+
     if(modbus_connect(Modbus)==-1)
     {
         cerr << "Connection failed!" << endl;
@@ -38,6 +69,11 @@ M6dbus::M6dbus(string IP, int prt)
     {
         cout << "Register table is up-to-date!" << endl;
     }
+    
+    // Initialisation des registres liés aux propulseurs
+	m_RegPropFr = regTab[1];
+	m_RegPropRe = regTab[2];
+	m_RegPropVert = regTab[3];
 }
 
 M6dbus::~M6dbus()
@@ -52,8 +88,14 @@ bool M6dbus::getOn()
 
 int M6dbus::updateRegTab(uint16_t* Tab)
 {
-    usleep(20);
-    return modbus_read_registers(Modbus,1,48,Tab);
+	usleep(40*1000);
+    int resultat = modbus_read_registers(Modbus,1,48,Tab);
+    
+    if(resultat == -1)
+		cout << termColor("red") << "Connection failed: " << modbus_strerror(errno) << endl << termColor();
+		
+	usleep(40*1000);
+	return resultat;
 }
 
 int M6dbus::writeReg(int reg, int val)
@@ -89,35 +131,33 @@ int M6dbus::getRegNum(int n)
 
 int M6dbus::updateAll()
 {
-    int ret;
-    ret = updateRegTab(regTab);
-    waterInC = ((regTab[10] >> 7) && 0x1);
-    depth = regTab[32];
-    direction = regTab[33];
-    U1 = regTab[34];
-    U2 = regTab[35];
-    I1 = regTab[36];
-    I2 = regTab[37];
-    tempMB = regTab[38];
-    tempOut = regTab[39];
-    tempEx1 = regTab[40];
-    tempEx2 = regTab[41];
-    tempEx3 = regTab[42];
-    capBat1 = regTab[43];
-    capBat2 = regTab[44];
-    version = regTab[47];
-    alarms = regTab[31];
-    auvTime[0] = regTab[16];
-    auvTime[1] = regTab[17];
-    auvTime[2] = regTab[18];
-    auvTime[3] = regTab[19];
-    return ret;
+	int ret;
+	ret = updateRegTab(regTab);
+	waterInC = ((regTab[10] >> 7) && 0x1);
+	depth = regTab[32];
+	direction = regTab[33];
+	U1 = regTab[34];
+	U2 = regTab[35];
+	I1 = regTab[36];
+	I2 = regTab[37];
+	tempMB = regTab[38];
+	tempOut = regTab[39];
+	tempEx1 = regTab[40];
+	tempEx2 = regTab[41];
+	tempEx3 = regTab[42];
+	capBat1 = regTab[43];
+	capBat2 = regTab[44];
+	version = regTab[47];
+	alarms = regTab[31];
+	auvTime[0] = regTab[16];
+	auvTime[1] = regTab[17];
+	auvTime[2] = regTab[18];
+	auvTime[3] = regTab[19];
+	return ret;
 }
 
 int M6dbus::turnLightOn(int intensity)
 {
-	setLight(intensity);
-	return 1;
     int readErr,writeErr;
 
     int tempReg1,tempReg5,newReg1,newReg5;
@@ -529,6 +569,14 @@ int M6dbus::setCamTilt(int val)
     return 1;
 }
 
+int M6dbus::updatePropulsors()
+{
+    if (writeReg(2,m_RegPropFr)==-1 || writeReg(3,m_RegPropFr)==-1 || writeReg(4,m_RegPropFr)==-1)
+        return -1;
+        
+    return 1;
+}
+
 int M6dbus::setPropFrLe(int val)
 {
     int readErr,writeErr;
@@ -546,16 +594,16 @@ int M6dbus::setPropFrLe(int val)
     if (val < 0)
         propVal = 0x7D + ((val * 0x47) / 100) - Offcet;
 
-    readErr = updateRegTab(regTab);
+    /*readErr = updateRegTab(regTab);
     if (readErr==-1)
         return readErr;
 
-    tempRegPropFr = regTab[1];
-    newRegPropFr = (tempRegPropFr & 0xFF00) | (propVal);
-
-    writeErr=writeReg(2,newRegPropFr);
+    tempRegPropFr = regTab[1];*/
+    m_RegPropFr = (m_RegPropFr & 0xFF00) | (propVal);
+	
+    /*writeErr=writeReg(2,m_RegPropFr);
     if (writeErr==-1)
-        return writeErr;
+        return writeErr;*/
     return 1;
 }
 
@@ -576,16 +624,16 @@ int M6dbus::setPropFrRi(int val)
     if (val < 0)
         propVal = 0x7D + ((val * 0x47) / 100) - Offcet;
 
-    readErr = updateRegTab(regTab);
+    /*readErr = updateRegTab(regTab);
     if (readErr==-1)
         return readErr;
 
-    tempRegPropFr = regTab[1];
-    newRegPropFr = (tempRegPropFr & 0x00FF) | (propVal << 8);
+    tempRegPropFr = regTab[1];*/
+    m_RegPropFr = (m_RegPropFr & 0x00FF) | (propVal << 8);
 
-    writeErr=writeReg(2,newRegPropFr);
+    /*writeErr=writeReg(2,m_RegPropFr);
     if (writeErr==-1)
-        return writeErr;
+        return writeErr;*/
     return 1;
 }
 
@@ -606,16 +654,16 @@ int M6dbus::setPropReLe(int val)
     if (val < 0)
         propVal = 0x7D + ((val * 0x47) / 100) - Offcet;
 
-    readErr = updateRegTab(regTab);
+    /*readErr = updateRegTab(regTab);
     if (readErr==-1)
         return readErr;
+        
+    tempRegPropFr = regTab[2];*/
+    m_RegPropRe = (m_RegPropRe & 0xFF00) | (propVal);
 
-    tempRegPropFr = regTab[2];
-    newRegPropFr = (tempRegPropFr & 0xFF00) | (propVal);
-
-    writeErr=writeReg(3,newRegPropFr);
+    /*writeErr=writeReg(3,m_RegPropRe);
     if (writeErr==-1)
-        return writeErr;
+        return writeErr;*/
     return 1;
 }
 
@@ -636,16 +684,16 @@ int M6dbus::setPropReRi(int val)
     if (val < 0)
         propVal = 0x7D + ((val * 0x47) / 100) - Offcet;
 
-    readErr = updateRegTab(regTab);
+    /*readErr = updateRegTab(regTab);
     if (readErr==-1)
         return readErr;
 
-    tempRegPropFr = regTab[2];
-    newRegPropFr = (tempRegPropFr & 0x00FF) | (propVal << 8);
+    tempRegPropFr = regTab[2];*/
+    m_RegPropRe = (m_RegPropRe & 0x00FF) | (propVal << 8);
 
-    writeErr=writeReg(3,newRegPropFr);
+    /*writeErr=writeReg(3,m_RegPropRe);
     if (writeErr==-1)
-        return writeErr;
+        return writeErr;*/
     return 1;
 }
 
@@ -666,16 +714,16 @@ int M6dbus::setPropVert(int val)
     if (val < 0)
         propVal = 0x7D + ((val * 0x47) / 100) - Offcet;
 
-    readErr = updateRegTab(regTab);
+    /*readErr = updateRegTab(regTab);
     if (readErr==-1)
         return readErr;
 
-    tempRegPropFr = regTab[3];
-    newRegPropFr = (tempRegPropFr & 0x00FF) | (propVal << 8);
+    tempRegPropFr = regTab[3];*/
+    m_RegPropVert = (m_RegPropVert & 0x00FF) | (propVal << 8);
 
-    writeErr=writeReg(4,newRegPropFr);
+    /*writeErr=writeReg(4,m_RegPropVert);
     if (writeErr==-1)
-        return writeErr;
+        return writeErr;*/
     return 1;
 }
 

@@ -41,7 +41,7 @@ ProcessConfig = ANTLER
 	
 	Run = MOOSDB					@ NewConsole = false
 	Run = uXMS						@ NewConsole = true
-	Run = pCiscrea					@ NewConsole = false
+	Run = pCiscrea					@ NewConsole = true
 	//Run = pLocalization				@ NewConsole = false
 	//Run = pControler				@ NewConsole = false
 	//Run = pSonar					@ NewConsole = true

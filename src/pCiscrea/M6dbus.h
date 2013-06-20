@@ -31,6 +31,7 @@ class M6dbus
 
 		bool getOn();
 
+		int updatePropulsors();
 		int updateRegTab(uint16_t*);
 		int writeReg(int,int);
 		int getRegNum(int);
@@ -121,6 +122,7 @@ class M6dbus
 		int alarms;
 		bool waterIn1, waterIn2, waterIn3, waterInC, hiTempIn, lowU1, lowU2,
 		highI1, highI2, maxDepth, errRConf, errI2C, errSPI, errLink;
+		uint16_t m_RegPropFr, m_RegPropRe, m_RegPropVert;
 };
 
 #endif // M6DBUS_H
