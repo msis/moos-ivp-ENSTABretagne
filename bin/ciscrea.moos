@@ -40,8 +40,8 @@ ProcessConfig = ANTLER
 	MSBetweenLaunches = 200
 	
 	Run = MOOSDB					@ NewConsole = false
-	Run = uXMS						@ NewConsole = true
-	Run = pCiscrea					@ NewConsole = true
+	//Run = uXMS						@ NewConsole = true
+	//Run = pCiscrea					@ NewConsole = true
 	//Run = pLocalization				@ NewConsole = false
 	//Run = pControler				@ NewConsole = false
 	//Run = pSonar					@ NewConsole = true
@@ -54,6 +54,7 @@ ProcessConfig = ANTLER
 	//Run = pTemperatureCPU			@ NewConsole = false
 	//Run = pInertialMeasurementUnit	@ NewConsole = false
 	//Run = pLogs						@ NewConsole = false
+	Run = pPipeFollowing						@ NewConsole = false
 }
 
 ProcessConfig = pCiscrea

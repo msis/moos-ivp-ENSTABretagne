@@ -25,6 +25,7 @@ ADD_SUBDIRECTORY(pHydrophone)
 ADD_SUBDIRECTORY(pTemperatureCPU)
 ADD_SUBDIRECTORY(pInertialMeasurementUnit)
 ADD_SUBDIRECTORY(pLogs)
+ADD_SUBDIRECTORY(pPipeFollowing)
 
 ##############################################################################
 #                           END of CMakeLists.txt

@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pPipeFollowing config block
+
+ProcessConfig = pPipeFollowing
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

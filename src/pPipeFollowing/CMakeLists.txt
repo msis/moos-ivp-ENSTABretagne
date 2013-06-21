@@ -1,20 +1,24 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pCamera
+# The CMakeLists.txt for:                       pPipeFollowing
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
 # FILE(GLOB SRC *.cpp)
 
 SET(SRC
-  Camera.cpp
-  Camera_Info.cpp
-  Camera_Tests.cpp
+  PipeFollowing.cpp
+  PipeFollowing_Info.cpp
+  PipeFollowing_Tests.cpp
   main.cpp
 )
 
-ADD_EXECUTABLE(pCamera ${SRC})
+SET(SRC_LINREG
+  regression_lineaire/linreg.cpp
+)
 
-TARGET_LINK_LIBRARIES(pCamera
+ADD_EXECUTABLE(pPipeFollowing ${SRC} ${SRC_LINREG})
+
+TARGET_LINK_LIBRARIES(pPipeFollowing
    MOOS
    mbutil
    m

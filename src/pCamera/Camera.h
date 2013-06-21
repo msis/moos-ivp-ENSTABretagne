@@ -24,8 +24,6 @@ class Camera : public CMOOSApp
 {
 	public:
 		Camera();
-		double getOrientationPipe(IplImage* img_original);
-		double median(vector<int> vec);
 		~Camera();
 
 	protected:
@@ -41,9 +39,8 @@ class Camera : public CMOOSApp
 		unsigned int	m_iterations;
 		double			m_timewarp;
 		bool 			m_server;
-		VideoCapture 	m_vc;
 		Mat 			m_capture_frame, m_bw_image, m_image;
-		IplImage		*channelRed, *channelGreen, *channelBlue, *img_hsv, *img_nb;
+		VideoCapture 	m_vc;
 };
 
 #endif 
