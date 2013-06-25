@@ -5,19 +5,27 @@ Community = ciscreaSaucE
 ProcessConfig = ANTLER
 {
 	MSBetweenLaunches = 100
-	Run = MOOSDB					@ NewConsole = false
-	Run = pCiscrea					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pLocalization				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pControler				@ NewConsole = true,	ExtraProcessParams=TemoinTests
-	Run = pRegulator				@ NewConsole = true,	ExtraProcessParams=TemoinTests
-	Run = pSonar					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pEchoSonder				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pModem					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pCamera					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pHydrophone				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pTemperatureCPU			@ NewConsole = true, 	ExtraProcessParams=TemoinTests 
-	Run = pInertialMeasurementUnit	@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-	Run = pLogs						@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+	Run = MOOSDB						@ NewConsole = false
+	
+	// Interfaces
+		Run = iCiscrea					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = iSonar					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = iEchoSounder				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = iModem					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = iCamera					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = iHydrophones				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = iTemperatureCPU			@ NewConsole = true, 	ExtraProcessParams=TemoinTests 
+		Run = iInertialMeasurementUnit	@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+	
+	// Programmes
+		Run = pLocalization				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = pControler				@ NewConsole = true,	ExtraProcessParams=TemoinTests
+		Run = pRegulator				@ NewConsole = true,	ExtraProcessParams=TemoinTests
+		Run = pLogs						@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = pBuoyDetection			@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = pPingLocator				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = pPipeFollowing			@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+		Run = pWallFollowing			@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	
 	TemoinTests = -tests
 }

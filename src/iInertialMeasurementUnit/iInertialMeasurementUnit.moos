@@ -1,0 +1,9 @@
+//------------------------------------------------
+// iInertialMeasurementUnit config block
+
+ProcessConfig = iInertialMeasurementUnit
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

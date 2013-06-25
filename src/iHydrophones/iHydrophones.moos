@@ -1,0 +1,9 @@
+//------------------------------------------------
+// iHydrophones config block
+
+ProcessConfig = iHydrophones
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

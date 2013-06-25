@@ -14,19 +14,23 @@ INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS} /usr/local/include/opencv)
 #============================================================================
 # List the subdirectories to build...
 #============================================================================
-ADD_SUBDIRECTORY(pCiscrea)
-ADD_SUBDIRECTORY(pLocalization)
-ADD_SUBDIRECTORY(pPipeFollowing)
+ADD_SUBDIRECTORY(iCamera)
+ADD_SUBDIRECTORY(iCiscrea)
+ADD_SUBDIRECTORY(iEchoSounder)
+ADD_SUBDIRECTORY(iHydrophones)
+ADD_SUBDIRECTORY(iInertialMeasurementUnit)
+ADD_SUBDIRECTORY(iModem)
+ADD_SUBDIRECTORY(iSonar)
+ADD_SUBDIRECTORY(pBuoyDetection)
 ADD_SUBDIRECTORY(pControler)
-ADD_SUBDIRECTORY(pSonar)
-ADD_SUBDIRECTORY(pEchoSonder)
-ADD_SUBDIRECTORY(pModem)
-ADD_SUBDIRECTORY(pCamera)
-ADD_SUBDIRECTORY(pHydrophone)
-ADD_SUBDIRECTORY(pTemperatureCPU)
-ADD_SUBDIRECTORY(pInertialMeasurementUnit)
+ADD_SUBDIRECTORY(pLocalization)
 ADD_SUBDIRECTORY(pLogs)
+ADD_SUBDIRECTORY(pPingLocator)
+ADD_SUBDIRECTORY(pPipeFollowing)
 ADD_SUBDIRECTORY(pRegulator)
+ADD_SUBDIRECTORY(iTemperatureCPU)
+ADD_SUBDIRECTORY(pWallFollowing)
+
 
 ##############################################################################
 #                           END of CMakeLists.txt

@@ -1,0 +1,9 @@
+//------------------------------------------------
+// iEchoSounder config block
+
+ProcessConfig = iEchoSounder
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

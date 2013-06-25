@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pBuoyDetection config block
+
+ProcessConfig = pBuoyDetection
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

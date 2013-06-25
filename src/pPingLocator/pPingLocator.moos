@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pPingLocator config block
+
+ProcessConfig = pPingLocator
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

@@ -1,0 +1,9 @@
+//------------------------------------------------
+// iTemperatureCPU config block
+
+ProcessConfig = iTemperatureCPU
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

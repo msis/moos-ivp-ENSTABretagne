@@ -1,0 +1,9 @@
+//------------------------------------------------
+// iModem config block
+
+ProcessConfig = iModem
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
