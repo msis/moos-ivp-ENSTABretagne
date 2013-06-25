@@ -18,13 +18,14 @@
 #include "MOOS/libMOOS/App/MOOSApp.h"
 #include "regression_lineaire/linreg.h"
 
-#define LARGEUR_MAX_PIPE				250
-#define PROPORTION_PIPE_NON_VISIBLE		0.2
-#define CORR_COEFF_MIN_DETECTION		0.4
-#define VALEUR_SEUILLAGE				100
-#define	DRAWING_THICKNESS				1
-#define DRAWING_CONNECTIVITY			8
-#define PROPORTION_POINTS_JONCTION_PIPE	0.6
+#define LARGEUR_MAX_PIPE					250
+#define PROPORTION_PIPE_NON_VISIBLE			0.2
+#define CORR_COEFF_MIN_DETECTION			0.4
+#define VALEUR_SEUILLAGE					160
+#define	DRAWING_THICKNESS					1
+#define DRAWING_CONNECTIVITY				8
+#define PROPORTION_POINTS_JONCTION_PIPE		0.6
+#define ECART_TYPE_MAXIMAL					30
 
 using namespace std;
 using namespace cv;
@@ -34,7 +35,9 @@ class PipeFollowing : public CMOOSApp
 	public:
 		PipeFollowing();
 		void getOrientationPipe(IplImage* img_original, LinearRegression* linreg, int* largeur_pipe, double* taux_reconnaissance_pipe);
-		double median(vector<int> vec);
+		double mediane(vector<int> vec);
+		double moyenne(vector<int> vec);
+		double ecartType(vector<int> vec);
 		void rotationImage(IplImage* src, IplImage* dst, double angle);
 		void getJonctionsPipe(IplImage* img_original, LinearRegression* linreg, int largeur_pipe, double taux_reconnaissance_pipe); 
 		void seuillageTeinteJaune(IplImage* img_original, int seuil, uchar **data_seuillage, uchar **data_nb);
@@ -50,11 +53,16 @@ class PipeFollowing : public CMOOSApp
 	private: // Configuration variables
 
 	private: // State variables
-		unsigned int	m_iterations;
-		double			m_timewarp;
-		IplImage		*channelRed, *channelGreen, *channelBlue, *img_hsv, *img_nb;
-		Mat 			m_mat_dst;
-		CvScalar 		red, blue, white;
+		string				m_nom_variable_image;
+		IplImage 			*m_img;
+		int 				m_largeur_pipe;
+		double 				m_taux_reconnaissance_pipe;
+		LinearRegression	*m_linreg;
+		unsigned int		m_iterations;
+		double				m_timewarp;
+		IplImage			*channelRed, *channelGreen, *channelBlue, *channelYellow, *img_hsv, *img_nb;
+		Mat 				m_mat_dst;
+		CvScalar 			red, blue, white;
 };
 
 #endif 

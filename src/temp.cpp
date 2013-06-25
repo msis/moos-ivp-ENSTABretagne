@@ -30,6 +30,7 @@ Camera::Camera()
 	channelBlue = cvCreateImage(cvSize(320, 240), 8, 1);
 	img_nb = cvCreateImage(cvSize(320, 240), 8, 1);
 	img_hsv = cvCreateImage(cvSize(320, 240), 8, 3);
+	namedWindow((char*)m_image_name.c_str(), CV_WINDOW_AUTOSIZE);
 }
 
 /**
@@ -73,10 +74,11 @@ bool Camera::OnConnectToServer()
  
 bool Camera::Iterate()
 {
-	if (m_vc_v4l2.read(m_capture_frame))
+	if(m_vc_v4l2.read(m_capture_frame))
 	{
-		Notify((char*)("VVV_IMG_" + m_image_name).c_str(), (void*)m_image.data, m_image.size().area(), MOOSLocalTime());
+		//Notify((char*)(m_image_name).c_str(), (void*)m_image.data, m_image.rows()*m_image.step(), MOOSLocalTime());
 		IplImage ipl_img = m_capture_frame;
+		Notify((char*)(m_image_name).c_str(), (void*)ipl_img.imageData, ipl_img.imageSize, MOOSLocalTime());
 		imshow((char*)m_image_name.c_str(), m_capture_frame);
 	}
 	
@@ -110,16 +112,15 @@ bool Camera::OnStartUp()
 			if(param == "IDENTIFIANT_CV_CAMERA")
 				identifiant_camera = atoi(value.c_str());
 
-			if(param == "IMAGE_NAME")
+			if(param == "VARIABLE_IMAGE_NAME")
 				m_image_name = value;
 		}
 	}
 
 	m_timewarp = GetMOOSTimeWarp();
-
 	SetAppFreq(20, 400);
 	SetIterateMode(REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL);
-	m_image = Mat(378, 512, CV_8UC1);
+	string device_name = "/dev/video" + identifiant_camera;
 
 	if(identifiant_camera == -1)
 	{
@@ -127,14 +128,9 @@ bool Camera::OnStartUp()
 		return false;
 	}
 
-	char buff[100];
-	sprintf(buff, "/dev/video%d", identifiant_camera);
-	string device_name = buff;
-
 	if(!m_vc_v4l2.open(device_name, 320, 240))
 		return false;
 
-	namedWindow((char*)m_image_name.c_str(), 1);
 	RegisterVariables();
 	return(true);
 }

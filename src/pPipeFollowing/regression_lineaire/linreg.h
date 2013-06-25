@@ -75,6 +75,7 @@ virtual double getB() const { return b; }
         double getStdErrorEst() const { return stdError; }
 virtual double estimateY(double x) const { return (a + b * x); }
 virtual double estimateOrthoY(double x) const { return (x - a) / -b; }
+		void reset();
 
         void Calculate();   // calculate coefficients
 

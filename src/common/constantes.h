@@ -15,4 +15,7 @@
 
 #define PRECISION_DONNEES_ENVOYEES	5.0 // en cm
 
+#define LARGEUR_IMAGE_CAMERA	320
+#define HAUTEUR_IMAGE_CAMERA	240
+
 #endif 

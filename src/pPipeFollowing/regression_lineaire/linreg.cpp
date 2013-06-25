@@ -27,6 +27,21 @@ LinearRegression::LinearRegression(double *x, double *y, long size)
             addXY(x[i], y[i]);
 }
 
+void LinearRegression::reset()
+{
+	n = 0;
+	sumX = 0;
+	sumY = 0;
+	sumXsquared = 0;
+	sumYsquared = 0;
+	sumXY = 0;
+	a = 0;
+	b = 0;
+	coefD = 0;
+	coefC = 0;
+	stdError = 0;
+}
+
 void LinearRegression::addXY(const double& x, const double& y, bool auto_calculate)
 {
     n++;

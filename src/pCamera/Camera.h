@@ -38,13 +38,14 @@ class Camera : public CMOOSApp
 	private: // Configuration variables
 
 	private: // State variables
+		string			m_image_name;
 		unsigned int	m_iterations;
 		double			m_timewarp;
 		bool			m_server;
 		VideoCapture	m_vc;
 		VideoGrabV4L2	m_vc_v4l2;
-		Mat				m_capture_frame, m_bw_image, m_image;
-		IplImage		*channelRed, *channelGreen, *channelBlue, *img_hsv, *img_nb;
+		Mat				m_capture_frame;
+		bool			m_affichage_image, m_inverser_image;
 };
 
 #endif 

@@ -41,20 +41,21 @@ ProcessConfig = ANTLER
 	
 	Run = MOOSDB					@ NewConsole = false
 	Run = uXMS						@ NewConsole = true
-	Run = pCiscrea					@ NewConsole = true
-	//Run = pLocalization				@ NewConsole = false
+	Run = pCiscrea					@ NewConsole = false
+	//Run = pLocalization			@ NewConsole = false
 	//Run = pControler				@ NewConsole = false
-	Run = pRegulator				@ NewConsole = truey
+	Run = pRegulator				@ NewConsole = false
 	//Run = pSonar					@ NewConsole = true
 	//Run = pEchoSonder				@ NewConsole = false
 	//Run = pModem					@ NewConsole = false ~ pModem_EMETTEUR
 	//Run = pModem					@ NewConsole = false ~ pModem_RECEPTEUR
-	Run = pCamera					@ NewConsole = true ~ pCamera_BOTTOM
-	Run = pCamera					@ NewConsole = false ~ pCamera_FRONT
+	Run = pPipeFollowing			@ NewConsole = false
+	Run = pCamera					@ NewConsole = false ~ pCamera_BOTTOM
+	Run = pCamera					@ NewConsole = false ~ pCamera_SIDE
 	//Run = pHydrophone				@ NewConsole = false
 	//Run = pTemperatureCPU			@ NewConsole = false
 	Run = pInertialMeasurementUnit	@ NewConsole = false
-	//Run = pLogs						@ NewConsole = false
+	//Run = pLogs					@ NewConsole = false
 }
 
 ProcessConfig = pCiscrea
@@ -82,14 +83,23 @@ ProcessConfig = pRegulator
 
 ProcessConfig = pCamera_BOTTOM
 {
-	SERIAL_PORT_NAME = /dev/ttyUSB1
+	VARIABLE_IMAGE_NAME = VVV_IMAGE_BOTTOM
 	IDENTIFIANT_CV_CAMERA = 1
+	DISPLAY_IMAGE = false
+	INVERT_IMAGE = true
 }
 
-ProcessConfig = pCamera_FRONT
+ProcessConfig = pCamera_SIDE
 {
-	SERIAL_PORT_NAME = /dev/ttyUSB2
+	VARIABLE_IMAGE_NAME = VVV_IMAGE_SIDE
 	IDENTIFIANT_CV_CAMERA = 0
+	DISPLAY_IMAGE = false
+	INVERT_IMAGE = false
+}
+
+ProcessConfig = pPipeFollowing
+{
+	VARIABLE_IMAGE_NAME = VVV_IMAGE_BOTTOM
 }
 
 ProcessConfig = pModem_EMETTEUR
@@ -106,7 +116,7 @@ ProcessConfig = pModem_RECEPTEUR
 
 ProcessConfig = pSonar
 {
-	SERIAL_PORT_NAME = /dev/ttyUSB0
+	SERIAL_PORT_NAME = /dev/ttyUSB2
 }
 
 ProcessConfig = pEchoSonder

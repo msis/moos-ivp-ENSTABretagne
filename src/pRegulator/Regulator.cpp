@@ -83,7 +83,7 @@ bool Regulator::OnNewMail(MOOSMSG_LIST &NewMail)
                   double err_heading = m_desired_heading - msg.GetDouble();
                   while (err_heading < -180.) err_heading += 360.0;
                   while (err_heading >= 180.) err_heading -= 360.0;
-                  cout << "Heading error = " << err_heading << endl;
+                 // cout << "Heading error = " << err_heading << endl;
                   m_pid_heading.Run(err_heading, msg.GetTime(), output_rz);
                   m_Comms.Notify("VVV_RZ_DESIRED", output_rz);
                 }
