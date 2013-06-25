@@ -1,0 +1,21 @@
+//------------------------------------------------
+// pRegulator config block
+
+ProcessConfig = pRegulator
+{
+    AppTick   = 4
+    CommsTick = 4
+
+    KP_Z        = 1.0
+    KI_Z        = 0.0
+    KD_Z        = 0.0
+    INTEGRAL_LIMIT_Z =  1.0
+    OUTPUT_LIMIT_Z   = 15.0
+
+    KP_HEADING  = 0.0
+    KI_HEADING  = 0.0
+    KD_HEADING  = 0.0
+    INTEGRAL_LIMIT_HEADING = 0.0
+    OUTPUT_LIMIT_HEADING   = 0.0
+}
+

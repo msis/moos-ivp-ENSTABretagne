@@ -18,6 +18,11 @@
 #include <stdlib.h>
 #include "../common/constantes.h"
 #include "modbus/modbus.h"
+#ifdef _WIN32
+	#include "MOOS/libMOOS/Utils/MOOSNTSerialPort.h"
+#else
+	#include "MOOS/libMOOS/Utils/MOOSLinuxSerialPort.h"
+#endif
 
 #define Offcet 0x1A
 
@@ -107,8 +112,6 @@ class M6dbus
 		int setPropReRi(int);
 		int setPropReLe(int);
 		int setPropVert(int);
-		
-		void setLight(int value);
 
 	private:
 		modbus_t *Modbus;

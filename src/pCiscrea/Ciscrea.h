@@ -18,6 +18,8 @@
 #include "../common/constantes.h"
 #include "AUV.h"
 
+#define AJUSTEMENT_CAPTEUR_Z	-0.82
+
 using namespace std;
 
 class Ciscrea : public CMOOSApp

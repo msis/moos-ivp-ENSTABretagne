@@ -16,6 +16,7 @@ INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS} /usr/local/include/opencv)
 #============================================================================
 ADD_SUBDIRECTORY(pCiscrea)
 ADD_SUBDIRECTORY(pLocalization)
+ADD_SUBDIRECTORY(pPipeFollowing)
 ADD_SUBDIRECTORY(pControler)
 ADD_SUBDIRECTORY(pSonar)
 ADD_SUBDIRECTORY(pEchoSonder)
@@ -25,7 +26,7 @@ ADD_SUBDIRECTORY(pHydrophone)
 ADD_SUBDIRECTORY(pTemperatureCPU)
 ADD_SUBDIRECTORY(pInertialMeasurementUnit)
 ADD_SUBDIRECTORY(pLogs)
-ADD_SUBDIRECTORY(pPipeFollowing)
+ADD_SUBDIRECTORY(pRegulator)
 
 ##############################################################################
 #                           END of CMakeLists.txt

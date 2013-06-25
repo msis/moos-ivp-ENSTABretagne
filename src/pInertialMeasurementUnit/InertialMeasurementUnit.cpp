@@ -22,7 +22,7 @@ using namespace std;
  * \brief Constructeur de l'application MOOS
  */
  
-InertialMeasurementUnit::InertialMeasurementUnit(string serial_port_name, bool initialisationAutomatique)
+InertialMeasurementUnit::InertialMeasurementUnit()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
@@ -35,31 +35,19 @@ InertialMeasurementUnit::InertialMeasurementUnit(string serial_port_name, bool i
 	this->m_rx	 = 0;
 	this->m_ry	 = 0;
 	this->m_rz	 = 0;
-	this->m_serial_port_name = serial_port_name;
-	
-	cout << "Initialisation sur " << serial_port_name << "..." << endl;
-	
-	if(initialisationAutomatique)
-	{
-		if(initialiserRazorAHRS())
-			cout << "Capteur initialise !" << endl;
-		
-		else
-			cout << "Erreur d'initialisation !" << endl;
-	}
 }
 
-bool InertialMeasurementUnit::initialiserRazorAHRS()
+bool InertialMeasurementUnit::initialiserRazorAHRS(string serial_port_name)
 {
 	bool resultat_initialisation = true;
 	
 	try
 	{
 		cout << "Initialisation de Razor..." << endl;
-		razor = new RazorAHRS(this->m_serial_port_name, 
+		razor = new RazorAHRS(serial_port_name, 
 								bind(&InertialMeasurementUnit::on_data, this, placeholders::_1),
 								bind(&InertialMeasurementUnit::on_error, this, placeholders::_1),
-								RazorAHRS::ACC_MAG_GYR_CALIBRATED);
+								RazorAHRS::YAW_PITCH_ROLL);
 	}
 	
 	catch(runtime_error &e)
@@ -89,9 +77,14 @@ void InertialMeasurementUnit::on_error(const string &msg)
  
 void InertialMeasurementUnit::on_data(const float data[])
 {
-	this->m_rz = data[2];
-	this->m_ry = data[1];
-	this->m_rx = data[0];
+	this->m_ry = data[2];
+	this->m_rx = data[1];
+	this->m_rz = data[0];
+	
+	m_Comms.Notify("VVV_HEADING_RAZOR", this->m_rz);
+	m_Comms.Notify("VVV_HEADING", this->m_rz);
+	
+	//cout << "Ry : " << m_rz << "\tRx : " << m_ry << "\tRz : " << m_rx << endl;
 	
 	/* TO DO :
 	this->m_az = data[3];
@@ -173,10 +166,6 @@ bool InertialMeasurementUnit::Iterate()
 	// Boussole : angle de rotation
 	//cout << "Magnetometre\t RX : " << this->m_rx << "\t RY : " << this->m_ry << "\t RZ : " << this->m_rz << endl;
 	
-	m_Comms.Notify("VVV_NAV_RX", this->m_rx);
-	m_Comms.Notify("VVV_NAV_RY", this->m_ry);
-	m_Comms.Notify("VVV_NAV_RZ", this->m_rz);
-	
 	/* TO DO :
 	// Accélération
 	cout << "Accelerometre\t AX : " << this->m_ax << "\t AY : " << this->m_ay << "\t AZ : " << this->m_az << endl;
@@ -213,10 +202,8 @@ bool InertialMeasurementUnit::OnStartUp()
 			string param = stripBlankEnds(toupper(biteString(*p, '=')));
 			string value = stripBlankEnds(*p);
 
-			if(param == "FOO")
-			{
-				//handled
-			}
+			if(param == "SERIAL_PORT_NAME")
+				initialiserRazorAHRS(value);
 			
 			else if(param == "BAR")
 			{

@@ -23,7 +23,7 @@
 void launchTestsAndExitIfOk(string param)
 {
 	Tests sessionDeTests("pInertialMeasurementUnit");
-	InertialMeasurementUnit centrale(param, false);
-	sessionDeTests.tester(centrale.initialiserRazorAHRS(), "Initialisation du capteur");
+	InertialMeasurementUnit centrale;
+	sessionDeTests.tester(centrale.initialiserRazorAHRS("/dev/ttyUSB4"), "Initialisation du capteur");
 	sessionDeTests.afficherConclusionTests();
 }

@@ -6,12 +6,12 @@ Community = ciscreaSaucE
 	Variables partagées :
 
 	// Consignes souhaitées, à imposer sur l'AUV
-	VVV_NAV_X_DESIRED, VVV_NAV_Y_DESIRED, VVV_NAV_Z_DESIRED, VVV_NAV_RZ_DESIRED
-	VVV_NAV_VX_DESIRED, VVV_NAV_VY_DESIRED, VVV_NAV_VZ_DESIRED
+	VVV_X_DESIRED, VVV_Y_DESIRED, VVV_Z_DESIRED, VVV_RZ_DESIRED
+	VVV_VX_DESIRED, VVV_VY_DESIRED, VVV_VZ_DESIRED
 	
 	// Composantes du mouvement et de la position mesurés
-	VVV_NAV_X, VVV_NAV_Y, VVV_NAV_Z
-	VVV_NAV_RX, VVV_NAV_RY, VVV_NAV_RZ, VVV_NAV_CAP
+	VVV_X, VVV_Y, VVV_Z
+	VVV_RX, VVV_RY, VVV_RZ, VVV_HEADING_CISCREA, VVV_HEADING_RAZOR
 	
 	// Actions sur AUV
 	VVV_SPOTLIGHTS
@@ -40,26 +40,44 @@ ProcessConfig = ANTLER
 	MSBetweenLaunches = 200
 	
 	Run = MOOSDB					@ NewConsole = false
-	//Run = uXMS						@ NewConsole = true
-	//Run = pCiscrea					@ NewConsole = true
+	Run = uXMS						@ NewConsole = true
+	Run = pCiscrea					@ NewConsole = true
 	//Run = pLocalization				@ NewConsole = false
 	//Run = pControler				@ NewConsole = false
+	Run = pRegulator				@ NewConsole = truey
 	//Run = pSonar					@ NewConsole = true
 	//Run = pEchoSonder				@ NewConsole = false
 	//Run = pModem					@ NewConsole = false ~ pModem_EMETTEUR
 	//Run = pModem					@ NewConsole = false ~ pModem_RECEPTEUR
-	//Run = pCamera					@ NewConsole = true ~ pCamera_BOTTOM
-	//Run = pCamera					@ NewConsole = false ~ pCamera_FRONT
+	Run = pCamera					@ NewConsole = true ~ pCamera_BOTTOM
+	Run = pCamera					@ NewConsole = false ~ pCamera_FRONT
 	//Run = pHydrophone				@ NewConsole = false
 	//Run = pTemperatureCPU			@ NewConsole = false
-	//Run = pInertialMeasurementUnit	@ NewConsole = false
+	Run = pInertialMeasurementUnit	@ NewConsole = false
 	//Run = pLogs						@ NewConsole = false
-	Run = pPipeFollowing						@ NewConsole = false
 }
 
 ProcessConfig = pCiscrea
 {
 	IDENTIFIANT_AUV = 2
+}
+
+ProcessConfig = pRegulator
+{
+    AppTick   = 1
+    CommsTick = 1
+
+    KP_Z        = 15.0
+    KI_Z        = 1.0
+    KD_Z        = 40.0
+    INTEGRAL_LIMIT_Z =  3.0
+    OUTPUT_LIMIT_Z   = 20.0
+
+    KP_HEADING  = 0.15
+    KI_HEADING  = 0.0
+    KD_HEADING  = 0.0
+    INTEGRAL_LIMIT_HEADING = 0.0
+    OUTPUT_LIMIT_HEADING   = 2.0
 }
 
 ProcessConfig = pCamera_BOTTOM
@@ -77,7 +95,7 @@ ProcessConfig = pCamera_FRONT
 ProcessConfig = pModem_EMETTEUR
 {
 	EMETTEUR = true
-	SERIAL_PORT_NAME = /dev/ttyUSB1
+	SERIAL_PORT_NAME = /dev/ttyUSB4
 }
 
 ProcessConfig = pModem_RECEPTEUR
@@ -93,12 +111,14 @@ ProcessConfig = pSonar
 
 ProcessConfig = pEchoSonder
 {
-	SERIAL_PORT_NAME = /dev/ttyUSB0
+	SERIAL_PORT_NAME = /dev/ttyUSB3
 }
 
 ProcessConfig = pInertialMeasurementUnit
 {
-	SERIAL_PORT_NAME = /dev/ttyUSB0
+	SERIAL_PORT_NAME = /dev/ttyUSB1
+    AppTick   = 10
+    CommsTick = 10
 }
 
 ProcessConfig = pLogs
@@ -109,10 +129,11 @@ ProcessConfig = pLogs
 
 ProcessConfig = uXMS
 {
-	VAR				= VVV_NAV_X_DESIRED, VVV_NAV_Y_DESIRED, VVV_NAV_Z_DESIRED, VVV_NAV_RZ_DESIRED
-	VAR				= VVV_NAV_VX_DESIRED, VVV_NAV_VY_DESIRED, VVV_NAV_VZ_DESIRED
-	VAR				= VVV_NAV_X, VVV_NAV_Y, VVV_NAV_Z, VVV_NAV_CAP
-	VAR				= VVV_NAV_RX, VVV_NAV_RY, VVV_NAV_RZ
+	AppTick       = 10
+	VAR				= VVV_X_DESIRED, VVV_Y_DESIRED, VVV_Z_DESIRED, VVV_RZ_DESIRED
+	VAR				= VVV_VX_DESIRED, VVV_VY_DESIRED, VVV_VZ_DESIRED
+	VAR				= VVV_X, VVV_Y, VVV_Z, VVV_HEADING_CISCREA, VVV_HEADING_RAZOR, VVV_HEADING_DESIRED, VVV_HEADING
+	VAR				= VVV_RX, VVV_RY, VVV_RZ
 	VAR				= VVV_SPOTLIGHTS
 	VAR				= VVV_CURRENT_EXTERNAL_BATTERY_1, VVV_CURRENT_EXTERNAL_BATTERY_2
 	VAR				= VVV_VOLTAGE_EXTERNAL_BATTERY_1, VVV_VOLTAGE_EXTERNAL_BATTERY_2
@@ -124,8 +145,13 @@ ProcessConfig = uXMS
 	VAR				= VVV_ANOMALY_X, VVV_ANOMALY_Y, VVV_ANOMALY_Z
 	VAR				= VVV_ANOMALY_STATE
 	VAR				= VVV_DISTANCE_ECHOSONDER
-	COLOR_MAP		= VVV_NAV_VX, red
-	COLOR_MAP		= VVV_NAV_VY, blue
-	COLOR_MAP		= VVV_NAV_VZ, green
-	// HISTORY_VAR	= VVV_NAV_VX
+	COLOR_MAP		= VVV_Z, blue
+	COLOR_MAP		= VVV_Z_DESIREDD, blue
+	COLOR_MAP		= VVV_VZ_DESIRED, blue
+	COLOR_MAP		= VVV_HEADING_CISCREA, green
+	COLOR_MAP		= VVV_HEADING_RAZOR, green
+	COLOR_MAP		= VVV_HEADING, green
+	COLOR_MAP		= VVV_HEADING_DESIRED, green
+	COLOR_MAP		= VVV_RZ, green
+	// HISTORY_VAR	= VVV_VX
 }

@@ -10,7 +10,6 @@
  */
  
 #include <time.h>
-#include <iterator>
 #include "ColorParse.h"
 #include "MBUtils.h"
 #include "Modem.h"

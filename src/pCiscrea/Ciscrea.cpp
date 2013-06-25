@@ -26,13 +26,10 @@ Ciscrea::Ciscrea(int identifiant_AUV) : m_identifiant_auv_a_instancier(identifia
 	this->m_auv_ciscrea = NULL;
 	
 	// Enregistrement des variables de la MOOSDB à suivre
-	this->m_listeVariablesSuivies.push_back("VVV_NAV_VX");
-	this->m_listeVariablesSuivies.push_back("VVV_NAV_VY");
-	this->m_listeVariablesSuivies.push_back("VVV_NAV_VZ");
-	this->m_listeVariablesSuivies.push_back("VVV_NAV_RZ");
-	this->m_listeVariablesSuivies.push_back("VVV_NAV_AX");
-	this->m_listeVariablesSuivies.push_back("VVV_NAV_AY");
-	this->m_listeVariablesSuivies.push_back("VVV_NAV_AZ");
+	this->m_listeVariablesSuivies.push_back("VVV_VX_DESIRED");
+	this->m_listeVariablesSuivies.push_back("VVV_VY_DESIRED");
+	this->m_listeVariablesSuivies.push_back("VVV_VZ_DESIRED");
+	this->m_listeVariablesSuivies.push_back("VVV_RZ_DESIRED");
 	this->m_listeVariablesSuivies.push_back("VVV_SPOTLIGHTS");
 	this->m_listeVariablesSuivies.push_back("VVV_AUV_IDENTIFIER");
 	this->m_listeVariablesSuivies.push_back("VVV_ON_MISSION");
@@ -46,6 +43,8 @@ Ciscrea::Ciscrea(int identifiant_AUV) : m_identifiant_auv_a_instancier(identifia
  
 bool Ciscrea::OnNewMail(MOOSMSG_LIST &NewMail)
 {
+	bool mettre_a_jour_propulseurs = false;
+	
 	if(this->m_auv_ciscrea == NULL)
 	{
 		if(this->m_identifiant_auv_a_instancier == 0)
@@ -69,17 +68,29 @@ bool Ciscrea::OnNewMail(MOOSMSG_LIST &NewMail)
 				instancierAUV();
 		}
 		
-		if(msg.GetKey() == "VVV_NAV_VX" && this->m_auv_ciscrea != NULL)
+		if(msg.GetKey() == "VVV_VX_DESIRED" && this->m_auv_ciscrea != NULL)
+		{
 			m_auv_ciscrea->setVx(msg.GetDouble());
+			mettre_a_jour_propulseurs = true;
+		}
 		
-		if(msg.GetKey() == "VVV_NAV_VY" && this->m_auv_ciscrea != NULL)
+		if(msg.GetKey() == "VVV_VY_DESIRED" && this->m_auv_ciscrea != NULL)
+		{
 			m_auv_ciscrea->setVy(msg.GetDouble());
+			mettre_a_jour_propulseurs = true;
+		}
 		
-		if(msg.GetKey() == "VVV_NAV_VZ" && this->m_auv_ciscrea != NULL)
+		if(msg.GetKey() == "VVV_VZ_DESIRED" && this->m_auv_ciscrea != NULL)
+		{
 			m_auv_ciscrea->setVz(msg.GetDouble());
+			mettre_a_jour_propulseurs = true;
+		}
 			
-		if(msg.GetKey() == "VVV_NAV_RZ" && this->m_auv_ciscrea != NULL)
+		if(msg.GetKey() == "VVV_RZ_DESIRED" && this->m_auv_ciscrea != NULL)
+		{
 			m_auv_ciscrea->setRz(msg.GetDouble());
+			mettre_a_jour_propulseurs = true;
+		}
 		
 		if(msg.GetKey() == "VVV_SPOTLIGHTS" && this->m_auv_ciscrea != NULL)
 		{
@@ -101,6 +112,9 @@ bool Ciscrea::OnNewMail(MOOSMSG_LIST &NewMail)
 			bool   mstr  = msg.IsString();
 		#endif
 	}
+		
+	if(mettre_a_jour_propulseurs)
+		m_auv_ciscrea->updatePropulseurs();
 
 	return(true);
 }
@@ -131,7 +145,13 @@ bool Ciscrea::OnConnectToServer()
 	
 	// Initialisations à 0
 	for(int i = 0 ; i < (int)this->m_listeVariablesSuivies.size() ; i++)
-		m_Comms.Notify((char*)this->m_listeVariablesSuivies[i].c_str(), 0.0);
+	{
+		if(this->m_listeVariablesSuivies[i] == "VVV_SPOTLIGHTS")
+			m_Comms.Notify("VVV_SPOTLIGHTS", 1000); // Témoin visuel de bonne communication Modbus
+			
+		else
+			m_Comms.Notify((char*)this->m_listeVariablesSuivies[i].c_str(), 0.0);
+	}
 	
 	return(true);
 }
@@ -149,8 +169,8 @@ bool Ciscrea::Iterate()
 	// Informations sur l'AUV
 	if(this->m_auv_ciscrea != NULL)
 	{
-		m_Comms.Notify("VVV_NAV_CAP", m_auv_ciscrea->getCap());
-		m_Comms.Notify("VVV_NAV_Z", m_auv_ciscrea->getProfondeur());
+		m_Comms.Notify("VVV_HEADING_CISCREA", m_auv_ciscrea->getCap());
+		m_Comms.Notify("VVV_Z", (m_auv_ciscrea->getProfondeur() / 100.0) + AJUSTEMENT_CAPTEUR_Z);
 		m_Comms.Notify("VVV_CURRENT_EXTERNAL_BATTERY_1", m_auv_ciscrea->getIntensiteBatterie1());
 		m_Comms.Notify("VVV_CURRENT_EXTERNAL_BATTERY_2", m_auv_ciscrea->getIntensiteBatterie2());
 		m_Comms.Notify("VVV_VOLTAGE_EXTERNAL_BATTERY_1", m_auv_ciscrea->getTensionBatterie1());

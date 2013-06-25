@@ -19,7 +19,7 @@
 #include "M6dbus.h"
 
 #define	PORT_MODBUS			502
-#define AFFICHER_DETAILS    1
+#define AFFICHER_DETAILS    0
 
 using namespace std;
 
@@ -47,11 +47,12 @@ class AUV
 		~AUV();
 		
 		// Commandes du Ciscrea :
-		int setVx(double);
-		int setVy(double);
-		int setVz(double);
-		int setRz(double);
-		int setYaw(double);
+		void setVx(double);
+		void setVy(double);
+		void setVz(double);
+		void setRz(double);
+		void setYaw(double);
+		int updatePropulseurs();
 		int allumerProjecteurs(int intensite);
 		int eteindreProjecteurs();
 		
@@ -71,7 +72,6 @@ class AUV
 	protected:
 		void creerMatriceE();
 		void initialisation();
-		int updatePropulseurs();
 		void normaliserVecteur(Matrice *forcesPropulseurs, double vitesse);
 };
 

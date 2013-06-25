@@ -89,7 +89,6 @@ double EchoSonder::getDistancePremierObstacle()
 		
 		// Conversion en décimales
 		distance = atof(reponse_parsee);
-		cout << "Distance echo-sondeur : " << distance << endl;
 		
 		if(distance != 0.0)
 			return distance;

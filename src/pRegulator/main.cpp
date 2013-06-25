@@ -1,6 +1,6 @@
 /**
  * \file main.cpp
- * \brief Programme principal de pInertialMeasurementUnit
+ * \brief Programme principal de pRegulator
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
  * \date Jun 7th 2013
@@ -12,16 +12,15 @@
 #include <string>
 #include "MBUtils.h"
 #include "ColorParse.h"
-#include "InertialMeasurementUnit.h"
-#include "InertialMeasurementUnit_Info.h"
-#include "InertialMeasurementUnit_Tests.h"
+#include "Regulator.h"
+#include "Regulator_Info.h"
+#include "Regulator_Tests.h"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
 	string mission_file;
-	string serialPortName;
 	bool lancer_tests = false;
 	string run_command = argv[0];
 
@@ -58,7 +57,7 @@ int main(int argc, char *argv[])
 		showHelpAndExit();
 
 	if(lancer_tests)
-		launchTestsAndExitIfOk("/dev/ttyUSB0");
+		launchTestsAndExitIfOk();
 	
 	else
 	{
@@ -66,8 +65,8 @@ int main(int argc, char *argv[])
 		cout << "Lancement de " << run_command << endl;
 		cout << termColor() << endl;
 
-		InertialMeasurementUnit InertialMeasurementUnit;
-		InertialMeasurementUnit.Run(run_command.c_str(), mission_file.c_str());
+		Regulator Regulator;
+		Regulator.Run(run_command.c_str(), mission_file.c_str());
 	}
 
 	return(0);

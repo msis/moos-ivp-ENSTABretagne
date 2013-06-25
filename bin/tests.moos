@@ -9,6 +9,7 @@ ProcessConfig = ANTLER
 	Run = pCiscrea					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pLocalization				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pControler				@ NewConsole = true,	ExtraProcessParams=TemoinTests
+	Run = pRegulator				@ NewConsole = true,	ExtraProcessParams=TemoinTests
 	Run = pSonar					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pEchoSonder				@ NewConsole = true, 	ExtraProcessParams=TemoinTests
 	Run = pModem					@ NewConsole = true, 	ExtraProcessParams=TemoinTests

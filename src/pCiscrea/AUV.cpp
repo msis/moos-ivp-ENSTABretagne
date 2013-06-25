@@ -210,18 +210,18 @@ void AUV::creerMatriceE()
 	this->E = new Matrice(6, 6, "Modele AUV");
 
 	// Vx :
-	(*this->E)[0][0] = cos(this->propFrRi->getAngle() * M_PI / 180.0);	// Devant droite : F1
-	(*this->E)[0][1] = -cos(this->propReRi->getAngle() * M_PI / 180.0);	// Derrière droite : F2
-	(*this->E)[0][2] = -cos(this->propReLe->getAngle() * M_PI / 180.0);	// Derrière gauche : F3
-	(*this->E)[0][3] = cos(this->propFrLe->getAngle() * M_PI / 180.0);	// Devant gauche : F4
+	(*this->E)[0][0] = -cos(this->propFrRi->getAngle() * M_PI / 180.0);	// Devant droite : F1
+	(*this->E)[0][1] = cos(this->propReRi->getAngle() * M_PI / 180.0);	// Derrière droite : F2
+	(*this->E)[0][2] = cos(this->propReLe->getAngle() * M_PI / 180.0);	// Derrière gauche : F3
+	(*this->E)[0][3] = -cos(this->propFrLe->getAngle() * M_PI / 180.0);	// Devant gauche : F4
 	(*this->E)[0][4] = 0;
 	(*this->E)[0][5] = 0;
 
 	// Vy :
 	(*this->E)[1][0] = -sin(this->propFrRi->getAngle() * M_PI / 180.0);
-	(*this->E)[1][1] = sin(this->propReRi->getAngle() * M_PI / 180.0);
+	(*this->E)[1][1] = -sin(this->propReRi->getAngle() * M_PI / 180.0);
 	(*this->E)[1][2] = sin(this->propReLe->getAngle() * M_PI / 180.0);
-	(*this->E)[1][3] = -sin(this->propFrLe->getAngle() * M_PI / 180.0);
+	(*this->E)[1][3] = sin(this->propFrLe->getAngle() * M_PI / 180.0);
 	(*this->E)[1][4] = 0;
 	(*this->E)[1][5] = 0;
 
@@ -400,10 +400,9 @@ bool AUV::getOn()
  * \brief Méthode définissant une nouvelle vitesse selon X
  */
 
-int AUV::setVx(double val)
+void AUV::setVx(double val)
 {
 	this->Vx = val;
-	return updatePropulseurs();
 }
 
 /**
@@ -411,10 +410,9 @@ int AUV::setVx(double val)
  * \brief Méthode définissant une nouvelle vitesse selon Y
  */
 
-int AUV::setVy(double val)
+void AUV::setVy(double val)
 {
 	this->Vy = val;
-	return updatePropulseurs();
 }
 
 /**
@@ -422,10 +420,9 @@ int AUV::setVy(double val)
  * \brief Méthode définissant une nouvelle vitesse selon Z
  */
 
-int AUV::setVz(double val)
+void AUV::setVz(double val)
 {
 	this->Vz = val;
-	return updatePropulseurs();
 }
 
 /**
@@ -433,10 +430,9 @@ int AUV::setVz(double val)
  * \brief Méthode définissant une nouvelle rotation selon Z (= Yaw)
  */
 
-int AUV::setRz(double val)
+void AUV::setRz(double val)
 {
 	this->Rz = val;
-	return updatePropulseurs();
 }
 
 /**
@@ -444,9 +440,9 @@ int AUV::setRz(double val)
  * \brief Méthode définissant une nouvelle rotation selon Z (= Yaw)
  */
 
-int AUV::setYaw(double val)
+void AUV::setYaw(double val)
 {
-	return this->setRz(val);
+	this->setRz(val);
 }
 
 /**

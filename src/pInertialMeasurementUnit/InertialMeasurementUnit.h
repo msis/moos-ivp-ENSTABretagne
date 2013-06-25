@@ -15,14 +15,16 @@
 #include "MOOS/libMOOS/App/MOOSApp.h"
 #include "RazorAHRS/RazorAHRS.h"
 
+#define AJUSTEMENT_HEADING_RAZOR	320
+
 using namespace std;
 		
 class InertialMeasurementUnit : public CMOOSApp
 {
 	public:
-		InertialMeasurementUnit(string serial_port_name, bool initialisationAutomatique = true);
+		InertialMeasurementUnit();
 		~InertialMeasurementUnit();
-		bool initialiserRazorAHRS();
+		bool initialiserRazorAHRS(string serial_port_name);
 
 	protected:
 		bool OnNewMail(MOOSMSG_LIST &NewMail);
@@ -41,7 +43,6 @@ class InertialMeasurementUnit : public CMOOSApp
 		double 			m_rx, m_ry, m_rz;
 		double 			m_vrx, m_vry, m_vrz;
 		double 			m_ax, m_ay, m_az;
-		string			m_serial_port_name;
 		
 		RazorAHRS *razor;
 };

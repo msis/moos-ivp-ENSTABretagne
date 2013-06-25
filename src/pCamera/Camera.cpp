@@ -11,6 +11,7 @@
 
 #include <iterator>
 #include <iostream>
+#include <iomanip>
 #include "MBUtils.h"
 #include "Camera.h"
 
@@ -24,6 +25,11 @@ Camera::Camera()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
+	channelRed = cvCreateImage(cvSize(320, 240), 8, 1);
+	channelGreen = cvCreateImage(cvSize(320, 240), 8, 1);
+	channelBlue = cvCreateImage(cvSize(320, 240), 8, 1);
+	img_nb = cvCreateImage(cvSize(320, 240), 8, 1);
+	img_hsv = cvCreateImage(cvSize(320, 240), 8, 3);
 }
 
 /**
@@ -43,31 +49,6 @@ Camera::~Camera()
  
 bool Camera::OnNewMail(MOOSMSG_LIST &NewMail)
 {
-	MOOSMSG_LIST::iterator p;
-
-	for(p = NewMail.begin() ; p != NewMail.end() ; p++)
-	{
-		CMOOSMsg &msg = *p;
-
-		if(p->IsName("Image"))
-		{
-			cerr << "bytes : " << p->GetBinaryDataSize() << "\tlatency : " <<
-			setprecision(3) << (MOOSLocalTime() - p->GetTime()) * 1e3 << "ms\r";
-			memcpy(m_image.data, p->GetBinaryData(), p->GetBinaryDataSize());
-		}
-
-		#if 0 // Keep these around just for template
-		string key   = msg.GetKey();
-		string comm  = msg.GetCommunity();
-		double dval  = msg.GetDouble();
-		string sval  = msg.GetString(); 
-		string msrc  = msg.GetSource();
-		double mtime = msg.GetTime();
-		bool   mdbl  = msg.IsDouble();
-		bool   mstr  = msg.IsString();
-		#endif
-	}
-	
 	return(true);
 }
 
@@ -78,11 +59,6 @@ bool Camera::OnNewMail(MOOSMSG_LIST &NewMail)
  
 bool Camera::OnConnectToServer()
 {
-	// register for variables here
-	// possibly look at the mission file?
-	// m_MissionReader.GetConfigurationParam("Name", <string>);
-	// m_Comms.Register("VARNAME", 0);
-
 	RegisterVariables();
 	Register("Image", 0.0);
 	
@@ -97,14 +73,17 @@ bool Camera::OnConnectToServer()
  
 bool Camera::Iterate()
 {
-	m_vc >> m_capture_frame;
-	cvtColor(m_capture_frame, m_bw_image, CV_BGR2GRAY);
-	resize(m_bw_image, m_image, m_image.size(), 0, 0, INTER_NEAREST);
-	Notify("Image", (void*)m_image.data, m_image.size().area(), MOOSLocalTime());
+	if (m_vc_v4l2.read(m_capture_frame))
+	{
+		Notify("Image", (void*)m_image.data, m_image.size().area(), MOOSLocalTime());
+		IplImage ipl_img = m_capture_frame;
+		imshow("display", m_capture_frame);
+	}
 	
-	imshow("display", m_image);
+	else
+		cout << "No frame grabbed." << endl;
+		
 	waitKey(10);
-
 	return(true);
 }
 
@@ -118,6 +97,7 @@ bool Camera::OnStartUp()
 	int identifiant_camera = -1;
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
+	
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
 	{
 		list<string>::iterator p;
@@ -135,7 +115,7 @@ bool Camera::OnStartUp()
 	m_timewarp = GetMOOSTimeWarp();
 
 	SetAppFreq(20, 400);
-	SetIterateMode(COMMS_DRIVEN_ITERATE_AND_MAIL);
+	SetIterateMode(REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL);
 	m_image = Mat(378, 512, CV_8UC1);
 
 	if(identifiant_camera == -1)
@@ -143,12 +123,15 @@ bool Camera::OnStartUp()
 		cout << "Aucun identifiant de caméra reconnu" << endl;
 		return false;
 	}
-	
-	if(!m_vc.open(identifiant_camera))
+
+	char buff[100];
+	sprintf(buff, "/dev/video%d", identifiant_camera);
+	string device_name = buff;
+
+	if(!m_vc_v4l2.open(device_name, 320, 240))
 		return false;
-		
+
 	namedWindow("display", 1);
-	
 	RegisterVariables();
 	return(true);
 }
@@ -160,5 +143,5 @@ bool Camera::OnStartUp()
  
 void Camera::RegisterVariables()
 {
-	// m_Comms.Register("FOOBAR", 0);
+	
 }

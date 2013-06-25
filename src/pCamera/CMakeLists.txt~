@@ -13,7 +13,12 @@ SET(SRC
   main.cpp
 )
 
-ADD_EXECUTABLE(pCamera ${SRC})
+SET(SRC_LINREG
+  regression_lineaire/linreg.cpp
+)
+
+
+ADD_EXECUTABLE(pCamera ${SRC} ${SRC_LINREG})
 
 TARGET_LINK_LIBRARIES(pCamera
    MOOS
@@ -24,6 +29,12 @@ TARGET_LINK_LIBRARIES(pCamera
    opencv_core
    opencv_imgproc
    opencv_highgui
+   opencv_ml
    opencv_video
-   opencv_legacy)
+   opencv_features2d
+   opencv_calib3d
+   opencv_objdetect
+   opencv_contrib
+   opencv_legacy
+   opencv_flann)
 

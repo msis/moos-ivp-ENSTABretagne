@@ -13,6 +13,7 @@
 #include "M6dbus.h"
 #include "ColorParse.h"
 #include <cerrno>
+#include <time.h>
 
 M6dbus::M6dbus(string IP, int prt)
 {
@@ -60,11 +61,16 @@ M6dbus::M6dbus(string IP, int prt)
         cout << "Connected to " << IP << "!" << endl;
         cout << "Reading registers..." << endl;
     }
+    
+    for(int i = 0 ; i < 10 ; i ++)
+		modbus_write_bit(Modbus, 0, true);
+	
     if(modbus_read_registers(Modbus,1,48,regTab)==-1)
     {
         cerr << "Unable to read the registers!" << endl;
         cout << "Please try to read them again" << endl;
     }
+    
     else
     {
         cout << "Register table is up-to-date!" << endl;
@@ -88,11 +94,11 @@ bool M6dbus::getOn()
 
 int M6dbus::updateRegTab(uint16_t* Tab)
 {
-	usleep(40*1000);
+	//usleep(40*1000);
     int resultat = modbus_read_registers(Modbus,1,48,Tab);
     
-    if(resultat == -1)
-		cout << termColor("red") << "Connection failed: " << modbus_strerror(errno) << endl << termColor();
+    /*if(resultat == -1)
+		cout << termColor("red") << "Connection failed: " << modbus_strerror(errno) << endl << termColor();*/
 		
 	usleep(40*1000);
 	return resultat;
@@ -106,20 +112,6 @@ int M6dbus::writeReg(int reg, int val)
     modbus_flush(Modbus);
     updateAll();
     return r;
-}
-
-void M6dbus::setLight(int value){ // CECI FONCTIONNE
- // envoyer ordre registre intensité lumière
-	int regcmd;
-	int valuep = value;
-	int istat = 0;
-	if (valuep > 250) valuep=250;
-	if (valuep < 0) valuep=0;
-	regcmd = (0x0000 << 8) | valuep;
- istat = -1;
- while (istat == -1) {
-   istat = modbus_write_register(Modbus, 5, regcmd) && modbus_write_register(Modbus, 1, 0xC001);
- }
 }
 
 int M6dbus::getRegNum(int n)
@@ -175,10 +167,10 @@ int M6dbus::turnLightOn(int intensity)
     newReg5 = tempReg5 | newReg5;   //putting the intensity value in the register
 
     //TODO: check who comes first?
-    writeErr=writeReg(1,newReg1);
+    writeErr=writeReg(5,newReg5);
     if (writeErr==-1)
         return writeErr;
-    writeErr=writeReg(5,newReg5);
+    writeErr=writeReg(1,newReg1);
     if (writeErr==-1)
         return writeErr;
     return 1;
@@ -224,10 +216,10 @@ int M6dbus::turnLightOn(int numL, int intensity)
     newReg5 = tempReg5 | newReg5;   //putting the intensity value in the register
 
     //TODO: check who comes first?
-    writeErr=writeReg(5,newReg5);
+    writeErr=writeReg(1,newReg1);
     if (writeErr==-1)
         return writeErr;
-    writeErr=writeReg(1,newReg1);
+    writeErr=writeReg(5,newReg5);
     if (writeErr==-1)
         return writeErr;
     return 1;
@@ -571,7 +563,7 @@ int M6dbus::setCamTilt(int val)
 
 int M6dbus::updatePropulsors()
 {
-    if (writeReg(2,m_RegPropFr)==-1 || writeReg(3,m_RegPropFr)==-1 || writeReg(4,m_RegPropFr)==-1)
+    if (writeReg(2,m_RegPropFr)==-1 || writeReg(3,m_RegPropRe)==-1 || writeReg(4,m_RegPropVert)==-1)
         return -1;
         
     return 1;

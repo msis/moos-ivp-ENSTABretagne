@@ -17,8 +17,6 @@
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
-#include "videograbv4l2.h"
-
 using namespace std;
 using namespace cv;
 
@@ -26,6 +24,8 @@ class Camera : public CMOOSApp
 {
 	public:
 		Camera();
+		double getOrientationPipe(IplImage* img_original);
+		double median(vector<int> vec);
 		~Camera();
 
 	protected:
@@ -40,10 +40,9 @@ class Camera : public CMOOSApp
 	private: // State variables
 		unsigned int	m_iterations;
 		double			m_timewarp;
-		bool			m_server;
-		VideoCapture	m_vc;
-		VideoGrabV4L2	m_vc_v4l2;
-		Mat				m_capture_frame, m_bw_image, m_image;
+		bool 			m_server;
+		VideoCapture 	m_vc;
+		Mat 			m_capture_frame, m_bw_image, m_image;
 		IplImage		*channelRed, *channelGreen, *channelBlue, *img_hsv, *img_nb;
 };
 
