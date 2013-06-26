@@ -38,32 +38,33 @@ Community = ciscreaSaucE
 ProcessConfig = ANTLER
 {
 	MSBetweenLaunches = 200
-	Run = uXMS							@ NewConsole = true, 	ExtraProcessParams=TemoinTests
+	Run = MOOSDB         				@ NewConsole = false 
+	Run = uXMS							@ NewConsole = true
 	
 	// Interfaces
-		Run = iCiscrea					@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-		Run = iSonar					@ NewConsole = false, 	ExtraProcessParams=TemoinTests
-		Run = iEchoSounder				@ NewConsole = false, 	ExtraProcessParams=TemoinTests
-		Run = iModem					@ NewConsole = false, 	ExtraProcessParams=TemoinTests ~ pModem_EMETTEUR
-		Run = iModem					@ NewConsole = false, 	ExtraProcessParams=TemoinTests ~ pModem_RECEPTEUR
-		Run = iCamera					@ NewConsole = false, 	ExtraProcessParams=TemoinTests ~ pCamera_BOTTOM
-		Run = iCamera					@ NewConsole = false, 	ExtraProcessParams=TemoinTests ~ pCamera_SIDE
-		Run = iHydrophones				@ NewConsole = false, 	ExtraProcessParams=TemoinTests
-		Run = iTemperatureCPU			@ NewConsole = false, 	ExtraProcessParams=TemoinTests 
-		Run = iInertialMeasurementUnit	@ NewConsole = false, 	ExtraProcessParams=TemoinTests
+		Run = iCiscrea					@ NewConsole = true
+		Run = iSonar					@ NewConsole = false
+		Run = iEchoSounder				@ NewConsole = false
+		Run = iModem					@ NewConsole = false ~ iModem_EMETTEUR
+		Run = iModem					@ NewConsole = false ~ iModem_RECEPTEUR
+		Run = iCamera					@ NewConsole = false ~ iCamera_BOTTOM
+		Run = iCamera					@ NewConsole = false ~ iCamera_SIDE
+		Run = iHydrophones				@ NewConsole = false
+		Run = iTemperatureCPU			@ NewConsole = false 
+		Run = iInertialMeasurementUnit	@ NewConsole = false
 	
 	// Programmes
-		Run = pLocalization				@ NewConsole = false, 	ExtraProcessParams=TemoinTests
-		Run = pControler				@ NewConsole = false,	ExtraProcessParams=TemoinTests
-		Run = pRegulator				@ NewConsole = false,	ExtraProcessParams=TemoinTests
-		Run = pLogs						@ NewConsole = false, 	ExtraProcessParams=TemoinTests
-		Run = pBuoyDetection			@ NewConsole = false, 	ExtraProcessParams=TemoinTests
-		Run = pPingLocator				@ NewConsole = false, 	ExtraProcessParams=TemoinTests
-		Run = pPipeFollowing			@ NewConsole = true, 	ExtraProcessParams=TemoinTests
-		Run = pWallFollowing			@ NewConsole = false, 	ExtraProcessParams=TemoinTests
+		Run = pLocalization				@ NewConsole = false
+		Run = pControler				@ NewConsole = false
+		Run = pRegulator				@ NewConsole = false
+		Run = pLogs						@ NewConsole = false
+		Run = pBuoyDetection			@ NewConsole = false
+		Run = pPingLocator				@ NewConsole = false
+		Run = pPipeFollowing			@ NewConsole = true
+		Run = pWallFollowing			@ NewConsole = false
 }
 
-ProcessConfig = pCiscrea
+ProcessConfig = iCiscrea
 {
 	IDENTIFIANT_AUV = 2
 }
@@ -86,7 +87,7 @@ ProcessConfig = pRegulator
     OUTPUT_LIMIT_HEADING   = 2.0
 }
 
-ProcessConfig = pCamera_BOTTOM
+ProcessConfig = iCamera_BOTTOM
 {
 	VARIABLE_IMAGE_NAME = VVV_IMAGE_BOTTOM
 	IDENTIFIANT_CV_CAMERA = 1
@@ -94,42 +95,43 @@ ProcessConfig = pCamera_BOTTOM
 	INVERT_IMAGE = true
 }
 
-ProcessConfig = pCamera_SIDE
+ProcessConfig = iCamera_SIDE
 {
 	VARIABLE_IMAGE_NAME = VVV_IMAGE_SIDE
 	IDENTIFIANT_CV_CAMERA = 0
-	DISPLAY_IMAGE = false
+	DISPLAY_IMAGE = true
 	INVERT_IMAGE = false
 }
 
 ProcessConfig = pPipeFollowing
 {
+	TIME_INTERVAL = 0.2
 	VARIABLE_IMAGE_NAME = VVV_IMAGE_BOTTOM
 }
 
-ProcessConfig = pModem_EMETTEUR
+ProcessConfig = iModem_EMETTEUR
 {
 	EMETTEUR = true
 	SERIAL_PORT_NAME = /dev/ttyUSB4
 }
 
-ProcessConfig = pModem_RECEPTEUR
+ProcessConfig = iModem_RECEPTEUR
 {
 	RECEPTEUR = true
 	SERIAL_PORT_NAME = /dev/ttyUSB2
 }
 
-ProcessConfig = pSonar
+ProcessConfig = iSonar
 {
 	SERIAL_PORT_NAME = /dev/ttyUSB2
 }
 
-ProcessConfig = pEchoSonder
+ProcessConfig = iEchoSonder
 {
 	SERIAL_PORT_NAME = /dev/ttyUSB3
 }
 
-ProcessConfig = pInertialMeasurementUnit
+ProcessConfig = iInertialMeasurementUnit
 {
 	SERIAL_PORT_NAME = /dev/ttyUSB1
     AppTick   = 10
@@ -144,7 +146,7 @@ ProcessConfig = pLogs
 
 ProcessConfig = uXMS
 {
-	AppTick       = 10
+	AppTick     	= 10
 	VAR				= VVV_X_DESIRED, VVV_Y_DESIRED, VVV_Z_DESIRED, VVV_RZ_DESIRED
 	VAR				= VVV_VX_DESIRED, VVV_VY_DESIRED, VVV_VZ_DESIRED
 	VAR				= VVV_X, VVV_Y, VVV_Z, VVV_HEADING_CISCREA, VVV_HEADING_RAZOR, VVV_HEADING_DESIRED, VVV_HEADING
