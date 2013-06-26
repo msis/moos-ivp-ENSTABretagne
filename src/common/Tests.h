@@ -9,6 +9,7 @@
 #ifndef TESTS
 #define TESTS
 
+#include <unistd.h>
 #include <string>
 #include <fstream>
 #include "ColorParse.h"
