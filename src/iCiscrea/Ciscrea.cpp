@@ -189,6 +189,7 @@ bool Ciscrea::Iterate()
  
 bool Ciscrea::OnStartUp()
 {
+	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))

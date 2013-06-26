@@ -208,6 +208,7 @@ bool Logs::supprimerFichierLogs()
  
 bool Logs::OnStartUp()
 {
+	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))

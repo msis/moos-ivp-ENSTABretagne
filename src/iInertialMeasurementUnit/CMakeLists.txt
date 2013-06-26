@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pInertialMeasurementUnit
+# The CMakeLists.txt for:                       iInertialMeasurementUnit
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
@@ -17,9 +17,9 @@ SET(SRC
 
 
 
-ADD_EXECUTABLE(pInertialMeasurementUnit ${SRC})
+ADD_EXECUTABLE(iInertialMeasurementUnit ${SRC})
 
-TARGET_LINK_LIBRARIES(pInertialMeasurementUnit
+TARGET_LINK_LIBRARIES(iInertialMeasurementUnit
    MOOS
    mbutil
    m

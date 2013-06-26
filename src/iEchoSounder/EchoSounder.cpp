@@ -157,9 +157,8 @@ bool EchoSounder::Iterate()
 		return false;
 
 	distance = getDistancePremierObstacle();
-	
-	if(distance != -1)
-		m_Comms.Notify("VVV_DISTANCE_ECHOSONDER", distance);
+	if(distance > 0)
+		m_Comms.Notify("VVV_DISTANCE_ECHOSOUNDER", distance);
 	
 	else
 		cout << "Erreur lors de la récupération de la distance" << endl;
@@ -174,6 +173,7 @@ bool EchoSounder::Iterate()
  
 bool EchoSounder::OnStartUp()
 {
+	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
@@ -198,7 +198,7 @@ bool EchoSounder::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
-	RegisterVariables();	
+	RegisterVariables();
 	return(true);
 }
 

@@ -99,6 +99,7 @@ bool WallFollowing::Iterate()
  
 bool WallFollowing::OnStartUp()
 {
+	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
@@ -124,7 +125,7 @@ bool WallFollowing::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
-	RegisterVariables();	
+	RegisterVariables();
 	return(true);
 }
 

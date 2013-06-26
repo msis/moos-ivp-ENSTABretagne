@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pCiscrea
+# The CMakeLists.txt for:                       iCiscrea
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
@@ -16,9 +16,9 @@ SET(SRC
   main.cpp
 )
 
-ADD_EXECUTABLE(pCiscrea ${SRC})
+ADD_EXECUTABLE(iCiscrea ${SRC})
 
-TARGET_LINK_LIBRARIES(pCiscrea
+TARGET_LINK_LIBRARIES(iCiscrea
    MOOS
    mbutil
    m

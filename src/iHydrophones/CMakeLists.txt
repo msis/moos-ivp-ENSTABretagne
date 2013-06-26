@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pHydrophones
+# The CMakeLists.txt for:                       iHydrophones
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
@@ -14,9 +14,9 @@ SET(SRC
 
 
 
-ADD_EXECUTABLE(pHydrophones ${SRC})
+ADD_EXECUTABLE(iHydrophones ${SRC})
 
-TARGET_LINK_LIBRARIES(pHydrophones
+TARGET_LINK_LIBRARIES(iHydrophones
    MOOS
    mbutil
    m

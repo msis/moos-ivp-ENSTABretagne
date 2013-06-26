@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pEchoSounder
+# The CMakeLists.txt for:                       iEchoSounder
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
@@ -14,9 +14,9 @@ SET(SRC
 
 
 
-ADD_EXECUTABLE(pEchoSounder ${SRC})
+ADD_EXECUTABLE(iEchoSounder ${SRC})
 
-TARGET_LINK_LIBRARIES(pEchoSounder
+TARGET_LINK_LIBRARIES(iEchoSounder
    MOOS
    mbutil
    m

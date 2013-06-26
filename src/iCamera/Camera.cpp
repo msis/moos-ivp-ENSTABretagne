@@ -68,20 +68,17 @@ bool Camera::OnConnectToServer()
  
 bool Camera::Iterate()
 {
+	Mat	m_capture_frame(LARGEUR_IMAGE_CAMERA, HAUTEUR_IMAGE_CAMERA, CV_64FC(3));
+	
 	if(m_vc_v4l2.read(m_capture_frame))
 	{
-		//Notify("Image", (void*)m_image.data, m_image.size().area(), MOOSLocalTime());
-		IplImage ipl_img = m_capture_frame;
-		
-		Mat sortie;
-		
 		if(m_inverser_image)
-			flip(m_capture_frame, sortie, -1);
+			flip(m_capture_frame, m_capture_frame, -1);
 		
-		Notify((char*)(m_image_name).c_str(), (void*)sortie.data, ipl_img.imageSize, MOOSLocalTime());
+		Notify((char*)(m_image_name).c_str(), (void*)m_capture_frame.data, 3 * LARGEUR_IMAGE_CAMERA * HAUTEUR_IMAGE_CAMERA, MOOSLocalTime());
 		
 		if(m_affichage_image)
-			imshow("display", m_capture_frame);
+			imshow(m_display_name, m_capture_frame);
 	}
 	
 	else
@@ -98,6 +95,7 @@ bool Camera::Iterate()
  
 bool Camera::OnStartUp()
 {
+	setlocale(LC_ALL, "C");
 	int identifiant_camera = -1;
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
@@ -115,7 +113,10 @@ bool Camera::OnStartUp()
 				identifiant_camera = atoi((char*)value.c_str());
 
 			if(param == "VARIABLE_IMAGE_NAME")
+			{
 				m_image_name = value;
+				m_display_name = m_image_name;
+			}
 				
 			if(param == "DISPLAY_IMAGE")
 				m_affichage_image = (value == "true");
@@ -144,9 +145,10 @@ bool Camera::OnStartUp()
 		return false;
 
 	if(m_affichage_image)
-		namedWindow("display", CV_WINDOW_NORMAL);
+		namedWindow(m_display_name, CV_WINDOW_NORMAL);
 		
 	RegisterVariables();
+	setlocale(LC_ALL, "");
 	return(true);
 }
 

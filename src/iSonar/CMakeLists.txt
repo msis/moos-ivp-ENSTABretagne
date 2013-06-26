@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pSonar
+# The CMakeLists.txt for:                       iSonar
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
@@ -36,11 +36,11 @@ SET(OSUTILS_SRC
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_DEBUG")
 
-ADD_EXECUTABLE(pSonar ${SRC} ${MINIKING_SRC} ${OSUTILS_SRC})
+ADD_EXECUTABLE(iSonar ${SRC} ${MINIKING_SRC} ${OSUTILS_SRC})
 
 include_directories(MiniKing/ OSUtils/)
 
-TARGET_LINK_LIBRARIES(pSonar
+TARGET_LINK_LIBRARIES(iSonar
    MOOS
    mbutil
    m

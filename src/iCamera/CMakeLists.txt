@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pCamera
+# The CMakeLists.txt for:                       iCamera
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
@@ -13,9 +13,9 @@ SET(SRC
   main.cpp
 )
 
-ADD_EXECUTABLE(pCamera ${SRC})
+ADD_EXECUTABLE(iCamera ${SRC})
 
-TARGET_LINK_LIBRARIES(pCamera
+TARGET_LINK_LIBRARIES(iCamera
    MOOS
    mbutil
    m

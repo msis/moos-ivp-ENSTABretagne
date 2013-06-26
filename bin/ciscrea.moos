@@ -42,10 +42,10 @@ ProcessConfig = ANTLER
 	Run = uXMS							@ NewConsole = true
 	
 	// Interfaces
-		Run = iCiscrea					@ NewConsole = true
-		Run = iSonar					@ NewConsole = false
-		Run = iEchoSounder				@ NewConsole = false
-		Run = iModem					@ NewConsole = false ~ iModem_EMETTEUR
+		//Run = iCiscrea				@ NewConsole = true
+		//Run = iSonar					@ NewConsole = false
+		//Run = iEchoSounder			@ NewConsole = false
+		//Run = iModem					@ NewConsole = false ~ iModem_EMETTEUR
 		Run = iModem					@ NewConsole = false ~ iModem_RECEPTEUR
 		Run = iCamera					@ NewConsole = false ~ iCamera_BOTTOM
 		Run = iCamera					@ NewConsole = false ~ iCamera_SIDE
@@ -58,10 +58,10 @@ ProcessConfig = ANTLER
 		Run = pControler				@ NewConsole = false
 		Run = pRegulator				@ NewConsole = false
 		Run = pLogs						@ NewConsole = false
-		Run = pBuoyDetection			@ NewConsole = false
 		Run = pPingLocator				@ NewConsole = false
 		Run = pPipeFollowing			@ NewConsole = true
 		Run = pWallFollowing			@ NewConsole = false
+		Run = pBuoyDetection			@ NewConsole = true
 }
 
 ProcessConfig = iCiscrea
@@ -99,7 +99,7 @@ ProcessConfig = iCamera_SIDE
 {
 	VARIABLE_IMAGE_NAME = VVV_IMAGE_SIDE
 	IDENTIFIANT_CV_CAMERA = 0
-	DISPLAY_IMAGE = true
+	DISPLAY_IMAGE = false
 	INVERT_IMAGE = false
 }
 
@@ -116,6 +116,17 @@ ProcessConfig = pPipeFollowing
 	PIPEFOLLOWING__PROPORTION_POINTS_JONCTION_PIPE 	= 0.6
 	PIPEFOLLOWING__ECART_TYPE_MAXIMAL 				= 30
 	PIPEFOLLOWING__MARGE_IMAGE 						= 5
+}
+
+ProcessConfig = pBuoyDetection
+{
+	TIME_INTERVAL = 0.2
+	VARIABLE_IMAGE_NAME = VVV_IMAGE_SIDE
+	
+	// Parameters
+	BUOYDETECTION__VALEUR_SEUILLAGE 				= 160
+	BUOYDETECTION__ECART_TYPE_MAXIMAL 				= 30
+	BUOYDETECTION__MARGE_IMAGE 						= 5
 }
 
 ProcessConfig = iModem_EMETTEUR
@@ -135,7 +146,7 @@ ProcessConfig = iSonar
 	SERIAL_PORT_NAME = /dev/ttyUSB2
 }
 
-ProcessConfig = iEchoSonder
+ProcessConfig = iEchoSounder
 {
 	SERIAL_PORT_NAME = /dev/ttyUSB3
 }
@@ -170,7 +181,7 @@ ProcessConfig = uXMS
 	VAR				= VVV_ANOMALY_DETECTED
 	VAR				= VVV_ANOMALY_X, VVV_ANOMALY_Y, VVV_ANOMALY_Z
 	VAR				= VVV_ANOMALY_STATE
-	VAR				= VVV_DISTANCE_ECHOSONDER
+	VAR				= VVV_DISTANCE_ECHOSOUNDER
 	VAR				= PIPEFOLLOWING__MARGE_IMAGE
 	COLOR_MAP		= VVV_Z, blue
 	COLOR_MAP		= VVV_Z_DESIREDD, blue

@@ -164,7 +164,8 @@ bool Regulator::OnStartUp()
         
         double out_lim_z = 0.0, int_lim_z = 0.0;
         double out_lim_heading = 0.0, int_lim_heading = 0.0;
-*/        
+*/
+	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
@@ -208,7 +209,7 @@ bool Regulator::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
-	RegisterVariables();	
+	RegisterVariables();
 	return(true);
 }
 
