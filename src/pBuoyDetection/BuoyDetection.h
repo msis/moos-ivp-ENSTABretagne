@@ -31,7 +31,7 @@ class BuoyDetection : public CMOOSApp
 		~BuoyDetection();
 
 	protected:
-		void updatePositionBouee();
+		double updatePositionBouee();
 		void seuillageTeinteOrange(IplImage* img, int seuil, uchar **data_seuillage, uchar **data_nb);
 		bool OnNewMail(MOOSMSG_LIST &NewMail);
 		bool Iterate();
@@ -50,6 +50,7 @@ class BuoyDetection : public CMOOSApp
 		IplImage		*channelRed, *channelGreen, *channelBlue, *channelOrange, *img_nb;
 		CvScalar 		red, blue, white, green;
 		double 			m_intervalle_mise_a_jour;
+		double			m_heading_actuel;
 		
 		// Parametres
 		double m_param_valeur_seuillage;

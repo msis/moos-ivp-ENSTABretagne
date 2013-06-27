@@ -561,9 +561,24 @@ int M6dbus::setCamTilt(int val)
     return 1;
 }
 
-int M6dbus::updatePropulsors()
+int M6dbus::updateHPropulsors()
 {
-    if (writeReg(2,m_RegPropFr)==-1 || writeReg(3,m_RegPropRe)==-1 || writeReg(4,m_RegPropVert)==-1)
+	
+    modbus_flush(Modbus);
+    modbus_write_register(Modbus,2,m_RegPropFr);
+    modbus_write_register(Modbus,3,m_RegPropRe);
+    modbus_flush(Modbus);
+    
+    /*
+    if(writeReg(2,m_RegPropFr)==-1 || writeReg(3,m_RegPropRe)==-1)
+        return -1;
+        */
+    return 1;
+}
+
+int M6dbus::updateVPropulsors()
+{
+    if(writeReg(4,m_RegPropVert)==-1)
         return -1;
         
     return 1;

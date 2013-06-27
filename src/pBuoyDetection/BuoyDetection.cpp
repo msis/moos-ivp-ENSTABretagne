@@ -66,7 +66,7 @@ BuoyDetection::~BuoyDetection()
  * \brief Méthode calculant la position de la bouée dans l'image
  */
 
-void BuoyDetection::updatePositionBouee()
+double BuoyDetection::updatePositionBouee()
 {
 	CvPoint pt; // Pour le dessin des points sur l'image
 	uchar *data_seuillage = NULL, *data_nb = NULL;
@@ -79,10 +79,11 @@ void BuoyDetection::updatePositionBouee()
 	position_y_bouee_dans_image = -1;
 	
 	vector<int> points_tranches, medianes_tranches;
-	int nb_points, nb_medianes, mediane_des_points, mediane_des_medianes;
+	int nb_points, nb_points_total, nb_medianes, mediane_des_points, mediane_des_medianes;
 	
 	// Recherche de l'abscisse
 	nb_medianes = 0;
+	nb_points_total = 0;
 	for(int j = m_param_marge_image ; j < h - m_param_marge_image ; j++) // h tranches sont étudiées
 	{
 		nb_points = 0;
@@ -105,6 +106,8 @@ void BuoyDetection::updatePositionBouee()
 			points_tranches.clear();
 			nb_medianes ++;
 		}
+		
+		nb_points_total += nb_points;
 	}
 	
 	if(nb_medianes != 0 && Statistiques::ecartType(medianes_tranches))
@@ -157,6 +160,8 @@ void BuoyDetection::updatePositionBouee()
 		cvPoint(0, position_y_bouee_dans_image),
 		cvPoint(w, position_y_bouee_dans_image),
 		green, 2, DRAWING_CONNECTIVITY);
+	
+	return nb_points_total;
 }
 
 /**
@@ -181,6 +186,7 @@ void BuoyDetection::seuillageTeinteOrange(IplImage* img, int seuil, uchar **data
  
 bool BuoyDetection::OnNewMail(MOOSMSG_LIST &NewMail)
 {
+	double taux_succes;
 	bool nouveau_parametre = false;
 	MOOSMSG_LIST::iterator p;
 
@@ -196,7 +202,38 @@ bool BuoyDetection::OnNewMail(MOOSMSG_LIST &NewMail)
 			else
 				cout << "Erreur : mauvaises dimensions dans la variable image \"" << m_nom_variable_image << "\" depuis la MOOSDB" << endl;
 			
-			updatePositionBouee();
+			taux_succes = updatePositionBouee();
+			
+			if(position_x_bouee_dans_image < LARGEUR_IMAGE_CAMERA / 2)
+				position_x_bouee_dans_image = -((LARGEUR_IMAGE_CAMERA / 2)- position_x_bouee_dans_image) * 100.0 / (LARGEUR_IMAGE_CAMERA / 2);
+			
+			else
+				position_x_bouee_dans_image = (position_x_bouee_dans_image - (LARGEUR_IMAGE_CAMERA / 2)) * 100.0 / (LARGEUR_IMAGE_CAMERA / 2);
+			
+			if(position_y_bouee_dans_image < HAUTEUR_IMAGE_CAMERA / 2)
+				position_y_bouee_dans_image = -((HAUTEUR_IMAGE_CAMERA / 2)- position_y_bouee_dans_image) * 100.0 / (HAUTEUR_IMAGE_CAMERA / 2);
+			
+			else
+				position_y_bouee_dans_image = (position_y_bouee_dans_image - (HAUTEUR_IMAGE_CAMERA / 2)) * 100.0 / (HAUTEUR_IMAGE_CAMERA / 2);
+			
+			Notify("BUOYDETECTION__X_POSITION", position_x_bouee_dans_image);
+			Notify("BUOYDETECTION__Y_POSITION", position_y_bouee_dans_image);
+			/*cout << taux_succes << "\t\t" << position_x_bouee_dans_image << endl;
+			if(taux_succes > 400 && position_x_bouee_dans_image < -50)
+			{
+				cout << "Vers la gauche" << endl;
+				Notify("VVV_RZ_DESIRED", -5.0);
+			}
+			
+			else if(taux_succes > 400 && position_x_bouee_dans_image > 50)
+			{
+				cout << "Vers la droite" << endl;
+				Notify("VVV_RZ_DESIRED", 5.0);
+			}
+			
+			else
+				Notify("VVV_RZ_DESIRED", 5.0); // Recherche de la bouée*/
+			
 			cvShowImage("BuoyDetection", m_img);
 			waitKey(10);
 		}
@@ -217,6 +254,11 @@ bool BuoyDetection::OnNewMail(MOOSMSG_LIST &NewMail)
 		{
 			m_param_marge_image = msg.GetDouble();
 			nouveau_parametre = true;
+		}
+
+		if(msg.GetKey() == "VVV_HEADING")
+		{
+			m_heading_actuel = msg.GetDouble();
 		}
 		
 		#if 0 // Keep these around just for template
@@ -321,4 +363,5 @@ void BuoyDetection::RegisterVariables()
 	m_Comms.Register("BUOYDETECTION__VALEUR_SEUILLAGE", 0);
 	m_Comms.Register("BUOYDETECTION__ECART_TYPE_MAXIMAL", 0);
 	m_Comms.Register("BUOYDETECTION__MARGE_IMAGE", 0);
+	m_Comms.Register("VVV_HEADING", 0);
 }

@@ -190,7 +190,7 @@ void PipeFollowing::updateOrientationPipe()
 	sprintf(texte_image, "Taux : %.1lf%%", m_taux_reconnaissance_pipe);
 	CvScalar* couleur_texte;
 	
-	if(m_taux_reconnaissance_pipe >= 80)
+	if(m_taux_reconnaissance_pipe >= 50)
 		couleur_texte = &white;
 	
 	else
@@ -409,7 +409,7 @@ bool PipeFollowing::OnNewMail(MOOSMSG_LIST &NewMail)
 		cout << "\tPIPEFOLLOWING__ECART_TYPE_MAXIMAL : \t\t\t" << m_param_ecart_type_maximal << endl;
 		cout << "\tPIPEFOLLOWING__MARGE_IMAGE : \t\t\t\t" << m_param_marge_image << endl;
 	}
-		
+	
 	return(true);
 }
 

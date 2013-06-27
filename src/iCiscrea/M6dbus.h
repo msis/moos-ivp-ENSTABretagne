@@ -36,7 +36,8 @@ class M6dbus
 
 		bool getOn();
 
-		int updatePropulsors();
+		int updateHPropulsors();
+		int updateVPropulsors();
 		int updateRegTab(uint16_t*);
 		int writeReg(int,int);
 		int getRegNum(int);
