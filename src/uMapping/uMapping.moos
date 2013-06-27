@@ -1,7 +1,7 @@
 //------------------------------------------------
-// pSonar config block
+// pMapping config block
 
-ProcessConfig = pSonar
+ProcessConfig = uMapping
 {
    AppTick   = 4
    CommsTick = 4

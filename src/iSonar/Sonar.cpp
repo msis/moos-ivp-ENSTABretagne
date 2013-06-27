@@ -12,6 +12,10 @@
 #include <iterator>
 #include "MBUtils.h"
 #include "Sonar.h"
+#include "seanetmsg.h"
+
+#include <highgui.h>
+
 
 using namespace std;
 
@@ -24,6 +28,19 @@ Sonar::Sonar()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
+        
+        m_bNoParams = true;
+        m_bSentCfg = false;
+                
+        m_bSonarReady = false;
+        m_bPollSonar = true;
+        
+        m_serial_thread.Initialise(listen_sonar_messages_thread_func, (void*)this);
+        MOOSTrace("Thread initialized\n");
+
+        img.create(360, 800, CV_8UC1);
+	MOOSTrace("Img created\n");
+        cv::namedWindow("sonar");
 }
 
 /**
@@ -33,12 +50,12 @@ Sonar::Sonar()
  
 bool Sonar::initialiserPortSerie(string nom_port)
 {
-	int baud = 9600;
+/*	int baud = 115200;
 	
 	// Instanciation de l'objet de communication avec le port série
 	cout << "Initialisation de \"" << nom_port << "\" (" << baud << ")" << endl;
 	this->m_moos_serial_port = CMOOSLinuxSerialPort();
-	return this->m_moos_serial_port.Create((char*)nom_port.c_str(), baud);
+	return this->m_moos_serial_port.Create((char*)nom_port.c_str(), baud);*/
 }
 
 /**
@@ -48,6 +65,7 @@ bool Sonar::initialiserPortSerie(string nom_port)
 
 Sonar::~Sonar()
 {
+    m_serial_thread.Stop();
 }
 
 /**
@@ -104,7 +122,8 @@ bool Sonar::OnConnectToServer()
 bool Sonar::Iterate()
 {
 	m_iterations++;
-	
+        cv::waitKey(10);
+/*	
 	if(this->m_cissonar->isConnected())
 	{
 		vector<double> Valpha;
@@ -112,11 +131,116 @@ bool Sonar::Iterate()
 		
 		this->m_cissonar->get_sonar_data(Valpha, Vdistance);
 	}
-	
+	*/
 	/*else
 		cout << "Sonar non connecté !" << endl;*/
 	
 	return(true);
+}
+
+void Sonar::ListenSonarMessages()
+{
+    const int buf_size = 512;
+    char buf[buf_size];
+    string sBuf;
+    
+    union HeadInf {
+        char c;
+        struct {
+            int InCenter : 1;
+            int Centered : 1;
+            int Motoring : 1;
+            int MotorOn  : 1;
+            int Dir : 1;
+            int InScan : 1;
+            int NoParams : 1;
+            int SentCfg : 1;
+        } bits;
+    } headInf;
+    
+    while (!m_serial_thread.IsQuitRequested())
+    {
+        int msg_size = 0;
+        int needed_len = SeaNetMsg::numberBytesMissing(sBuf, msg_size);
+        
+        if (needed_len == SeaNetMsg::mrNotAMessage) {
+            // Remove first character if the header cannot be decoded
+            sBuf.erase(0,1);
+        }
+        else if (needed_len > 0) {
+            // Read more data as needed
+            int nb_read = m_Port.ReadNWithTimeOut(buf, needed_len);
+            sBuf.append(buf, nb_read);
+        }
+        else if (needed_len == 0) {
+            // Process message
+            // cout << "Found message " << SeaNetMsg::detectMessageType(sBuf) << endl;
+            SeaNetMsg snmsg(sBuf);
+            cout << "Created message with type " << snmsg.messageType() << endl;
+            snmsg.print_hex();
+            
+            if (snmsg.messageType() == SeaNetMsg::mtAlive) {
+                headInf.c = snmsg.data().at(20);
+                
+                m_bNoParams = headInf.bits.NoParams;
+                m_bSentCfg = headInf.bits.SentCfg;
+                
+                // Sonar polling was enabled but Sonar was not ready...
+                // ...now that sonar is ready, start to poll.
+                if (!m_bSonarReady && m_bPollSonar && !m_bNoParams && m_bSentCfg) {
+                    cout << "Sonar is now ready, initiating scanline polling." << endl;
+                    SeaNetMsg_SendData msg_SendData;
+                    msg_SendData.setTime(MOOSTime());
+                    SendMessage(msg_SendData);
+                }   
+                
+                // Update m_bSonarReady
+                m_bSonarReady = (!m_bNoParams) && m_bSentCfg;
+                
+                cout << "InScan:"<<headInf.bits.InScan << " NoParams:"<<headInf.bits.NoParams << " SentCfg:"<<headInf.bits.SentCfg;
+            }
+            
+            if (snmsg.messageType() == SeaNetMsg::mtHeadData) {
+                const SeaNetMsg_HeadData * pHdta = reinterpret_cast<SeaNetMsg_HeadData*> (&snmsg);
+                
+                // Display
+                uchar* line = img.ptr((int)pHdta->bearing());
+                memcpy(line, pHdta->scanlineData(), pHdta->nBins());
+                cv::imshow("sonar", img);
+
+                // MOOSDB raw data
+                vector<int> vScanline;
+                for (int k=0; k<pHdta->nBins(); ++k)
+                    vScanline.push_back( pHdta->scanlineData()[k] );
+                
+                stringstream ss;
+                ss << "bearing=" << pHdta->bearing() << ",";
+                ss << "ad_interval=" << pHdta->ADInterval_m() << ",";
+                ss << "scanline=";
+                Write(ss, vScanline);
+                
+                Notify("SONAR_RAW_DATA", ss.str());
+                //cout << endl << ss.str() << endl;
+                
+                ss.clear();
+                ss << "bearing=" << pHdta->bearing() << ","
+                    << "distance=" << pHdta->firstObstacleDist(20, 0.5, 100.); // thd, min, max
+                Notify("SONAR_DISTANCE", ss.str());
+                                
+                if (m_bSonarReady && m_bPollSonar) {
+                    SeaNetMsg_SendData msg_SendData;
+                    msg_SendData.setTime(MOOSTime());
+                    SendMessage(msg_SendData);
+                }
+                                
+                //cout << "InScan:"<<headInf.bits.InScan << " NoParams:"<<headInf.bits.NoParams << " SentCfg:"<<headInf.bits.SentCfg;
+            }
+            
+            cout << endl;
+            
+            sBuf.erase(0,msg_size);
+        }
+    }
 }
 
 /**
@@ -126,7 +250,6 @@ bool Sonar::Iterate()
  
 bool Sonar::OnStartUp()
 {
-	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
@@ -140,12 +263,47 @@ bool Sonar::OnStartUp()
 		}
 	}
 
-	string fichier_config = "Sonar.txt";
+/*	string fichier_config = "Sonar.txt";
 	this->m_cissonar = new SonarDF((char*)fichier_config.c_str());
+*/
+	MOOSTrace("Opening serial port\n");
+        bool portOpened = this->m_Port.Create("/dev/ttyUSB2", 115200);
+	if (portOpened)
+		MOOSTrace("Port opened\n");
+	else
+		MOOSTrace("Port not opened\n");
+
+        //this->m_Port.SetTermCharacter('\n');
+        m_Port.Flush();
 
 	m_timewarp = GetMOOSTimeWarp();
 
 	RegisterVariables();
+        
+	MOOSTrace("Starting thread\n");
+        m_serial_thread.Start();
+        
+        //////
+        SeaNetMsg_ReBoot msg_ReBoot;
+        
+        MOOSPause(50);
+        cout << "REBOOT" << endl;
+        SendMessage(msg_ReBoot);
+        
+        MOOSPause(1000);
+        cout << "SEND VERSION" << endl;
+        SendMessage(SeaNetMsg_SendVersion());
+
+        MOOSPause(50);
+        cout << "SEND BBUSER" << endl;
+        SendMessage(SeaNetMsg_SendBBUser());
+                
+        MOOSPause(50);
+        cout << "HEAD COMMAND" << endl;
+        SendMessage(SeaNetMsg_HeadCommand());
+        
+        //////
+        
 	return(true);
 }
 

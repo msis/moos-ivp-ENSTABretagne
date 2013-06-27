@@ -39,29 +39,32 @@ ProcessConfig = ANTLER
 {
 	MSBetweenLaunches = 200
 	Run = MOOSDB         				@ NewConsole = false 
-	Run = uXMS							@ NewConsole = true
 	
 	// Interfaces
 		Run = iCiscrea					@ NewConsole = true
-		Run = iSonar					@ NewConsole = false
-		Run = iEchoSounder				@ NewConsole = false
-		Run = iModem					@ NewConsole = false ~ iModem_EMETTEUR
-		Run = iModem					@ NewConsole = false ~ iModem_RECEPTEUR
-		Run = iCamera					@ NewConsole = false ~ iCamera_BOTTOM
-		Run = iCamera					@ NewConsole = false ~ iCamera_SIDE
-		Run = iHydrophones				@ NewConsole = false
-		Run = iTemperatureCPU			@ NewConsole = false 
-		Run = iInertialMeasurementUnit	@ NewConsole = false
+		//Run = iSonar					@ NewConsole = false
+		//Run = iEchoSounder				@ NewConsole = false
+		//Run = iModem					@ NewConsole = false ~ iModem_EMETTEUR
+		//Run = iModem					@ NewConsole = false ~ iModem_RECEPTEUR
+		//Run = iCamera					@ NewConsole = false ~ iCamera_BOTTOM
+		//Run = iCamera					@ NewConsole = false ~ iCamera_SIDE
+		//Run = iHydrophones				@ NewConsole = false
+		//Run = iTemperatureCPU			@ NewConsole = false 
+		//Run = iInertialMeasurementUnit	@ NewConsole = false
 	
 	// Programmes
-		Run = pLocalization				@ NewConsole = false
-		Run = pControler				@ NewConsole = false
-		//Run = pRegulator				@ NewConsole = false
-		Run = pLogs						@ NewConsole = false
-		Run = pPingLocator				@ NewConsole = false
+		//Run = pLocalization				@ NewConsole = false
+		//Run = pControler				@ NewConsole = false
+		Run = pRegulator				@ NewConsole = false
+		//Run = pLogs						@ NewConsole = false
+		//Run = pPingLocator				@ NewConsole = false
 		//Run = pPipeFollowing			@ NewConsole = true
 		//Run = pWallFollowing			@ NewConsole = false
-		Run = pBuoyDetection			@ NewConsole = true
+		//Run = pBuoyDetection			@ NewConsole = true
+	
+	// Interfaces
+		//Run = uXMS						@ NewConsole = true
+		Run = uMapping					@ NewConsole = true
 }
 
 ProcessConfig = iCiscrea
