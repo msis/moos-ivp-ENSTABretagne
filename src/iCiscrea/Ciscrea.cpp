@@ -127,6 +127,7 @@ bool Ciscrea::OnNewMail(MOOSMSG_LIST &NewMail)
 void Ciscrea::instancierAUV()
 {
 	this->m_auv_ciscrea = new AUV(this->m_identifiant_auv_a_instancier);
+	//this->m_auv_ciscrea->allumerProjecteurs(1000);
 		
 	// Mise à jour du nom dans la MOOSDB
 	m_Comms.Notify("VVV_AUV_NAME", m_auv_ciscrea->getNom());
@@ -141,18 +142,6 @@ void Ciscrea::instancierAUV()
  
 bool Ciscrea::OnConnectToServer()
 {
-	RegisterVariables();
-	
-	// Initialisations à 0
-	for(int i = 0 ; i < (int)this->m_listeVariablesSuivies.size() ; i++)
-	{
-		if(this->m_listeVariablesSuivies[i] == "VVV_SPOTLIGHTS")
-			m_Comms.Notify("VVV_SPOTLIGHTS", 1000); // Témoin visuel de bonne communication Modbus
-			
-		else
-			m_Comms.Notify((char*)this->m_listeVariablesSuivies[i].c_str(), 0.0);
-	}
-	
 	return(true);
 }
 
@@ -169,14 +158,22 @@ bool Ciscrea::Iterate()
 	// Informations sur l'AUV
 	if(this->m_auv_ciscrea != NULL)
 	{
-		m_Comms.Notify("VVV_HEADING_CISCREA", m_auv_ciscrea->getCap());
+		if(m_iterations % 30 == 0)
+		{
+			m_auv_ciscrea->updateRegistresModbus();
+			m_Comms.Notify("VVV_CURRENT_EXTERNAL_BATTERY_1", m_auv_ciscrea->getIntensiteBatterie1());
+			m_Comms.Notify("VVV_CURRENT_EXTERNAL_BATTERY_2", m_auv_ciscrea->getIntensiteBatterie2());
+			m_Comms.Notify("VVV_VOLTAGE_EXTERNAL_BATTERY_1", m_auv_ciscrea->getTensionBatterie1());
+			m_Comms.Notify("VVV_VOLTAGE_EXTERNAL_BATTERY_2", m_auv_ciscrea->getTensionBatterie2());
+			m_Comms.Notify("VVV_CONSUMPTION_EXTERNAL_BATTERY_1", m_auv_ciscrea->getConsommationBatterie1());
+			m_Comms.Notify("VVV_CONSUMPTION_EXTERNAL_BATTERY_2", m_auv_ciscrea->getConsommationBatterie2());
+		}
+		
+		else
+			m_auv_ciscrea->updateRegistresModbusProfondeurEtCap();
+		
 		m_Comms.Notify("VVV_Z", (m_auv_ciscrea->getProfondeur() / 100.0) + AJUSTEMENT_CAPTEUR_Z);
-		m_Comms.Notify("VVV_CURRENT_EXTERNAL_BATTERY_1", m_auv_ciscrea->getIntensiteBatterie1());
-		m_Comms.Notify("VVV_CURRENT_EXTERNAL_BATTERY_2", m_auv_ciscrea->getIntensiteBatterie2());
-		m_Comms.Notify("VVV_VOLTAGE_EXTERNAL_BATTERY_1", m_auv_ciscrea->getTensionBatterie1());
-		m_Comms.Notify("VVV_VOLTAGE_EXTERNAL_BATTERY_2", m_auv_ciscrea->getTensionBatterie2());
-		m_Comms.Notify("VVV_CONSUMPTION_EXTERNAL_BATTERY_1", m_auv_ciscrea->getConsommationBatterie1());
-		m_Comms.Notify("VVV_CONSUMPTION_EXTERNAL_BATTERY_2", m_auv_ciscrea->getConsommationBatterie2());
+		m_Comms.Notify("VVV_HEADING_CISCREA", m_auv_ciscrea->getCap());
 	}
 	
 	return(true);
@@ -206,7 +203,11 @@ bool Ciscrea::OnStartUp()
 				this->m_identifiant_auv_a_instancier = atoi((char*)value.c_str());
 			
 				if(this->m_identifiant_auv_a_instancier != 0)
+				{
 					instancierAUV();
+					this->m_auv_ciscrea->allumerProjecteurs(1000);
+					RegisterVariables();
+				}
 			}
 		}
 	}

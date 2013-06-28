@@ -48,6 +48,7 @@ class Sonar : public CMOOSInstrument
                bool SendMessage(const SeaNetMsg & msg) {msg.print_hex();printf("\n");return (m_Port.Write(msg.data().data(), msg.data().size()) == msg.data().size());}
 
 	private: // Configuration variables
+		string m_portName;
 
 	private: // State variables
 		unsigned int			m_iterations;

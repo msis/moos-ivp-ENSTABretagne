@@ -1,6 +1,6 @@
 /**
  * \file Sonar_Info.cpp
- * \brief Informations sur l'application pSonar
+ * \brief Informations sur l'application iSonar
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
  * \date Jun 5th 2013

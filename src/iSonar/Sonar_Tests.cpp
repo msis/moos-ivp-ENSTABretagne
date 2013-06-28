@@ -21,6 +21,6 @@
 
 void launchTestsAndExitIfOk()
 {
-	Tests sessionDeTests("pSonar");
+	Tests sessionDeTests("iSonar");
 	sessionDeTests.afficherConclusionTests();
 }

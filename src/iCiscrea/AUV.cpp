@@ -330,7 +330,6 @@ Matrice* AUV::getForcesPropulseurs()
 
 int AUV::updatePropulseurs()
 {
-	bool update_propulseurs_horizontaux = false, update_propulseurs_verticaux = false;
 	Matrice *consigneAUV = getVecteurConsigneAUV();
 	Matrice *forcesPropulseurs = getForcesPropulseurs();
 	double vitesseGlobale = max(max(max(abs(this->Vx), abs(this->Vy)), abs(this->Vz)), abs(this->Rz));
@@ -351,36 +350,24 @@ int AUV::updatePropulseurs()
 			cout << termColor("red") << "Erreur sur propulseur FrRi" << termColor() << endl;
 			return -1;
 		}
-		
-		else
-			update_propulseurs_horizontaux = true;
 
 		if(this->mb->setPropFrLe(this->propFrLe->affinerPuissance((*forcesPropulseurs)[3][0])) == -1) // F4
 		{
 			cout << termColor("red") << "Erreur sur propulseur FrLe" << termColor() << endl;
 			return -1;
 		}
-		
-		else
-			update_propulseurs_horizontaux = true;
 
 		if(this->mb->setPropReRi(this->propReRi->affinerPuissance((*forcesPropulseurs)[1][0])) == -1) // F2
 		{
 			cout << termColor("red") << "Erreur sur propulseur ReRi" << termColor() << endl;
 			return -1;
 		}
-		
-		else
-			update_propulseurs_horizontaux = true;
 
 		if(this->mb->setPropReLe(this->propReLe->affinerPuissance((*forcesPropulseurs)[2][0])) == -1) // F3
 		{
 			cout << termColor("red") << "Erreur sur propulseur ReLe" << termColor() << endl;
 			return -1;
 		}
-		
-		else
-			update_propulseurs_horizontaux = true;
 
 		if(this->mb->setPropVert((*forcesPropulseurs)[4][0]) == -1) // F5 et F6
 		{
@@ -388,33 +375,9 @@ int AUV::updatePropulseurs()
 			return -1;
 		}
 		
-		else
-			update_propulseurs_verticaux = true;
-		
-		if(update_propulseurs_horizontaux && this->mb->updateHPropulsors() == -1)
+		if(this->mb->updatePropulsors() == -1)
 		{
-			cout << termColor("red") << "Erreur sur update propulseurs horizontaux" << termColor() << endl;
-			return -1;
-		}
-		
-		/*else
-		{
-			sleep(1);
-			this->mb->setPropFrRi(this->propFrRi->affinerPuissance(-(*forcesPropulseurs)[0][0]));
-			this->mb->setPropFrLe(this->propFrLe->affinerPuissance(-(*forcesPropulseurs)[3][0]));
-			this->mb->setPropReRi(this->propReRi->affinerPuissance(-(*forcesPropulseurs)[1][0]));
-			this->mb->setPropReLe(this->propReLe->affinerPuissance(-(*forcesPropulseurs)[2][0]));
-			this->mb->updateHPropulsors();
-			this->mb->setPropFrRi(0);
-			this->mb->setPropFrLe(0);
-			this->mb->setPropReRi(0);
-			this->mb->setPropReLe(0);
-			this->mb->updateHPropulsors();
-		}*/
-		
-		if(update_propulseurs_verticaux && this->mb->updateVPropulsors() == -1)
-		{
-			cout << termColor("red") << "Erreur sur update propulseurs verticaux" << termColor() << endl;
+			cout << termColor("red") << "Erreur sur update propulseurs" << termColor() << endl;
 			return -1;
 		}
 	}
@@ -480,6 +443,26 @@ void AUV::setRz(double val)
 void AUV::setYaw(double val)
 {
 	this->setRz(val);
+}
+
+/**
+ * \fn
+ * \brief Méthode mettant à jour les registres Modbus
+ */
+
+int AUV::updateRegistresModbusProfondeurEtCap()
+{
+	return this->mb->updateDepthAndDirec();
+}
+
+/**
+ * \fn
+ * \brief Méthode mettant à jour les registres Modbus
+ */
+
+int AUV::updateRegistresModbus()
+{
+	return this->mb->updateAll();
 }
 
 /**

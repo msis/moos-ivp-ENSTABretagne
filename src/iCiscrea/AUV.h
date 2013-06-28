@@ -47,6 +47,8 @@ class AUV
 		~AUV();
 		
 		// Commandes du Ciscrea :
+		int updateRegistresModbus();
+		int updateRegistresModbusProfondeurEtCap();
 		void setVx(double);
 		void setVy(double);
 		void setVz(double);

@@ -71,7 +71,7 @@ bool Regulator::OnNewMail(MOOSMSG_LIST &NewMail)
                 if (key == "VVV_Z" && msg.IsDouble()) {
                   double output_vz = 0.0;
                   m_pid_z.Run(m_desired_z - msg.GetDouble(),msg.GetTime(), output_vz);
-                  //m_Comms.Notify("VVV_VZ_DESIRED", output_vz);
+                  m_Comms.Notify("VVV_VZ_DESIRED", output_vz);
                 }
                 
                 if (key == "VVV_HEADING_DESIRED" && msg.IsDouble()) {

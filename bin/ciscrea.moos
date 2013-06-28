@@ -39,36 +39,35 @@ ProcessConfig = ANTLER
 {
 	MSBetweenLaunches = 200
 	Run = MOOSDB         				@ NewConsole = false 
+	Run = uXMS							@ NewConsole = true
 	
 	// Interfaces
 		Run = iCiscrea					@ NewConsole = true
-		//Run = iSonar					@ NewConsole = false
+		//Run = iSonar					@ NewConsole = true
 		//Run = iEchoSounder				@ NewConsole = false
-		//Run = iModem					@ NewConsole = false ~ iModem_EMETTEUR
+		Run = iModem					@ NewConsole = false ~ iModem_EMETTEUR
 		//Run = iModem					@ NewConsole = false ~ iModem_RECEPTEUR
-		//Run = iCamera					@ NewConsole = false ~ iCamera_BOTTOM
-		//Run = iCamera					@ NewConsole = false ~ iCamera_SIDE
+		Run = iCamera					@ NewConsole = false ~ iCamera_BOTTOM
+		Run = iCamera					@ NewConsole = false ~ iCamera_SIDE
 		//Run = iHydrophones				@ NewConsole = false
 		//Run = iTemperatureCPU			@ NewConsole = false 
-		//Run = iInertialMeasurementUnit	@ NewConsole = false
+		Run = iInertialMeasurementUnit	@ NewConsole = false
 	
 	// Programmes
 		//Run = pLocalization				@ NewConsole = false
 		//Run = pControler				@ NewConsole = false
-		Run = pRegulator				@ NewConsole = false
+		Run = pRegulator				@ NewConsole = true
 		//Run = pLogs						@ NewConsole = false
 		//Run = pPingLocator				@ NewConsole = false
 		//Run = pPipeFollowing			@ NewConsole = true
 		//Run = pWallFollowing			@ NewConsole = false
 		//Run = pBuoyDetection			@ NewConsole = true
-	
-	// Interfaces
-		//Run = uXMS						@ NewConsole = true
-		Run = uMapping					@ NewConsole = true
 }
 
 ProcessConfig = iCiscrea
 {
+    AppTick   = 10
+    CommsTick = 10
 	IDENTIFIANT_AUV = 2
 }
 
@@ -87,7 +86,7 @@ ProcessConfig = pRegulator
     KI_HEADING  = 0.0
     KD_HEADING  = 0.0
     INTEGRAL_LIMIT_HEADING = 0.0
-    OUTPUT_LIMIT_HEADING   = 4.0
+    OUTPUT_LIMIT_HEADING   = 15.0
 }
 
 ProcessConfig = iCamera_BOTTOM
@@ -146,7 +145,7 @@ ProcessConfig = iModem_RECEPTEUR
 
 ProcessConfig = iSonar
 {
-	SERIAL_PORT_NAME = /dev/ttyUSB2
+	SERIAL_PORT_NAME = /dev/ttyUSB5
 }
 
 ProcessConfig = iEchoSounder
@@ -170,23 +169,24 @@ ProcessConfig = pLogs
 ProcessConfig = uXMS
 {
 	AppTick     	= 10
-	//VAR				= VVV_X_DESIRED, VVV_Y_DESIRED, VVV_Z_DESIRED, VVV_RZ_DESIRED
-	//VAR				= VVV_VX_DESIRED, VVV_VY_DESIRED, VVV_VZ_DESIRED
-	//VAR				= VVV_X, VVV_Y, VVV_Z, VVV_HEADING_CISCREA, VVV_HEADING_RAZOR, VVV_HEADING_DESIRED, VVV_HEADING
+	VAR				= VVV_X_DESIRED, VVV_Y_DESIRED, VVV_Z_DESIRED, VVV_RZ_DESIRED
+	VAR				= VVV_VX_DESIRED, VVV_VY_DESIRED, VVV_VZ_DESIRED
+	VAR				= VVV_X, VVV_Y, VVV_Z, VVV_HEADING_CISCREA, VVV_HEADING_RAZOR, VVV_HEADING_DESIRED, VVV_HEADING
 	VAR				= VVV_RZ
-	//VAR				= VVV_SPOTLIGHTS
-	//VAR				= VVV_CURRENT_EXTERNAL_BATTERY_1, VVV_CURRENT_EXTERNAL_BATTERY_2
-	//VAR				= VVV_VOLTAGE_EXTERNAL_BATTERY_1, VVV_VOLTAGE_EXTERNAL_BATTERY_2
-	//VAR				= VVV_CONSUMPTION_EXTERNAL_BATTERY_1, VVV_CONSUMPTION_EXTERNAL_BATTERY_2
-	//VAR				= VVV_AUV_IDENTIFIER, VVV_AUV_NAME
-	//VAR				= VVV_TEMPERATURE_CPU
-	//VAR				= VVV_ON_MISSION
-	//VAR				= VVV_ANOMALY_DETECTED
-	//VAR				= VVV_ANOMALY_X, VVV_ANOMALY_Y, VVV_ANOMALY_Z
-	//VAR				= VVV_ANOMALY_STATE
-	//VAR				= VVV_DISTANCE_ECHOSOUNDER
-	//VAR				= PIPEFOLLOWING__MARGE_IMAGE
-	VAR				= BUOYDETECTION__X_POSITION, BUOYDETECTION__Y_POSITION, VVV_RZ_DESIRED, VVV_HEADING_DESIRED, VVV_HEADING
+	VAR				= VVV_SPOTLIGHTS
+	VAR				= VVV_CURRENT_EXTERNAL_BATTERY_1, VVV_CURRENT_EXTERNAL_BATTERY_2
+	VAR				= VVV_VOLTAGE_EXTERNAL_BATTERY_1, VVV_VOLTAGE_EXTERNAL_BATTERY_2
+	VAR				= VVV_CONSUMPTION_EXTERNAL_BATTERY_1, VVV_CONSUMPTION_EXTERNAL_BATTERY_2
+	VAR				= VVV_AUV_IDENTIFIER, VVV_AUV_NAME
+	VAR				= VVV_TEMPERATURE_CPU
+	VAR				= VVV_ON_MISSION
+	VAR				= VVV_ANOMALY_DETECTED
+	VAR				= VVV_ANOMALY_X, VVV_ANOMALY_Y, VVV_ANOMALY_Z
+	VAR				= VVV_ANOMALY_STATE
+	VAR				= VVV_DISTANCE_ECHOSOUNDER
+	VAR				= PIPEFOLLOWING__MARGE_IMAGE
+	VAR = SONAR_DISTANCE
+	//VAR				= BUOYDETECTION__X_POSITION, BUOYDETECTION__Y_POSITION, VVV_RZ_DESIRED, VVV_HEADING_DESIRED, VVV_HEADING
 	COLOR_MAP		= VVV_Z, blue
 	COLOR_MAP		= VVV_Z_DESIREDD, blue
 	COLOR_MAP		= VVV_VZ_DESIRED, blue

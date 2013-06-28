@@ -204,6 +204,7 @@ void Sonar::ListenSonarMessages()
                 const SeaNetMsg_HeadData * pHdta = reinterpret_cast<SeaNetMsg_HeadData*> (&snmsg);
                 
                 // Display
+		MOOSTrace("nBins=%d\n", pHdta->nBins());
                 uchar* line = img.ptr((int)pHdta->bearing());
                 memcpy(line, pHdta->scanlineData(), pHdta->nBins());
                 cv::imshow("sonar", img);
@@ -222,10 +223,10 @@ void Sonar::ListenSonarMessages()
                 Notify("SONAR_RAW_DATA", ss.str());
                 //cout << endl << ss.str() << endl;
                 
-                ss.clear();
-                ss << "bearing=" << pHdta->bearing() << ","
+                stringstream ss2;
+                ss2 << "bearing=" << pHdta->bearing() << ","
                     << "distance=" << pHdta->firstObstacleDist(20, 0.5, 100.); // thd, min, max
-                Notify("SONAR_DISTANCE", ss.str());
+                Notify("SONAR_DISTANCE", ss2.str());
                                 
                 if (m_bSonarReady && m_bPollSonar) {
                     SeaNetMsg_SendData msg_SendData;
@@ -250,24 +251,38 @@ void Sonar::ListenSonarMessages()
  
 bool Sonar::OnStartUp()
 {
+	MOOSTrace("\nSonar start up\n");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
+	
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
 	{
+		MOOSTrace("Reading configuration\n");
 		list<string>::iterator p;
 		for(p = sParams.begin() ; p != sParams.end() ; p++)
 		{
 			string original_line = *p;
 			string param = stripBlankEnds(toupper(biteString(*p, '=')));
 			string value = stripBlankEnds(*p);
+
+			MOOSTrace(original_line);
+
+			if(param == "SERIAL_PORT_NAME")
+			{
+				MOOSTrace("Using %s serial port\n", value.c_str());
+				m_portName = value;
+			}
+
 		}
 	}
+	else
+		MOOSTrace("No configuration read.\n");
 
 /*	string fichier_config = "Sonar.txt";
 	this->m_cissonar = new SonarDF((char*)fichier_config.c_str());
 */
 	MOOSTrace("Opening serial port\n");
-        bool portOpened = this->m_Port.Create("/dev/ttyUSB2", 115200);
+        bool portOpened = this->m_Port.Create(m_portName.c_str(), 115200);
 	if (portOpened)
 		MOOSTrace("Port opened\n");
 	else

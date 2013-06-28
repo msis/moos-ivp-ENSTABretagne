@@ -10,14 +10,19 @@
  *
  */
 
+#include <stdio.h>
 #include "M6dbus.h"
 #include "ColorParse.h"
 #include <cerrno>
 #include <time.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
 
 M6dbus::M6dbus(string IP, int prt)
 {
     on = false;
+
     //Modbus = modbus_new_tcp((char*)IP.c_str(),prt);
     Modbus = modbus_new_rtu("/dev/ttyUSB0", 38400, 'N', 8, 1);
     modbus_set_slave(Modbus, 16);
@@ -32,7 +37,7 @@ M6dbus::M6dbus(string IP, int prt)
 	/* Save original timeout */
 	modbus_get_response_timeout(Modbus, &old_response_timeout);
 	response_timeout.tv_sec = 0;
-	response_timeout.tv_usec = 500000;
+	response_timeout.tv_usec = 20000;
 	modbus_set_response_timeout(Modbus, &response_timeout);
 	cout << "Response timeout : " << old_response_timeout.tv_sec << "s - us : " << old_response_timeout.tv_usec << endl;
 
@@ -45,7 +50,7 @@ M6dbus::M6dbus(string IP, int prt)
 
 	/* Define a new and too short timeout! */
 	byte_timeout.tv_sec = 0;
-	byte_timeout.tv_usec = 500000;
+	byte_timeout.tv_usec = 1000;
 	modbus_set_byte_timeout(Modbus, &byte_timeout);
 
     if(modbus_connect(Modbus)==-1)
@@ -55,6 +60,7 @@ M6dbus::M6dbus(string IP, int prt)
         modbus_free(Modbus);
         return;
     }
+    
     else
     {
         on = true;
@@ -62,24 +68,17 @@ M6dbus::M6dbus(string IP, int prt)
         cout << "Reading registers..." << endl;
     }
     
-    for(int i = 0 ; i < 10 ; i ++)
-		modbus_write_bit(Modbus, 0, true);
+    //while(modbus_write_bit(Modbus, 0, true) == -1);
 	
-    if(modbus_read_registers(Modbus,1,48,regTab)==-1)
-    {
-        cerr << "Unable to read the registers!" << endl;
-        cout << "Please try to read them again" << endl;
-    }
+	cout << "Lecteur des registres Modbus..." << endl;
+    while(modbus_read_registers(Modbus,1,48,regTab) == -1);
+    cout << termColor("green") << "Registres prêts !" << termColor() << endl;
     
-    else
-    {
-        cout << "Register table is up-to-date!" << endl;
-    }
-    
-    // Initialisation des registres liés aux propulseurs
+    // Initialisation des registres
 	m_RegPropFr = regTab[1];
 	m_RegPropRe = regTab[2];
 	m_RegPropVert = regTab[3];
+	updateRegTab(regTab);
 }
 
 M6dbus::~M6dbus()
@@ -95,13 +94,13 @@ bool M6dbus::getOn()
 int M6dbus::updateRegTab(uint16_t* Tab)
 {
 	//usleep(40*1000);
-    int resultat = modbus_read_registers(Modbus,1,48,Tab);
+	while(modbus_read_registers(Modbus,1,48,Tab) == -1);
     
     /*if(resultat == -1)
 		cout << termColor("red") << "Connection failed: " << modbus_strerror(errno) << endl << termColor();*/
 		
-	usleep(40*1000);
-	return resultat;
+	//usleep(40*1000);
+	return 1;
 }
 
 int M6dbus::writeReg(int reg, int val)
@@ -167,12 +166,8 @@ int M6dbus::turnLightOn(int intensity)
     newReg5 = tempReg5 | newReg5;   //putting the intensity value in the register
 
     //TODO: check who comes first?
-    writeErr=writeReg(5,newReg5);
-    if (writeErr==-1)
-        return writeErr;
-    writeErr=writeReg(1,newReg1);
-    if (writeErr==-1)
-        return writeErr;
+    while(writeErr=writeReg(5,newReg5) == -1);
+    while(writeErr=writeReg(1,newReg1) == -1);
     return 1;
 }
 
@@ -188,9 +183,7 @@ int M6dbus::turnLightOff()
     tempReg1=regTab[0];
     newReg1=tempReg1&0xFFF0;    //clearing the first byte
 
-    writeErr=writeReg(1,newReg1);
-    if (writeErr==-1)
-        return writeErr;
+    while(writeErr=writeReg(1,newReg1) == -1);
     return 1;
 }
 
@@ -216,12 +209,8 @@ int M6dbus::turnLightOn(int numL, int intensity)
     newReg5 = tempReg5 | newReg5;   //putting the intensity value in the register
 
     //TODO: check who comes first?
-    writeErr=writeReg(1,newReg1);
-    if (writeErr==-1)
-        return writeErr;
-    writeErr=writeReg(5,newReg5);
-    if (writeErr==-1)
-        return writeErr;
+    while(writeErr=writeReg(1,newReg1) == -1);
+    while(writeErr=writeReg(5,newReg5) == -1);
     return 1;
 }
 
@@ -256,9 +245,7 @@ int M6dbus::turnLightOff(int numL)
         return -1;
     }
 
-    writeErr=writeReg(1,newReg1);
-    if (writeErr==-1)
-        return writeErr;
+    while(writeErr=writeReg(1,newReg1) == -1);
     return 1;
 }
 
@@ -561,26 +548,21 @@ int M6dbus::setCamTilt(int val)
     return 1;
 }
 
-int M6dbus::updateHPropulsors()
+int M6dbus::updatePropulsors()
 {
+	uint16_t valeurs[3];
+	valeurs[0] = m_RegPropFr;
+	valeurs[1] = m_RegPropRe;
+	valeurs[2] = m_RegPropVert;
 	
     modbus_flush(Modbus);
-    modbus_write_register(Modbus,2,m_RegPropFr);
-    modbus_write_register(Modbus,3,m_RegPropRe);
+    while(modbus_write_registers(Modbus, 2, 3, valeurs) == -1);
     modbus_flush(Modbus);
     
     /*
     if(writeReg(2,m_RegPropFr)==-1 || writeReg(3,m_RegPropRe)==-1)
         return -1;
         */
-    return 1;
-}
-
-int M6dbus::updateVPropulsors()
-{
-    if(writeReg(4,m_RegPropVert)==-1)
-        return -1;
-        
     return 1;
 }
 
@@ -812,8 +794,6 @@ int M6dbus::setAuvTime(int* time)
 
 int M6dbus::getAlarms()
 {
-    if (updateAll()==-1)
-        return -1;
     waterIn1 = ((alarms & 0x1) && 0x1);
     waterIn2 = ((alarms & 0x2) && 0x2) ;
     waterIn3 = ((alarms & 0x4) && 0x4) ;
@@ -832,224 +812,146 @@ int M6dbus::getAlarms()
 
 bool M6dbus::getWaterIn1()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return waterIn1;
 }
 
 bool M6dbus::getWaterIn2()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return waterIn2;
 }
 
 bool M6dbus::getWaterIn3()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return waterIn3;
 }
 
 bool M6dbus::getWaterInCam()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return waterInC;
 }
 
 bool M6dbus::getHiTempIn()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return hiTempIn;
 }
 
 bool M6dbus::getLowU1()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return lowU1;
 }
 
 bool M6dbus::getLowU2()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return lowU2;
 }
 
 bool M6dbus::getHighI1()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return highI1;
 }
 
 bool M6dbus::getHighI2()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return highI2;
 }
 
 bool M6dbus::getMaxDepth()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return maxDepth;
 }
 
 bool M6dbus::getErrRConf()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return errRConf;
 }
 
 bool M6dbus::getErrI2C()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return errI2C;
 }
 
 bool M6dbus::getErrSPI()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return errSPI;
 }
 
 bool M6dbus::getErrLink()
 {
-    if (getAlarms() == -1)
-        return -1;
-
     return errLink;
+}
+
+int M6dbus::updateDepthAndDirec()
+{
+	while(modbus_read_registers(Modbus,32,2,&(regTab[31])) == -1);
+	return 1;
 }
 
 int M6dbus::getDepth()
 {
-    if (updateAll() == -1)
-        return -1;
-
-    return depth;
+    return regTab[32];
 }
 
 int M6dbus::getDirec()
 {
-    if (updateAll() == -1)
-        return -1;
-
-    return direction;
+    return regTab[33];
 }
 
 int M6dbus::getU1()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return U1;
 }
 
 int M6dbus::getU2()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return U2;
 }
 
 int M6dbus::getI1()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return I1;
 }
 
 int M6dbus::getI2()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return I2;
 }
 
 int M6dbus::getTempMB()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return tempMB;
 }
 
 int M6dbus::getTempOut()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return tempOut;
 }
 
 int M6dbus::getTempEx1()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return tempEx1;
 }
 
 int M6dbus::getTempEx2()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return tempEx2;
 }
 
 int M6dbus::getTempEx3()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return tempEx3;
 }
 
 int M6dbus::getCapBat1()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return capBat1;
 }
 
 int M6dbus::getCapBat2()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return capBat2;
 }
 
 int M6dbus::getVersion()
 {
-    if (updateAll() == -1)
-        return -1;
-
     return version;
 }
