@@ -1,0 +1,104 @@
+//ServerHost = 192.168.0.11
+ServerHost = localhost
+ServerPort = 9001
+Community = CISSAU_control
+
+ProcessConfig = ANTLER
+{
+	MSBetweenLaunches = 200
+	Run = MOOSDB         	@ NewConsole = false 
+	
+	// Interfaces
+	Run = uJoystick		@ NewConsole = false
+	Run = uXMS		@ NewConsole = true
+	//Run = uMapping		@ NewConsole = true
+	Run = pMOOSBridge
+}
+
+//////////////////////////////////////////////
+// Bridge configuration
+ProcessConfig = pMOOSBridge
+{
+	BridgeFrequency = 10
+
+	// Listen for other bridges on port 9100
+	UDPListen = 9100
+
+	// Broadcast variables , VVV_VZ_DESIRED
+	UDPShare = [VVV_VX_DESIRED, VVV_VY_DESIRED, VVV_RZ_DESIRED, VVV_Z_DESIRED]->ciscreaSaucE@192.168.0.11:9100
+	//UDPShare = [VVV_VX_DESIRED, VVV_VX_DESIRED]->all@broadcast:9100
+}
+
+
+ProcessConfig = uJoystick
+{
+   AppTick   = 4
+   CommsTick = 4
+   
+   SHOW_ALL_EVENTS = 0
+   
+   SCALE = -90
+   AXIS = 0
+   DEST_VAR = VVV_VY_DESIRED
+   
+   SCALE = -120
+   AXIS = 1
+   DEST_VAR = VVV_VX_DESIRED
+   
+   SCALE = 50
+   AXIS = 2
+   DEST_VAR = VVV_RZ_DESIRED
+   
+//   AXIS_SCALE = -100
+//   AXIS = 3
+//   DEST_VAR = VVV_VZ_DESIRED
+
+   MIN = 6   
+   MAX = 0
+   AXIS = 3
+   DEST_VAR = VVV_Z_DESIRED
+   
+   DEVICE_NAME = /dev/input/js0
+   
+//   AXIS_SCALE = -0.5
+//   AXIS = 3
+//   INCREMENT = 1
+//   DEST_VAR = VVV_Z_DESIRED
+}
+
+ProcessConfig = uXMS
+{
+	AppTick     	= 10
+	//VAR				= VVV_X_DESIRED, VVV_Y_DESIRED, 
+	VAR = VVV_Z_DESIRED
+	VAR =  VVV_RZ_DESIRED
+	VAR				= VVV_VX_DESIRED, VVV_VY_DESIRED, VVV_VZ_DESIRED
+	VAR = VVV_Z, VVV_HEADING
+	//VAR				= VVV_X, VVV_Y, VVV_Z, VVV_HEADING_CISCREA, VVV_HEADING_RAZOR, VVV_HEADING_DESIRED, VVV_HEADING
+	VAR				= VVV_RZ
+	//VAR				= VVV_SPOTLIGHTS
+	//VAR				= VVV_CURRENT_EXTERNAL_BATTERY_1, VVV_CURRENT_EXTERNAL_BATTERY_2
+	VAR				= VVV_VOLTAGE_EXTERNAL_BATTERY_1, VVV_VOLTAGE_EXTERNAL_BATTERY_2
+	//VAR				= VVV_CONSUMPTION_EXTERNAL_BATTERY_1, VVV_CONSUMPTION_EXTERNAL_BATTERY_2
+	//VAR				= VVV_AUV_IDENTIFIER, VVV_AUV_NAME
+	//VAR				= VVV_TEMPERATURE_CPU
+	//VAR				= VVV_ON_MISSION
+	//VAR				= VVV_ANOMALY_DETECTED
+	//VAR				= VVV_ANOMALY_X, VVV_ANOMALY_Y, VVV_ANOMALY_Z
+	//VAR				= VVV_ANOMALY_STATE
+	VAR				= VVV_DISTANCE_ECHOSOUNDER
+	//VAR				= PIPEFOLLOWING__MARGE_IMAGE
+	//VAR				= BUOYDETECTION__X_POSITION, BUOYDETECTION__Y_POSITION, VVV_RZ_DESIRED, VVV_HEADING_DESIRED, VVV_HEADING
+	COLOR_MAP		= VVV_Z, blue
+	COLOR_MAP		= VVV_Z_DESIREDD, blue
+	COLOR_MAP		= VVV_VZ_DESIRED, blue
+	COLOR_MAP		= VVV_HEADING_CISCREA, green
+	COLOR_MAP		= VVV_HEADING_RAZOR, green
+	COLOR_MAP		= VVV_HEADING, green
+	COLOR_MAP		= VVV_HEADING_DESIRED, green
+	COLOR_MAP		= VVV_RZ, green
+	COLOR_MAP		= BUOYDETECTION__X_POSITION, red
+	COLOR_MAP		= BUOYDETECTION__Y_POSITION, red
+	COLOR_MAP		= VVV_RZ_DESIRED, red
+	// HISTORY_VAR	= VVV_VX
+}

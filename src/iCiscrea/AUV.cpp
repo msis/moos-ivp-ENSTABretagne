@@ -280,7 +280,7 @@ void AUV::normaliserVecteur(Matrice *forcesPropulseurs, double vitesse)
 
 	for(int a = 0 ; a < forcesPropulseurs->nombreLignes() ; a ++)
 		if(abs(valeur_max) < abs((*forcesPropulseurs)[a][0]))
-			valeur_max = (*forcesPropulseurs)[a][0];
+			valeur_max = abs((*forcesPropulseurs)[a][0]);
 
 	if(valeur_max > 1.0) // On ne normalise que les valeurs superieures à 100%
 		for(int a = 0 ; a < forcesPropulseurs->nombreLignes() ; a ++)

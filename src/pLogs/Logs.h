@@ -12,6 +12,10 @@
 #ifndef Logs_HEADER
 #define Logs_HEADER
 
+#include <cv.h>
+#include "highgui.h"
+#include <fstream>
+#include <iostream>
 #include <vector>
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
@@ -19,6 +23,7 @@
 #define	REPERTOIRE_LOGS							"./logs"
 #define	PREFIXE_FICHIER_LOGS					"logs_preparation_sauce"
 
+using namespace cv;
 using namespace std;
 
 class Logs : public CMOOSApp
@@ -39,6 +44,8 @@ class Logs : public CMOOSApp
 		string getCheminCompletDuFichier();
 
 	private: // Configuration variables
+		time_t 			m_debut;
+		int 			m_numero_mail;
 		bool			m_generer_logs;
 		bool 			m_auv_connecte;
 		bool			m_fichier_logs_cree;

@@ -16,6 +16,8 @@
 //#include "SonarDF.h"
 #include "seanetmsg.h"
 
+#include <fstream>
+
 #include "MOOS/libMOOS/App/MOOSInstrument.h"
 /*#ifdef _WIN32
 	#include "MOOS/libMOOS/Utils/MOOSNTSerialPort.h"
@@ -63,7 +65,9 @@ class Sonar : public CMOOSInstrument
                 
                 CMOOSThread m_serial_thread;
                 
-                cv::Mat img;
+                cv::Mat img, img_polar;
+                std::ofstream log1;
+                std::ofstream log2;
 
     
         static bool listen_sonar_messages_thread_func(void *pSonarObject) {

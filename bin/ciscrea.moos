@@ -37,31 +37,75 @@ Community = ciscreaSaucE
 
 ProcessConfig = ANTLER
 {
+	Run = uPlayback
+		
 	MSBetweenLaunches = 200
 	Run = MOOSDB         				@ NewConsole = false 
 	Run = uXMS							@ NewConsole = true
 	
 	// Interfaces
-		Run = iCiscrea					@ NewConsole = true
+		//Run = iCiscrea					@ NewConsole = true
 		//Run = iSonar					@ NewConsole = true
 		//Run = iEchoSounder				@ NewConsole = false
-		Run = iModem					@ NewConsole = false ~ iModem_EMETTEUR
+		//Run = iModem					@ NewConsole = false ~ iModem_EMETTEUR
 		//Run = iModem					@ NewConsole = false ~ iModem_RECEPTEUR
-		Run = iCamera					@ NewConsole = false ~ iCamera_BOTTOM
-		Run = iCamera					@ NewConsole = false ~ iCamera_SIDE
+		//Run = iCamera					@ NewConsole = false ~ iCamera_BOTTOM
+		//Run = iCamera					@ NewConsole = false ~ iCamera_SIDE
 		//Run = iHydrophones				@ NewConsole = false
 		//Run = iTemperatureCPU			@ NewConsole = false 
-		Run = iInertialMeasurementUnit	@ NewConsole = false
+		//Run = iInertialMeasurementUnit	@ NewConsole = false
 	
 	// Programmes
 		//Run = pLocalization				@ NewConsole = false
 		//Run = pControler				@ NewConsole = false
-		Run = pRegulator				@ NewConsole = true
-		//Run = pLogs						@ NewConsole = false
+		//Run = pRegulator				@ NewConsole = true
+		//Run = pLogs						@ NewConsole = true
+		//Run = pLogger
 		//Run = pPingLocator				@ NewConsole = false
 		//Run = pPipeFollowing			@ NewConsole = true
 		//Run = pWallFollowing			@ NewConsole = false
 		//Run = pBuoyDetection			@ NewConsole = true
+
+	// MOOSBridge
+		//Run = pMOOSBridge
+}
+
+////////////////////////////////////////////
+// Logger configuration
+ProcessConfig = pLogger
+{
+    AppTick   = 20.0
+    CommsTick = 20.0
+
+	File = CiscreaVEDI
+
+	PATH = /home/ciscrea1/MOOSData/
+
+	//SyncLog = true @ 0.5
+
+	AsyncLog = true
+
+	WildCardLogging = true
+
+	FileTimeStamp = true
+
+	WildCardPattern = *
+	WildCardOmitPattern = VVV_IMAGE*
+
+	Log = VVV_IMAGE_BOTTOM @ 0.25
+	Log = VVV_IMAGE_SIDE @ O.25
+}
+
+//////////////////////////////////////////////
+// Bridge configuration
+ProcessConfig = pMOOSBridge
+{
+	// Listen for other bridges on port 9100
+	UDPListen = 9100
+
+	// Broadcast variables
+	UDPShare = [VVV_DISTANCE_ECHOSONDER, VVV_Z]->all@broadcast:9100
+	//UDPShare = [VVV_VX_DESIRED, VVV_VX_DESIRED]->all@broadcast:9100
 }
 
 ProcessConfig = iCiscrea
@@ -76,13 +120,15 @@ ProcessConfig = pRegulator
     AppTick   = 1
     CommsTick = 1
 
-    KP_Z        = 15.0
+ //   KP_Z        = 15.0
+    KP_Z        = 70.0
     KI_Z        = 1.0
     KD_Z        = 40.0
     INTEGRAL_LIMIT_Z =  3.0
-    OUTPUT_LIMIT_Z   = 20.0
+    OUTPUT_LIMIT_Z   = 100.0
 
-    KP_HEADING  = 0.15
+	KP_HEADING = 0;
+//    KP_HEADING  = 0.15
     KI_HEADING  = 0.0
     KD_HEADING  = 0.0
     INTEGRAL_LIMIT_HEADING = 0.0
@@ -93,7 +139,7 @@ ProcessConfig = iCamera_BOTTOM
 {
 	VARIABLE_IMAGE_NAME = VVV_IMAGE_BOTTOM
 	IDENTIFIANT_CV_CAMERA = 1
-	DISPLAY_IMAGE = false
+	DISPLAY_IMAGE = true
 	INVERT_IMAGE = true
 }
 
@@ -101,7 +147,7 @@ ProcessConfig = iCamera_SIDE
 {
 	VARIABLE_IMAGE_NAME = VVV_IMAGE_SIDE
 	IDENTIFIANT_CV_CAMERA = 0
-	DISPLAY_IMAGE = false
+	DISPLAY_IMAGE = true
 	INVERT_IMAGE = false
 }
 

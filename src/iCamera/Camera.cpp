@@ -76,6 +76,7 @@ bool Camera::Iterate()
 			flip(m_capture_frame, m_capture_frame, -1);
 		
 		Notify((char*)(m_image_name).c_str(), (void*)m_capture_frame.data, 3 * LARGEUR_IMAGE_CAMERA * HAUTEUR_IMAGE_CAMERA, MOOSLocalTime());
+		imwrite("test.jpeg", m_capture_frame);
 		
 		if(m_affichage_image)
 			imshow(m_display_name, m_capture_frame);

@@ -14,6 +14,14 @@
 #include "MBUtils.h"
 #include "Ciscrea.h"
 
+/*
+ * TO DO :
+ * 
+ * - Remettre automatiquement Vx, Vz, Vz, etc à 0 quand pas de réponse depuis
+ * 		n secondes...
+ */
+ 
+ 
 /**
  * \fn
  * \brief Constructeur de l'application MOOS
@@ -205,7 +213,7 @@ bool Ciscrea::OnStartUp()
 				if(this->m_identifiant_auv_a_instancier != 0)
 				{
 					instancierAUV();
-					this->m_auv_ciscrea->allumerProjecteurs(1000);
+					//this->m_auv_ciscrea->allumerProjecteurs(1000);
 					RegisterVariables();
 				}
 			}

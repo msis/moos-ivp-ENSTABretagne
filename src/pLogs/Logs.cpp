@@ -10,8 +10,6 @@
  */
  
 #include <iterator>
-#include <fstream>
-#include <iostream>
 #include <string>
 #include "MBUtils.h"
 #include "Logs.h"
@@ -25,6 +23,10 @@ using namespace std;
  
 Logs::Logs()
 {
+	// Récupération de la date au lancement des logs
+	time(&m_debut);
+	
+	this->m_numero_mail 		= 0;
 	this->m_iterations 			= 0;
 	this->m_timewarp   			= 1;
 	this->m_auv_connecte 		= false;
@@ -42,6 +44,8 @@ Logs::Logs()
 	this->m_listeVariablesSuivies.push_back("VVV_AUV_NAME");
 	this->m_listeVariablesSuivies.push_back("VVV_AUV_IDENTIFIER");
 	this->m_listeVariablesSuivies.push_back("VVV_ON_MISSION");
+	this->m_listeVariablesSuivies.push_back("VVV_IMAGE_SIDE");
+	this->m_listeVariablesSuivies.push_back("VVV_IMAGE_BOTTOM");
 }
 
 /**
@@ -61,6 +65,15 @@ Logs::~Logs()
  
 bool Logs::OnNewMail(MOOSMSG_LIST &NewMail)
 {
+	char chemin_fichier[500];
+	this->m_numero_mail ++;
+	
+	// Récupération de la date
+	struct tm Debut = *localtime(&m_debut);
+	time_t maintenant;
+	time(&maintenant);
+	struct tm Today = *localtime(&maintenant);
+			
 	MOOSMSG_LIST::iterator p;
 
 	for(p = NewMail.begin() ; p != NewMail.end() ; p++)
@@ -81,18 +94,42 @@ bool Logs::OnNewMail(MOOSMSG_LIST &NewMail)
 		
 		if(msg.GetKey() == "VVV_AUV_NAME")
 		{
-			// Récupération de la date d'aujourd'hui
 			char date[20];
-			time_t maintenant;
-			time(&maintenant);
-			struct tm Today = *localtime(&maintenant);
 			sprintf(date, "%2.2d-%2.2d-%4.4d", Today.tm_mday, Today.tm_mon + 1, Today.tm_year + 1900);
 			
 			// Calcul du nom du fichier de logs
-			char chemin_fichier[500];
 			sprintf(chemin_fichier, "%s/%s_%s_%s.log", REPERTOIRE_LOGS, PREFIXE_FICHIER_LOGS, (char*)msg.GetString().c_str(), date);
 			this->m_nom_fichier = string(chemin_fichier);
 			this->m_auv_connecte = true;
+		}
+		
+		if(msg.GetKey() == "VVV_IMAGE_BOTTOM" || msg.GetKey() == "VVV_IMAGE_SIDE")
+		{
+			IplImage *img = cvCreateImage(cvSize(LARGEUR_IMAGE_CAMERA, HAUTEUR_IMAGE_CAMERA), 8, 3);
+			
+			if((int)msg.GetString().size() == img->imageSize)
+				memcpy(img->imageData, msg.GetString().data(), img->imageSize);
+			
+			else
+				cout << "Erreur : mauvaises dimensions dans la variable image \"" << msg.GetKey() << "\" depuis la MOOSDB" << endl;
+			
+			// Calcul du nom du fichier de logs
+			sprintf(chemin_fichier, "%s/", REPERTOIRE_LOGS);
+			MOOSCreateDirectory(string(chemin_fichier));
+			sprintf(chemin_fichier, "%s/%s/", chemin_fichier, (char*)msg.GetKey().c_str());
+			MOOSCreateDirectory(string(chemin_fichier));
+			sprintf(chemin_fichier, "%s/%04d%02d%02d_%02d%02d%02d/", 
+										chemin_fichier, 
+										(Debut.tm_year + 1900),
+										Debut.tm_mon,
+										Debut.tm_mday,
+										Debut.tm_hour,
+										Debut.tm_min,
+										Debut.tm_sec);
+			MOOSCreateDirectory(string(chemin_fichier));
+			sprintf(chemin_fichier, "%s%08d.jpeg", chemin_fichier, this->m_numero_mail);
+			Mat imgMat(img); 
+			imwrite(chemin_fichier, imgMat);
 		}
 		
 		#if 0 // Keep these around just for template
@@ -179,7 +216,7 @@ bool Logs::creerFichierLogs()
 	{
 		fichier.close();
 		this->m_fichier_logs_cree = true;
-		cout << "Fichierdddd de logs créé : \"" << this->m_nom_fichier << "\"" << endl;
+		cout << "Fichier de logs créé : \"" << this->m_nom_fichier << "\"" << endl;
 		return true;
 	}
 	

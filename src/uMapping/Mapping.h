@@ -3,7 +3,7 @@
  * \brief Classe Mapping
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
- * \date Jun 25th 2013
+ * \date Jun 20th 2013
  *
  * Application MOOS de mapping
  *
@@ -15,10 +15,14 @@
 #include <cv.h>
 #include "highgui.h"
 #include "../common/constantes.h"
+#include "../common/statistiques.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
-using namespace cv;
+#define LARGEUR_MAPPING		500
+#define HAUTEUR_MAPPING		500
+
 using namespace std;
+using namespace cv;
 
 class Mapping : public CMOOSApp
 {
@@ -32,12 +36,14 @@ class Mapping : public CMOOSApp
 		bool OnConnectToServer();
 		bool OnStartUp();
 		void RegisterVariables();
+		void getDataSonar(int* data, int* nb_data, int* angle_data_sonar);
 
 	private: // Configuration variables
 
 	private: // State variables
-		unsigned int	m_iterations;
-		double			m_timewarp;
+		unsigned int		m_iterations;
+		double				m_timewarp;
+		Mat					m_map, m_img_ciscrea;
 };
 
 #endif 

@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       uMapping
+# The CMakeLists.txt for:                       pMapping
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
@@ -11,8 +11,6 @@ SET(SRC
   Mapping_Tests.cpp
   main.cpp
 )
-
-
 
 ADD_EXECUTABLE(uMapping ${SRC})
 
@@ -31,7 +29,5 @@ TARGET_LINK_LIBRARIES(uMapping
    opencv_objdetect
    opencv_contrib
    opencv_legacy
-   opencv_flann
-   opencv_stitching
-   opencv_nonfree
-    )
+   opencv_flann)
+

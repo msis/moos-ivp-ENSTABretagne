@@ -28,19 +28,24 @@ Sonar::Sonar()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
-        
-        m_bNoParams = true;
-        m_bSentCfg = false;
-                
-        m_bSonarReady = false;
-        m_bPollSonar = true;
-        
-        m_serial_thread.Initialise(listen_sonar_messages_thread_func, (void*)this);
-        MOOSTrace("Thread initialized\n");
 
-        img.create(360, 800, CV_8UC1);
+	m_bNoParams = true;
+	m_bSentCfg = false;
+
+	m_bSonarReady = false;
+	m_bPollSonar = true;
+
+	m_serial_thread.Initialise(listen_sonar_messages_thread_func, (void*)this);
+	MOOSTrace("Thread initialized\n");
+
+	img.create(360, 800, CV_8UC1);
+	img_polar.create(800, 800, CV_8UC1);
 	MOOSTrace("Img created\n");
-        cv::namedWindow("sonar");
+	cv::namedWindow("sonar");
+	//cv::namedWindow("sonar pol");
+
+	log1.open("SONAR_SCANLINES.txt", ios_base::out);
+	log2.open("SONAR_DIST.txt", ios_base::out);
 }
 
 /**
@@ -66,6 +71,9 @@ bool Sonar::initialiserPortSerie(string nom_port)
 Sonar::~Sonar()
 {
     m_serial_thread.Stop();
+    
+        log1.close();
+        log2.close();
 }
 
 /**
@@ -207,7 +215,9 @@ void Sonar::ListenSonarMessages()
 		MOOSTrace("nBins=%d\n", pHdta->nBins());
                 uchar* line = img.ptr((int)pHdta->bearing());
                 memcpy(line, pHdta->scanlineData(), pHdta->nBins());
+                //cvLogPolar(&img, &img_polar, cvPoint2D32f(320/2, 240/2), 40, CV_INTER_LINEAR + CV_WARP_FILL_OUTLIERS + CV_WARP_INVERSE_MAP);
                 cv::imshow("sonar", img);
+                //cv::imshow("sonar pol", img_polar);
 
                 // MOOSDB raw data
                 vector<int> vScanline;
@@ -222,11 +232,14 @@ void Sonar::ListenSonarMessages()
                 
                 Notify("SONAR_RAW_DATA", ss.str());
                 //cout << endl << ss.str() << endl;
+                log1 << MOOSGetTimeStampString() << " " << ss.str() << endl;
                 
                 stringstream ss2;
                 ss2 << "bearing=" << pHdta->bearing() << ","
                     << "distance=" << pHdta->firstObstacleDist(20, 0.5, 100.); // thd, min, max
                 Notify("SONAR_DISTANCE", ss2.str());
+                
+                log2 << MOOSGetTimeStampString() << " " << ss.str() << endl;
                                 
                 if (m_bSonarReady && m_bPollSonar) {
                     SeaNetMsg_SendData msg_SendData;

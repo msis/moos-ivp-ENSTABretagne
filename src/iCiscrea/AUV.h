@@ -19,7 +19,7 @@
 #include "M6dbus.h"
 
 #define	PORT_MODBUS			502
-#define AFFICHER_DETAILS    0
+#define AFFICHER_DETAILS    1
 
 using namespace std;
 

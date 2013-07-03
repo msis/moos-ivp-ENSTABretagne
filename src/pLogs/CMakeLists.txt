@@ -20,5 +20,7 @@ TARGET_LINK_LIBRARIES(pLogs
    MOOS
    mbutil
    m
-   pthread)
+   pthread
+   opencv_highgui
+   opencv_core)
 

@@ -3,20 +3,20 @@
  * \brief Classe Mapping
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
- * \date Jun 27th 2013
+ * \date Jun 20th 2013
  *
  * Application MOOS de mapping
  *
  */
 
+#include <clocale>
 #include <iterator>
+#include <iomanip>
+#include <cmath>
+#include <string>
 #include "MBUtils.h"
 #include "Mapping.h"
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/stitching/stitcher.hpp>
-#include <iostream>
-#include <vector>
+#include "ColorParse.h"
 
 using namespace std;
 
@@ -27,26 +27,58 @@ using namespace std;
  
 Mapping::Mapping()
 {
-	Mat carte;
-	Mat fr1 = imread("");
-	Mat fr2 = imread("");
-	vector<Mat> imgs;
+	m_iterations = 0;
+	m_timewarp   = 1;
+	
+	cvNamedWindow("Mapping", 1);
+	m_map = Mat::zeros(LARGEUR_MAPPING, HAUTEUR_MAPPING, CV_8UC3);
+	m_map = Scalar(255, 255, 255);
+	m_img_ciscrea = imread("img_ciscrea_small.png");
+	
+	int* data_sonar = NULL, nb_data_sonar, angle_data_sonar;
+	getDataSonar(data_sonar, &nb_data_sonar, &angle_data_sonar);
+	/*
+	for(int i = 0 ; i < nb_data_sonar ; i ++)
+	{
+		line(m_map,
+				Point(cos(angle_data_sonar * M_PI / 180.0) * i, sin(angle_data_sonar * M_PI / 180.0) * i),
+				Point(cos(angle_data_sonar * M_PI / 180.0) * i, sin(angle_data_sonar * M_PI / 180.0) * i),
+				Scalar(161, 149, 104), 1, 8);
+	}*/
+	
+	
+	int largeur_img = 37;
+	resize(m_img_ciscrea, m_img_ciscrea, Size(largeur_img, largeur_img * m_img_ciscrea.size().height /  m_img_ciscrea.size().width), 0, 0, INTER_LINEAR);
 
-	Stitcher stitcher = Stitcher::createDefault();
+	/*transform(m_img_ciscrea, 
+				m_img_ciscrea, 
+				getRotationMatrix2D(Point2f(m_img_ciscrea.size().width / 2, m_img_ciscrea.size().height / 2), 30.0, 1.0));*/
+	
+	Rect roi(Point((LARGEUR_MAPPING - m_img_ciscrea.size().width) / 2, (HAUTEUR_MAPPING - m_img_ciscrea.size().height) / 2), 
+				Size(m_img_ciscrea.size().width, m_img_ciscrea.size().height));
+	Mat destinationROI = m_map(roi);
+	m_img_ciscrea.copyTo(destinationROI);
+	
+	line(m_map, Point(LARGEUR_MAPPING / 2, (HAUTEUR_MAPPING / 2) - 40), Point(LARGEUR_MAPPING / 2, (HAUTEUR_MAPPING / 2) - 120), Scalar(161, 149, 104), 1, 8, 0);
+	line(m_map, Point(LARGEUR_MAPPING / 2, (HAUTEUR_MAPPING / 2) + 40), Point(LARGEUR_MAPPING / 2, (HAUTEUR_MAPPING / 2) + 120), Scalar(161, 149, 104), 1, 8, 0);
+	line(m_map, Point((LARGEUR_MAPPING / 2) - 40, HAUTEUR_MAPPING / 2), Point((LARGEUR_MAPPING / 2) - 120, HAUTEUR_MAPPING / 2), Scalar(161, 149, 104), 1, 8, 0);
+	line(m_map, Point((LARGEUR_MAPPING / 2) + 40, HAUTEUR_MAPPING / 2), Point((LARGEUR_MAPPING / 2) + 120, HAUTEUR_MAPPING / 2), Scalar(161, 149, 104), 1, 8, 0);
+}
 
-	imgs.push_back(fr1);
-	imgs.push_back(fr2);
-	Stitcher::Status status;
+/**
+ * \fn
+ * \brief Récupération des données depuis l'interface du sonar
+ */
 
-	status = stitcher.stitch(imgs, carte);
-
-	if(status != Stitcher::OK)
-		cout << "Error stitching - Code: " <<int(status)<<endl;
-
-	imshow("Frame 1", imgs[0]);
-	imshow("Frame 2", imgs[1]);
-	imshow("Stitched Image", carte);
-	waitKey();
+void Mapping::getDataSonar(int* data, int* nb_data, int* angle_data_sonar)
+{
+	data[0] = 1;
+	data[1] = 200;
+	data[2] = 150;
+	data[3] = 25;
+	
+	*nb_data = 4;
+	*angle_data_sonar = 30;
 }
 
 /**
@@ -56,6 +88,9 @@ Mapping::Mapping()
 
 Mapping::~Mapping()
 {
+	//cvReleaseImage(&img);
+	Mat map = Mat::zeros(LARGEUR_MAPPING, HAUTEUR_MAPPING, CV_8UC3);
+	cvDestroyWindow("Mapping");
 }
 
 /**
@@ -66,24 +101,25 @@ Mapping::~Mapping()
  
 bool Mapping::OnNewMail(MOOSMSG_LIST &NewMail)
 {
+	bool nouveau_parametre = false;
 	MOOSMSG_LIST::iterator p;
 
 	for(p = NewMail.begin() ; p != NewMail.end() ; p++)
 	{
 		CMOOSMsg &msg = *p;
-
+		
 		#if 0 // Keep these around just for template
-		string key   = msg.GetKey();
-		string comm  = msg.GetCommunity();
-		double dval  = msg.GetDouble();
-		string sval  = msg.GetString(); 
-		string msrc  = msg.GetSource();
-		double mtime = msg.GetTime();
-		bool   mdbl  = msg.IsDouble();
-		bool   mstr  = msg.IsString();
+			string key   = msg.GetKey();
+			string comm  = msg.GetCommunity();
+			double dval  = msg.GetDouble();
+			string sval  = msg.GetString(); 
+			string msrc  = msg.GetSource();
+			double mtime = msg.GetTime();
+			bool   mdbl  = msg.IsDouble();
+			bool   mstr  = msg.IsString();
 		#endif
 	}
-
+	
 	return(true);
 }
 
@@ -94,12 +130,6 @@ bool Mapping::OnNewMail(MOOSMSG_LIST &NewMail)
  
 bool Mapping::OnConnectToServer()
 {
-	// register for variables here
-	// possibly look at the mission file?
-	// m_MissionReader.GetConfigurationParam("Name", <string>);
-	// m_Comms.Register("VARNAME", 0);
-
-	RegisterVariables();
 	return(true);
 }
 
@@ -112,6 +142,8 @@ bool Mapping::OnConnectToServer()
 bool Mapping::Iterate()
 {
 	m_iterations++;
+	imshow("Mapping", m_map);
+	waitKey(10);
 	return(true);
 }
 
@@ -133,21 +165,9 @@ bool Mapping::OnStartUp()
 			string original_line = *p;
 			string param = stripBlankEnds(toupper(biteString(*p, '=')));
 			string value = stripBlankEnds(*p);
-
-			if(param == "FOO")
-			{
-				//handled
-			}
-			
-			else if(param == "BAR")
-			{
-				//handled
-			}
 		}
 	}
-
-	m_timewarp = GetMOOSTimeWarp();
-
+	
 	RegisterVariables();
 	return(true);
 }
@@ -159,5 +179,5 @@ bool Mapping::OnStartUp()
  
 void Mapping::RegisterVariables()
 {
-	// m_Comms.Register("FOOBAR", 0);
+	
 }
