@@ -25,6 +25,7 @@
 #endif
 
 #define Offcet 0x1A
+#define NB_LECTURES_MAX_REGISTRES	10
 
 using namespace std;
 
@@ -37,6 +38,7 @@ class M6dbus
 		bool getOn();
 
 		int updatePropulsors();
+		int updateDepthAndDirec();
 		int updateRegTab(uint16_t*);
 		int writeReg(int,int);
 		int getRegNum(int);

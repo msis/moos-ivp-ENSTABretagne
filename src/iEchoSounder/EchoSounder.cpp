@@ -28,6 +28,21 @@ EchoSounder::EchoSounder()
 	this->m_iterations = 0;
 	this->m_timewarp   = 1;
 	this->m_port_initialise = false;
+	distance_precedente_1 = 0;
+	distance_precedente_2 = 0;
+	
+	enregistrerDistance(16.2);
+	enregistrerDistance(17.3);
+	enregistrerDistance(16.5);
+	enregistrerDistance(15.9);
+	enregistrerDistance(16.0);
+	enregistrerDistance(18.2);
+	enregistrerDistance(17.3);
+	enregistrerDistance(16.4);
+	enregistrerDistance(15.6);
+	enregistrerDistance(2.5);
+	enregistrerDistance(16.5);
+	enregistrerDistance(15.7);
 }
 
 /**
@@ -150,21 +165,49 @@ bool EchoSounder::OnConnectToServer()
  
 bool EchoSounder::Iterate()
 {
-	double distance;
+	double distance, distance_mediane;
 	m_iterations++;
 	
 	if(!this->m_port_initialise)
 		return false;
 
 	distance = getDistancePremierObstacle();
+	enregistrerDistance(distance);
+		
+	return(true);
+}
+
+/**
+ * \fn
+ * \brief Méthode enregistrant la distance dans la MOOSDB (avec filtrage)
+ */
+
+void EchoSounder::enregistrerDistance(float distance)
+{
+	float distance_filtree;
 	
-	if(distance != -1)
-		m_Comms.Notify("VVV_DISTANCE_ECHOSONDER", distance);
+	if(distance > 0)
+	{
+		m_Comms.Notify("VVV_DISTANCE_ECHOSOUNDER", distance);
+		m_lot_distances.push_back(distance);
+		
+		if(distance_precedente_1 != 0)
+		{
+			m_lot_distances.push_back(distance_precedente_1);
+			m_lot_distances.push_back(distance_precedente_2);
+		}
+		
+		distance_filtree = (int)Statistiques::mediane(m_lot_distances);
+		//cout << distance_filtree << endl;
+		m_Comms.Notify("ECHO_DIST_FLT", distance_filtree);
+		
+		distance_precedente_2 = distance_precedente_1;
+		distance_precedente_1 = distance;
+		m_lot_distances.clear();
+	}
 	
 	else
 		cout << "Erreur lors de la récupération de la distance" << endl;
-		
-	return(true);
 }
 
 /**
@@ -174,6 +217,7 @@ bool EchoSounder::Iterate()
  
 bool EchoSounder::OnStartUp()
 {
+	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
@@ -198,7 +242,7 @@ bool EchoSounder::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
-	RegisterVariables();	
+	RegisterVariables();
 	return(true);
 }
 

@@ -5,5 +5,16 @@ ProcessConfig = iSonar
 {
    AppTick   = 4
    CommsTick = 4
+   
+    SERIAL_PORT_NAME = /dev/ttyUSB2
+
+    Range = 25 // Portée en m
+    nBins = 400 // Nombre d'échantillons sur une scanline
+    AngleStep = 1.8 // Résolution angulaire du scan rotatif (en degrés, multiples de 0.09)
+    Continous = true // Scan circulaire en continu, ou aller retour entre deux angle (cf LeftLimit/RightLimit)
+    Gain = 45 // Reglage de gain (entre 0% et 100%)
+    LeftLimit = 70.0 // Angle limite gauche du secteur de balayage (si Continous = false)
+    RightLimit = 160.0 // // Angle limite droite du secteur de balayage (si Continous = false)
+
 }
 

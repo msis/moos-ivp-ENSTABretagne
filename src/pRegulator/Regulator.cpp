@@ -79,12 +79,13 @@ bool Regulator::OnNewMail(MOOSMSG_LIST &NewMail)
                   m_pid_heading.SetGoal(msg.GetDouble());
                 }
                 if (key == "VVV_HEADING" && msg.IsDouble()) {
-                  double output_rz = 0.0;
+                  double output_rz = 1.0;
                   double err_heading = m_desired_heading - msg.GetDouble();
                   while (err_heading < -180.) err_heading += 360.0;
                   while (err_heading >= 180.) err_heading -= 360.0;
                  // cout << "Heading error = " << err_heading << endl;
                   m_pid_heading.Run(err_heading, msg.GetTime(), output_rz);
+                  //cout << "RZ -----> " << output_rz << endl;
                   m_Comms.Notify("VVV_RZ_DESIRED", output_rz);
                 }
                 
@@ -164,7 +165,8 @@ bool Regulator::OnStartUp()
         
         double out_lim_z = 0.0, int_lim_z = 0.0;
         double out_lim_heading = 0.0, int_lim_heading = 0.0;
-*/        
+*/
+	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
@@ -208,7 +210,7 @@ bool Regulator::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
-	RegisterVariables();	
+	RegisterVariables();
 	return(true);
 }
 

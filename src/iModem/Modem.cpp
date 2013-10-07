@@ -131,19 +131,19 @@ bool Modem::OnNewMail(MOOSMSG_LIST &NewMail)
 		if(msg.GetKey() == "VVV_ANOMALY_DETECTED")
 			this->m_anomalie_detectee = (msg.GetDouble() == 1.0);
 
-		if(msg.GetKey() == "VVV_ANOMALY_X")
+		if(msg.GetKey() == "VVV_X_BUOY")
 		{
 			this->m_position_x_anomalie = msg.GetDouble();
 			this->m_position_x_anomalie_recue = false;
 		}
 
-		if(msg.GetKey() == "VVV_ANOMALY_Y")
+		if(msg.GetKey() == "VVV_Y_BUOY")
 		{
 			this->m_position_y_anomalie = msg.GetDouble();
 			this->m_position_y_anomalie_recue = false;
 		}
 
-		if(msg.GetKey() == "VVV_ANOMALY_Z")
+		if(msg.GetKey() == "VVV_Z_BUOY")
 		{
 			this->m_position_z_anomalie = msg.GetDouble();
 			this->m_position_z_anomalie_recue = false;
@@ -227,6 +227,22 @@ bool Modem::Iterate()
 				if(!this->envoyerMessage(message))
 					cout << "Erreur lors de l'envoi du message" << endl;
 			}
+			// Information sur X
+			if(!this->m_position_y_anomalie_recue)
+			{
+				cout << "Envoie de la position Y de l'anomalie" << endl;
+				Communication::encoderMesureExterneY(this->m_position_y_anomalie, message);
+				if(!this->envoyerMessage(message))
+					cout << "Erreur lors de l'envoi du message" << endl;
+			}
+			// Information sur X
+			if(!this->m_position_z_anomalie_recue)
+			{
+				cout << "Envoie de la position Z de l'anomalie" << endl;
+				Communication::encoderMesureExterneZ(this->m_position_z_anomalie, message);
+				if(!this->envoyerMessage(message))
+					cout << "Erreur lors de l'envoi du message" << endl;
+			}
 		}
 	}
 	
@@ -280,6 +296,7 @@ bool Modem::Iterate()
  
 bool Modem::OnStartUp()
 {
+	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
@@ -316,7 +333,7 @@ bool Modem::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
-	RegisterVariables();	
+	RegisterVariables();
 	return(true);
 }
 

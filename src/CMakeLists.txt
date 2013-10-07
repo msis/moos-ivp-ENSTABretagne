@@ -30,6 +30,17 @@ ADD_SUBDIRECTORY(pPipeFollowing)
 ADD_SUBDIRECTORY(pRegulator)
 ADD_SUBDIRECTORY(iTemperatureCPU)
 ADD_SUBDIRECTORY(pWallFollowing)
+ADD_SUBDIRECTORY(uJoystick)
+ADD_SUBDIRECTORY(pSensorViewer)
+ADD_SUBDIRECTORY(pLateralRegulator)
+ADD_SUBDIRECTORY(pValidationGate)
+ADD_SUBDIRECTORY(pAroundTheIsland)
+ADD_SUBDIRECTORY(pSonarThdViewer)
+ADD_SUBDIRECTORY(pWayPoints)
+ADD_SUBDIRECTORY(pMove)
+ADD_SUBDIRECTORY(pLoc)
+ADD_SUBDIRECTORY(pSimulateur)
+ADD_SUBDIRECTORY(pReglage_sonar)
 
 
 ##############################################################################

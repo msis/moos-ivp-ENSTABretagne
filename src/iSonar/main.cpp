@@ -1,6 +1,6 @@
 /**
  * \file main.cpp
- * \brief Programme principal de pSonar
+ * \brief Programme principal de iSonar
  * \author Team CISSAU - Veni Vidi Vici (ENSTA Bretagne)
  * \version 0.1
  * \date Jun 5th 2013

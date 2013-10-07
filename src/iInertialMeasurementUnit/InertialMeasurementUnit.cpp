@@ -8,6 +8,7 @@
  * Récupération des informations physiques du mouvement de l'AUV via la centrale inertielle
  */
 
+#include <math.h>
 #include <iterator>
 #include "MBUtils.h"
 #include <iostream>
@@ -82,7 +83,12 @@ void InertialMeasurementUnit::on_data(const float data[])
 	this->m_rz = data[0];
 	
 	m_Comms.Notify("VVV_HEADING_RAZOR", this->m_rz);
-	m_Comms.Notify("VVV_HEADING", this->m_rz);
+	
+	  double heading = MOOSDeg2Rad(this->m_rz);
+	  double a = MOOSDeg2Rad(-12.6), b = 0.45, c = MOOSDeg2Rad(-10.5);
+	  double heading_correct = heading - ( a*sin(heading+b) + c);
+	  
+	m_Comms.Notify("VVV_HEADING", MOOSRad2Deg(heading_correct));
 	
 	//cout << "Ry : " << m_rz << "\tRx : " << m_ry << "\tRz : " << m_rx << endl;
 	
@@ -191,6 +197,7 @@ bool InertialMeasurementUnit::Iterate()
  
 bool InertialMeasurementUnit::OnStartUp()
 {
+	setlocale(LC_ALL, "C");
 	list<string> sParams;
 	m_MissionReader.EnableVerbatimQuoting(false);
 	if(m_MissionReader.GetConfiguration(GetAppName(), sParams))
@@ -214,7 +221,7 @@ bool InertialMeasurementUnit::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
-	RegisterVariables();	
+	RegisterVariables();
 	return(true);
 }
 

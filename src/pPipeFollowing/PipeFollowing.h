@@ -15,17 +15,12 @@
 #include <cv.h>
 #include "highgui.h"
 #include "../common/constantes.h"
+#include "../common/statistiques.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
 #include "regression_lineaire/linreg.h"
 
-#define LARGEUR_MAX_PIPE					250
-#define PROPORTION_PIPE_NON_VISIBLE			0.2
-#define CORR_COEFF_MIN_DETECTION			0.4
-#define VALEUR_SEUILLAGE					160
 #define	DRAWING_THICKNESS					1
 #define DRAWING_CONNECTIVITY				8
-#define PROPORTION_POINTS_JONCTION_PIPE		0.6
-#define ECART_TYPE_MAXIMAL					30
 
 using namespace std;
 using namespace cv;
@@ -34,16 +29,16 @@ class PipeFollowing : public CMOOSApp
 {
 	public:
 		PipeFollowing();
-		void getOrientationPipe(IplImage* img_original, LinearRegression* linreg, int* largeur_pipe, double* taux_reconnaissance_pipe);
+		~PipeFollowing();
+
+	protected:
+		void updateOrientationPipe();
 		double mediane(vector<int> vec);
 		double moyenne(vector<int> vec);
 		double ecartType(vector<int> vec);
 		void rotationImage(IplImage* src, IplImage* dst, double angle);
-		void getJonctionsPipe(IplImage* img_original, LinearRegression* linreg, int largeur_pipe, double taux_reconnaissance_pipe); 
-		void seuillageTeinteJaune(IplImage* img_original, int seuil, uchar **data_seuillage, uchar **data_nb);
-		~PipeFollowing();
-
-	protected:
+		void getJonctionsPipe(IplImage* m_img, LinearRegression* linreg, int largeur_pipe, double taux_reconnaissance_pipe); 
+		void seuillageTeinteJaune(IplImage* img, int seuil, uchar **data_seuillage, uchar **data_nb);
 		bool OnNewMail(MOOSMSG_LIST &NewMail);
 		bool Iterate();
 		bool OnConnectToServer();
@@ -60,9 +55,19 @@ class PipeFollowing : public CMOOSApp
 		LinearRegression	*m_linreg;
 		unsigned int		m_iterations;
 		double				m_timewarp;
-		IplImage			*channelRed, *channelGreen, *channelBlue, *channelYellow, *img_hsv, *img_nb;
+		IplImage			*channelRed, *channelGreen, *channelBlue, *channelYellow, *img_nb;
 		Mat 				m_mat_dst;
-		CvScalar 			red, blue, white;
+		CvScalar 			red, blue, white, green;
+		double 				m_intervalle_mise_a_jour;
+		
+		// Parametres
+		double m_param_largeur_max_pipe;
+		double m_param_proportion_pipe_non_visible;
+		double m_param_corr_coeff_min_detection;
+		double m_param_valeur_seuillage;
+		double m_param_proportion_points_jonction_pipe;
+		double m_param_ecart_type_maximal;
+		double m_param_marge_image;
 };
 
 #endif 

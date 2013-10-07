@@ -13,6 +13,7 @@
 #define EchoSounder_HEADER
 
 #include "../common/constantes.h"
+#include "../common/statistiques.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
 #ifdef _WIN32
 	#include "MOOS/libMOOS/Utils/MOOSNTSerialPort.h"
@@ -30,6 +31,7 @@ class EchoSounder : public CMOOSApp
 		EchoSounder();
 		bool initialiserPortSerie(string nom_port);
 		double getDistancePremierObstacle();
+		void enregistrerDistance(float distance);
 		~EchoSounder();
 
 	protected:
@@ -47,6 +49,8 @@ class EchoSounder : public CMOOSApp
 		vector<string>			m_listeVariablesSuivies;
 		CMOOSLinuxSerialPort	m_moos_serial_port;
 		bool					m_port_initialise;
+		vector<float>			m_lot_distances;
+		float 					distance_precedente_1, distance_precedente_2;
 };
 
 #endif 

@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pModem
+# The CMakeLists.txt for:                       iModem
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
@@ -16,9 +16,9 @@ SET(SRC
 
 
 
-ADD_EXECUTABLE(pModem ${SRC})
+ADD_EXECUTABLE(iModem ${SRC})
 
-TARGET_LINK_LIBRARIES(pModem
+TARGET_LINK_LIBRARIES(iModem
    MOOS
    mbutil
    m

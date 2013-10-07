@@ -19,7 +19,7 @@
 #include "M6dbus.h"
 
 #define	PORT_MODBUS			502
-#define AFFICHER_DETAILS    0
+#define AFFICHER_DETAILS    1
 
 using namespace std;
 
@@ -47,6 +47,8 @@ class AUV
 		~AUV();
 		
 		// Commandes du Ciscrea :
+		int updateRegistresModbus();
+		int updateRegistresModbusProfondeurEtCap();
 		void setVx(double);
 		void setVy(double);
 		void setVz(double);

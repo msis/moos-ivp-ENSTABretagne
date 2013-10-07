@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                       pTemperatureCPU
+# The CMakeLists.txt for:                       iTemperatureCPU
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
@@ -14,9 +14,9 @@ SET(SRC
 
 
 
-ADD_EXECUTABLE(pTemperatureCPU ${SRC})
+ADD_EXECUTABLE(iTemperatureCPU ${SRC})
 
-TARGET_LINK_LIBRARIES(pTemperatureCPU
+TARGET_LINK_LIBRARIES(iTemperatureCPU
    MOOS
    mbutil
    m
