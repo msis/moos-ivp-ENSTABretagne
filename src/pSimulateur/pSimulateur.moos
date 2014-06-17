@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pSimulateur config block
+
+ProcessConfig = pSimulateur
+{
+   AppTick   = 100
+   CommsTick = 4
+}
+

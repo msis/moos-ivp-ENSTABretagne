@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pReglage_sonar config block
+
+ProcessConfig = pReglage_sonar
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

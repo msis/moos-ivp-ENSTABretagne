@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pWayPoints config block
+
+ProcessConfig = pWayPoints
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

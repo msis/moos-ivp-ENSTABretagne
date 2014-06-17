@@ -1,0 +1,27 @@
+//------------------------------------------------
+// uJoystick config block
+
+ProcessConfig = uJoystick
+{
+   AppTick   = 4
+   CommsTick = 4
+   
+   SHOW_ALL_EVENTS = 1
+   
+   AXIS_SCALE = 50
+   AXIS = 0
+   DEST_VAR = VVV_VY_DESIRED
+   
+   AXIS_SCALE = -50
+   AXIS = 1
+   DEST_VAR = VVV_VX_DESIRED
+   
+   AXIS_SCALE = 50
+   AXIS = 2
+   DEST_VAR = VVV_RZ_DESIRED
+   
+   AXIS_SCALE = -40
+   AXIS = 3
+   DEST_VAR = VVV_VZ_DESIRED
+}
+

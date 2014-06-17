@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pLoc config block
+
+ProcessConfig = pLoc
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

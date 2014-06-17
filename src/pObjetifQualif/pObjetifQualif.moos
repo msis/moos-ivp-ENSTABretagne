@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pObjetifQualif config block
+
+ProcessConfig = pObjetifQualif
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

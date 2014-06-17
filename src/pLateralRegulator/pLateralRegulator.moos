@@ -1,0 +1,27 @@
+//------------------------------------------------
+// pLateralRegulator config block
+
+ProcessConfig = pLateralRegulator
+{
+    AppTick   = 4
+    CommsTick = 4
+    
+    DESIRED_DIST = 25.0
+
+    KP        = 4.0
+    KI        = 0.0
+    KD        = 0.0
+    INTEGRAL_LIMIT =  1.0
+    OUTPUT_LIMIT   = 10.0
+    
+    INPUT_FILTER_MIN = 5
+    INPUT_FILTER_MAX = 100
+    
+    // VVV_DISTANCE_ECHOSOUNDER
+    INPUT_VAR = ECHO_DIST_FLT
+    OUTPUT_VAR = VVV_VY_DESIRED
+    //DESIRED_DIST_VAR = 
+    ACTIVATE_VAR = START_ECHO
+    ACTIVE = false
+}
+

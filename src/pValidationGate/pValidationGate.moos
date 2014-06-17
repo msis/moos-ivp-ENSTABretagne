@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pValidationGate config block
+
+ProcessConfig = pValidationGate
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

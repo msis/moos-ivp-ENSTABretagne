@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pAroundTheIsland config block
+
+ProcessConfig = pAroundTheIsland
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

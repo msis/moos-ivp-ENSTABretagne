@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pMove config block
+
+ProcessConfig = pMove
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
