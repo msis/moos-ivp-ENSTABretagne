@@ -2,7 +2,7 @@
 #define VIDEOGRABV4L2_H
 
 #include <string>
-#include <cv.h>
+#include <opencv/cv.h>
 
 class VideoGrabV4L2
 {

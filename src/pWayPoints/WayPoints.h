@@ -18,7 +18,7 @@
 #include <math.h>
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
-#include "MOOS/libMOOSGeodesy/MOOSGeodesy.h"
+#include "MOOSGeodesy.h"
 
 using namespace std;
 

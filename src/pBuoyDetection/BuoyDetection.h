@@ -12,8 +12,7 @@
 #ifndef BuoyDetection_HEADER
 #define BuoyDetection_HEADER
 
-#include <cv.h>
-#include "highgui.h"
+#include <opencv/cv.h>
 #include "../common/constantes.h"
 #include "../common/statistiques.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"

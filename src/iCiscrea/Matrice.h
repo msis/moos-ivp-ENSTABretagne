@@ -17,13 +17,10 @@
 #include <string.h>
 #include <sstream>
 #include <math.h>
-#include <cv.h>
+
 #include "../common/constantes.h"
 
 #define EPSILON		0.00000001 // Précision réel machine
-
-using namespace std;
-using namespace cv;
 
 class Matrice
 {
@@ -31,13 +28,13 @@ class Matrice
 		int colonnes;
 		int lignes;
 		double **tableau;	// Le double tableau représentatif de la matrice
-		string nom_matrice;	// Le nom de la matrice, tel qu'il sera affiché dans la console via la méthode afficher()
+		std::string nom_matrice;	// Le nom de la matrice, tel qu'il sera affiché dans la console via la méthode afficher()
 
 	public :
-		Matrice(int nombre_lignes, int nombre_colonnes, string nom);
+		Matrice(int nombre_lignes, int nombre_colonnes, std::string nom);
 		void initialisation();
 		double * & operator[](int rang);
-		void changerNom(string nouveau_nom);
+		void changerNom(std::string nouveau_nom);
 		void inverser();
 		Matrice operator * (const Matrice &X);
 		Matrice operator + (const Matrice &X);

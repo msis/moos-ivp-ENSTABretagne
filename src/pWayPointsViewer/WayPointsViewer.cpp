@@ -75,11 +75,11 @@ WayPointsViewer::WayPointsViewer()
 	m_waypoints.push_back(make_point(-4.534590163338356,48.30323621201908));
 	
 	m_position = make_point(-4.534590163338356,48.30323621201908);
-	m_moosgeodesy.LatLong2LocalGrid(m_position.y, m_position.x, m_position.y, m_position.x);
+	m_moosgeodesy.LatLong2LocalUTM(m_position.y, m_position.x, m_position.y, m_position.x);
 	
 	double nord, est;
 	for(list<Point2D>::iterator it = m_waypoints.begin() ; it != m_waypoints.end() ; it ++)
-		m_moosgeodesy.LatLong2LocalGrid(it->y, it->x, it->y, it->x);
+		m_moosgeodesy.LatLong2LocalUTM(it->y, it->x, it->y, it->x);
 	
 	cvNamedWindow("Mapping", 1);
 	m_map_background = imread("background_ile.png", CV_LOAD_IMAGE_COLOR);
@@ -202,7 +202,7 @@ bool WayPointsViewer::OnNewMail(MOOSMSG_LIST &NewMail)
 	}
 	
 	if(gps_update)
-		m_moosgeodesy.LatLong2LocalGrid(m_gps_lat, m_gps_long, m_position.y, m_position.x);
+		m_moosgeodesy.LatLong2LocalUTM(m_gps_lat, m_gps_long, m_position.y, m_position.x);
 
 	return(true);
 }

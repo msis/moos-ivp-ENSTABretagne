@@ -12,8 +12,8 @@
 #ifndef Logs_HEADER
 #define Logs_HEADER
 
-#include <cv.h>
-#include "highgui.h"
+#include <opencv/cv.h>
+#include <opencv2/highgui/highgui.hpp>
 #include <fstream>
 #include <iostream>
 #include <vector>

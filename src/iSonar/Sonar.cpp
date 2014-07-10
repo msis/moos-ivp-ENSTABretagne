@@ -14,7 +14,7 @@
 #include "Sonar.h"
 #include "seanetmsg.h"
 
-#include <highgui.h>
+//#include <opencv2/highgui/highgui.hpp>
 
 
 using namespace std;
@@ -160,7 +160,7 @@ bool Sonar::OnConnectToServer()
 bool Sonar::Iterate()
 {
 	m_iterations++;
-        cv::waitKey(10);
+    //    cv::waitKey(10);
 /*	
 	if(this->m_cissonar->isConnected())
 	{

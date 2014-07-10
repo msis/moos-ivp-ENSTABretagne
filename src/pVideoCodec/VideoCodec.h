@@ -12,8 +12,8 @@
 #ifndef VideoCodec_HEADER
 #define VideoCodec_HEADER
 
-#include <cv.h>
-#include <highgui.h>
+#include <opencv/cv.h>
+#include <opencv2/highgui/highgui.hpp>
 #include <vector>
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"

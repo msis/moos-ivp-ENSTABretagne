@@ -74,7 +74,7 @@ WayPoints::WayPoints()
 	
 	double nord, est;
 	for(list<Point>::iterator it = m_waypoints.begin() ; it != m_waypoints.end() ; it ++)
-		m_moosgeodesy.LatLong2LocalGrid(it->y, it->x, it->y, it->x);
+		m_moosgeodesy.LatLong2LocalUTM(it->y, it->x, it->y, it->x);
 	
 	// Tests
 	/*m_waypoints.push_back(make_point(11,3));
@@ -129,7 +129,7 @@ bool WayPoints::OnNewMail(MOOSMSG_LIST &NewMail)
 		#endif
 	}
 	
-	m_moosgeodesy.LatLong2LocalGrid(m_gps_lat, m_gps_long, m_position.y, m_position.x);
+	m_moosgeodesy.LatLong2LocalUTM(m_gps_lat, m_gps_long, m_position.y, m_position.x);
 	
 	return(true);
 }

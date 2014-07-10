@@ -16,11 +16,11 @@
 #include <list>
 #include <utility>
 #include <math.h>
-#include <cv.h>
-#include "highgui.h"
+#include <opencv/cv.h>
+#include <opencv2/highgui/highgui.hpp>
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
-#include "MOOS/libMOOSGeodesy/MOOSGeodesy.h"
+#include "MOOSGeodesy.h"
 
 #define LARGEUR_MAPPING		500
 #define HAUTEUR_MAPPING		500

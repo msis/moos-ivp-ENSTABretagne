@@ -17,6 +17,7 @@ ADD_EXECUTABLE(pWayPoints ${SRC})
 TARGET_LINK_LIBRARIES(pWayPoints
    MOOS
    MOOSGeodesy
+   proj
    mbutil
    m
    pthread)

@@ -53,16 +53,16 @@ bool ValidationGate::OnNewMail(MOOSMSG_LIST &NewMail)
 		if(msg.GetKey() == "VVV_GO_GATE")
 		{
 			m_Comms.Notify("VVV_Z_DESIRED", 2.0);
-			sleep(3);
+			MOOSPause(3000);
 			m_Comms.Notify("VVV_HEADING_DESIRED", HEADING_COTE_PISCINE_B);
-			sleep(1);
+			MOOSPause(1000);
 			m_Comms.Notify("VVV_VX_DESIRED", 10.0);
-			sleep(5);
+			MOOSPause(5000);
 			m_Comms.Notify("VVV_VX_DESIRED", 0.0);
 			m_Comms.Notify("VVV_HEADING_DESIRED", HEADING_COTE_PISCINE_A);
-			sleep(1);
+			MOOSPause(1000);
 			m_Comms.Notify("VVV_VX_DESIRED", 20.0);
-			sleep(5);
+			MOOSPause(5000);
 			m_Comms.Notify("VVV_VX_DESIRED", 0.0);
 			m_Comms.Notify("VVV_HEADING_DESIRED", HEADING_COTE_PISCINE_C);
 		}

@@ -13,6 +13,7 @@
 #include <fstream>
 #include "ColorParse.h"
 #include "constantes.h"
+#include <unistd.h> // for usleep
 
 // Constantes liées à l'exécution des tests
 #define	TESTS_DUREE_AFFICHAGE_MESSAGE_ERREUR	8	// en secondes

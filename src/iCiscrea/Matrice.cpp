@@ -11,6 +11,10 @@
 
 #include "Matrice.h"
 
+#include <opencv/cv.h>
+ 
+using namespace std;
+using namespace cv;
 /**
  * \fn
  * \brief Constructeur de la classe Matrice

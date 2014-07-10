@@ -12,8 +12,8 @@
 #ifndef PipeFollowing_HEADER
 #define PipeFollowing_HEADER
 
-#include <cv.h>
-#include "highgui.h"
+#include <opencv/cv.h>
+#include <opencv2/highgui/highgui.hpp>
 #include "../common/constantes.h"
 #include "../common/statistiques.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"

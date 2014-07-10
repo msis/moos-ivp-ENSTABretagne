@@ -182,8 +182,8 @@ bool VideoCodec::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
-	SetAppFreq(20, 400);
-	SetIterateMode(REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL);
+//	SetAppFreq(20, 400);
+//	SetIterateMode(REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL);
 
 /*
 	if(!m_vc_v4l2.open(device_name, LARGEUR_IMAGE_CAMERA, HAUTEUR_IMAGE_CAMERA))

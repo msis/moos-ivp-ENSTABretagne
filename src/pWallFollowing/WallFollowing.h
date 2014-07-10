@@ -15,8 +15,8 @@
 #include <map>
 #include <list>
 #include <utility>
-#include <cv.h>
-#include "highgui.h"
+#include <opencv/cv.h>
+#include <opencv2/highgui/highgui.hpp>
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
 

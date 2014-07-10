@@ -12,8 +12,9 @@
 #ifndef Camera_HEADER
 #define Camera_HEADER
 
-#include <cv.h>
-#include "highgui.h"
+#include <opencv/cv.h>
+#include <opencv2/highgui/highgui.hpp>
+
 #include "../common/constantes.h"
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
@@ -42,7 +43,7 @@ class Camera : public CMOOSApp
 		unsigned int	m_iterations;
 		double			m_timewarp;
 		bool			m_server;
-		VideoCapture	m_vc;
+		//VideoCapture	m_vc;
 		VideoGrabV4L2	m_vc_v4l2;
 		bool			m_affichage_image, m_inverser_image;
 };
