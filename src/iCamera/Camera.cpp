@@ -68,7 +68,7 @@ bool Camera::OnConnectToServer()
  
 bool Camera::Iterate()
 {
-	Mat	m_capture_frame(LARGEUR_IMAGE_CAMERA, HAUTEUR_IMAGE_CAMERA, CV_64FC(3));
+	Mat	m_capture_frame(LARGEUR_IMAGE_CAMERA, HAUTEUR_IMAGE_CAMERA, CV_8UC(3));
 	
 	if(m_vc_v4l2.read(m_capture_frame))
 	{
@@ -79,13 +79,15 @@ bool Camera::Iterate()
 		//imwrite("test.jpeg", m_capture_frame);
 		
 		if(m_affichage_image)
+		{
 			imshow(m_display_name, m_capture_frame);
+			waitKey(10);
+		}
 	}
 	
 	else
-		cout << "No frame grabbed." << endl;
-		
-	waitKey(10);
+		MOOSDebugWrite("No frame grabbed.");
+
 	return(true);
 }
 
@@ -129,8 +131,8 @@ bool Camera::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 
-	SetAppFreq(20, 400);
-	SetIterateMode(REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL);
+//	SetAppFreq(20, 400);
+//	SetIterateMode(REGULAR_ITERATE_AND_COMMS_DRIVEN_MAIL);
 
 	if(identifiant_camera == -1)
 	{

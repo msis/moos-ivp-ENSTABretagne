@@ -24,8 +24,8 @@ SensorViewer::SensorViewer()
 {
 	m_iterations = 0;
 	m_timewarp   = 1;
-	img1.create(240,320,CV_8UC3);
-	img2.create(240,320,CV_8UC3);
+	img1.create(HAUTEUR_IMAGE_CAMERA,LARGEUR_IMAGE_CAMERA,CV_8UC3);
+	img2.create(HAUTEUR_IMAGE_CAMERA,LARGEUR_IMAGE_CAMERA,CV_8UC3);
 	
 	img_son_pol.create(360,800,CV_8UC1);
 	img_son_cart.create(400,400,CV_8UC1);

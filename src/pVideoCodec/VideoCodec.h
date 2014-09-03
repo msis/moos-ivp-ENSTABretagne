@@ -16,6 +16,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
 #include "../common/constantes.h"
+
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
 class VideoCodec : public CMOOSApp
@@ -32,9 +33,24 @@ class VideoCodec : public CMOOSApp
 		void RegisterVariables();
 
 	private: // Configuration variables
+	  
+private:
+  struct NamedAndTimedData {
+    std::string name;
+    double time;
+  };
+  struct ImageData : public NamedAndTimedData {
+    cv::Mat img;
+  };
+  struct JpegData : public NamedAndTimedData {
+    std::vector<uchar> buf;
+  };
+  
+  unsigned int getImageDataIndexForVar(const std::string& varName);
+  unsigned int getJpegDataIndexForVar(const std::string& varName);
 
 	private: // State variables
-		std::string			m_image_name, m_display_name;
+		std::string			m_display_name;
 		unsigned int	m_iterations;
 		double			m_timewarp;
 		bool			m_decode;
@@ -42,6 +58,9 @@ class VideoCodec : public CMOOSApp
 		bool			m_affichage_image;
 		cv::Mat imgRaw;
 		std::vector<uchar> bufComp;
+		std::vector< ImageData > m_img;
+		std::vector< JpegData > m_buf;
+		unsigned int m_nb_img, m_nb_buf;
 };
 
 #endif 
