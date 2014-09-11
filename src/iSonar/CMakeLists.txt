@@ -3,8 +3,6 @@
 # Author(s):                              Équipe Ciscrea - Veni Vidi Vici
 #--------------------------------------------------------
 
-# FILE(GLOB SRC *.cpp)
-
 SET(SRC
   seanetmsg.cpp
   Sonar.cpp
