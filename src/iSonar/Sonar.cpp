@@ -33,9 +33,7 @@ Sonar::Sonar()
 	m_bSonarReady = false;
 	m_bPollSonar = true;
 
-	if (m_serial_thread.Initialise(listen_sonar_messages_thread_func, (void*)this))
-	  MOOSTrace("Sonar thread initialized.\n");
-	else
+	if (!m_serial_thread.Initialise(listen_sonar_messages_thread_func, (void*)this))
 	  MOOSFail("Sonar thread initialization error...\n");
 }
 
