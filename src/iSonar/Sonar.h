@@ -13,28 +13,16 @@
 #define Sonar_HEADER
 
 #include "../common/constantes.h"
-//#include "SonarDF.h"
 #include "seanetmsg.h"
 
 #include <fstream>
 
 #include "MOOS/libMOOS/App/MOOSInstrument.h"
-/*#ifdef _WIN32
-	#include "MOOS/libMOOS/Utils/MOOSNTSerialPort.h"
-#else
-	#include "MOOS/libMOOS/Utils/MOOSLinuxSerialPort.h"
-#endif
-*/
-
-//#include <opencv/cv.hpp>
 
 class Sonar : public CMOOSInstrument
 {
-        //friend bool listen_sonar_messages_thread_func(void *pSonarObject);
-    
 	public:
 		Sonar();
-		bool initialiserPortSerie(std::string nom_port);
 		~Sonar();
 
 	protected:
@@ -43,10 +31,10 @@ class Sonar : public CMOOSInstrument
 		bool OnConnectToServer();
 		bool OnStartUp();
 		void RegisterVariables();
-                
-               void ListenSonarMessages();
-               
-               bool SendMessage(const SeaNetMsg & msg) {/*msg.print_hex();printf("\n");*/return (m_Port.Write(msg.data().data(), (int)msg.data().size()) == (int)msg.data().size());}
+				
+		void ListenSonarMessages();
+			   
+		bool SendSonarMessage(const SeaNetMsg & msg) {return (m_Port.Write(msg.data().data(), (int)msg.data().size()) == (int)msg.data().size());}
 
 	private: // Configuration variables
 		std::string m_portName;
@@ -56,29 +44,23 @@ class Sonar : public CMOOSInstrument
 	private: // State variables
 		unsigned int			m_iterations;
 		double			        m_timewarp;
-		//CMOOSLinuxSerialPort	m_moos_serial_port;
-		//SonarDF*				m_cissonar;
-                bool m_bNoParams;
-                bool m_bSentCfg;
-                
-                bool m_bSonarReady;
-                bool m_bPollSonar;
-		                
-                CMOOSThread m_serial_thread;
-                
-                //cv::Mat img, img_polar;
-                std::ofstream log1;
-                std::ofstream log2;
+		bool m_bNoParams;
+		bool m_bSentCfg;
+				
+		bool m_bSonarReady;
+		bool m_bPollSonar;
+						
+		CMOOSThread m_serial_thread;
 
-    
-        static bool listen_sonar_messages_thread_func(void *pSonarObject) {
-            Sonar* pSonar = static_cast<Sonar*> (pSonarObject);
-            if (pSonar) {
-                pSonar->ListenSonarMessages();
-                return true;
-            }
-            else return false;
-        }
+		static bool listen_sonar_messages_thread_func(void *pSonarObject) {
+			Sonar* pSonar = static_cast<Sonar*> (pSonarObject);
+			if (pSonar) 
+			{
+				pSonar->ListenSonarMessages();
+				return true;
+			}
+			else return false;
+		}
 };
 
 #endif 
