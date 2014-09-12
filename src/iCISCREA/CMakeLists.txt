@@ -4,6 +4,7 @@
 #--------------------------------------------------------
 
 SET(SRC
+  M6dbus.cpp
   CISCREA.cpp
   CISCREA_Info.cpp
   main.cpp
@@ -16,5 +17,6 @@ TARGET_LINK_LIBRARIES(iCISCREA
    apputil
    mbutil
    m
+   modbus
    pthread)
 

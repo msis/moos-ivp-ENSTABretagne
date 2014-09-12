@@ -16,7 +16,6 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../common/constantes.h"
 #include "modbus/modbus.h"
 #ifdef _WIN32
 	#include "MOOS/libMOOS/Utils/MOOSNTSerialPort.h"
@@ -25,7 +24,7 @@
 #endif
 
 #define Offcet 0x1A
-#define NB_LECTURES_MAX_REGISTRES	10
+#define MAX_RETRIES	10
 
 using namespace std;
 
@@ -37,6 +36,8 @@ class M6dbus
 		~M6dbus();
 
 		bool getOn();
+
+		void setMaxRetries(int max);
 
 		int updatePropulsors();
 		int updateDepthAndDirec();
@@ -119,6 +120,7 @@ class M6dbus
 	private:
 		modbus_t *Modbus;
 		bool on;
+		int maxRetries;
 		uint16_t regTab[48];
 		//Variables (raw value)
 		int depth, direction, U1, I1, U2, I2, tempMB,
