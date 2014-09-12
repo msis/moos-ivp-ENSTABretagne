@@ -44,6 +44,8 @@ class CISCREA : public AppCastingMOOSApp
 		int m_desired_thrust,m_desired_rudder,m_desired_slide,
 				m_desired_elevator,m_front_lights;
 
+		int m_depth_offset;
+
 	private: // State variables
 		M6dbus *m_ciscrea;
 		bool connectToAUV();

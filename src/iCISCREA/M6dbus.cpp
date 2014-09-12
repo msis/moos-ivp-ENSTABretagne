@@ -127,11 +127,9 @@ M6dbus::M6dbus(string SerialPort)
 		on = true;
 		cout << "Reading registers..." << endl;
 	}
-	
-	//while(modbus_write_bit(Modbus, 0, true) == -1);
-	cout << "Lecteur des registres Modbus..." << endl;
+
 	while(modbus_read_registers(Modbus,1,48,regTab) == -1);
-	cout << termColor("green") << "Registres prêts !" << termColor() << endl;
+	cout << termColor("green") << "Registers read!" << termColor() << endl;
 	
 	// Initialisation des registres
 	m_RegPropFr = regTab[1];

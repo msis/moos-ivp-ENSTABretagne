@@ -43,6 +43,7 @@ CISCREA::CISCREA()
   m_desired_elevator=0;
   m_front_lights=0;
 
+  m_depth_offset=0;
 }
 
 //---------------------------------------------------------
@@ -104,6 +105,10 @@ bool CISCREA::Iterate()
 {
   AppCastingMOOSApp::Iterate();
   // Do your thing here!
+
+  m_ciscrea->updateAll();
+  Notify("DEPTH",m_ciscrea->getDepth()/100.0 + m_depth_offset);
+
   AppCastingMOOSApp::PostReport();
   return(true);
 }
@@ -199,6 +204,10 @@ bool CISCREA::OnStartUp()
     }
     else if(param == "VERT_SENS") {
       m_vert_sens = atoi(value.c_str());
+      handled = true;
+    }
+    else if(param == "DEPTH_OFFSET") {
+      m_depth_offset = atoi(value.c_str());
       handled = true;
     }
 

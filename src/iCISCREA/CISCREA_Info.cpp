@@ -100,6 +100,7 @@ void showExampleConfigAndExit()
   blk("  FRLE_SENS = 1");
   blk("  VERT_SENS = 1");
   blk("                                                                ");
+  blk("  DEPTH_OFFSET = 0.85");
   blk("                                                                ");
   blk("                                                                ");
   blk("}                                                               ");
