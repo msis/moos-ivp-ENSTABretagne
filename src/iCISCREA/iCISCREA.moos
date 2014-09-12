@@ -1,0 +1,9 @@
+//------------------------------------------------
+// iCISCREA config block
+
+ProcessConfig = iCISCREA
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
