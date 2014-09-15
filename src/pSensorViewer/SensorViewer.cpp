@@ -43,44 +43,23 @@ SensorViewer::SensorViewer()
 	float ad_interval = 0.25056;
 	float mag_step = ad_interval / 2.0;
 	
-    vector<float> vMag;
-    vector<float> vAngle;
+  vector<float> vMag;
+  vector<float> vAngle;
 
-    for(double angle = 0; angle < height; angle++)
+  for(double angle = 0; angle < height; angle++)
+  {
+    for(int mag = 0; mag < width ; mag++)
     {
-        for(int mag = 0; mag < width ; mag++)
-        {
-            vAngle.push_back(angle);
-            vMag.push_back((float)mag * mag_step);
-        }
+      vAngle.push_back(angle);
+      vMag.push_back((float)mag * mag_step);
     }
+  }
 
-    vector<double> vX;
-    vector<double> vY;
+  vector<double> vX;
+  vector<double> vY;
 
-    //cartToPolar(vX, vY, mag, angle, true);
-    cv::polarToCart(vMag, vAngle, pol2cart_x, pol2cart_y, true);
-
-/*    for(size_t i = 0; i < mag.size(); i++)
-    {
-        cout << "Cartesian (" << vX[i] << ", " << vY[i] << ") " << "<-> Polar (" << mag[i] << ", " << angle[i] << ")" << endl;
-    }
-*/
-/*		
-	for(int x=1; x < width; x++)
-	{
-	    for(int y=1; y < height; y++)
-	    {
-	        Radius = RadiusMin + y;
-	        Angle = 2 * CV_PI * x / imgPol->width;
-	        x0 = cvRound(CenterX + Radius * cos(Angle));
-// Radius = (x0 - xc) / cos(angle)
-// 
-	        y0 = cvRound(CenterY + Radius * sin(Angle));
-//	 
-	        cvSet2D(imgPol, y, x, cvGet2D(imgBase,y0,x0));
-	    }
-	}*/
+  //cartToPolar(vX, vY, mag, angle, true);
+  cv::polarToCart(vMag, vAngle, pol2cart_x, pol2cart_y, true);
 }
 
 /**
@@ -206,8 +185,8 @@ bool SensorViewer::OnConnectToServer()
 bool SensorViewer::Iterate()
 {
 	m_iterations++;
-	cv::imshow("video side",img1);
-	cv::imshow("video bottom",img2);
+	cv::imshow("Camera feed - 0",img1);
+	cv::imshow("Camera feed - 1",img2);
 	cv::Point2d center(199.5,199.5);
 	cv::Point2d dir(center.x + 100.*cos(heading), center.y + 100.*sin(heading));
 	//cv::remap(img_son_pol, img_son_cart, pol2cart_x, pol2cart_y, cv::INTER_NEAREST);
@@ -235,7 +214,7 @@ bool SensorViewer::Iterate()
 	//cv::imwrite(ss.str(), img_son_cart);
 	
 	cv::line(img_sonar, center, dir, cv::Scalar(255,100,0), 2.0);
-	cv::imshow("sonar", img_sonar /*sonar_flt_h - sonar_flt*/);
+	cv::imshow("Sonar Data", img_sonar /*sonar_flt_h - sonar_flt*/);
 //	cv::imshow("sonar",img_son_pol);
 	cv::waitKey(10);
 	return(true);
@@ -274,9 +253,9 @@ bool SensorViewer::OnStartUp()
 
 	m_timewarp = GetMOOSTimeWarp();
 	
-	cv::namedWindow("video side");
-	cv::namedWindow("video bottom");
-	cv::namedWindow("sonar");
+	cv::namedWindow("Camera feed - 0");
+	cv::namedWindow("Camera feed - 1");
+	cv::namedWindow("Sonar Data");
 
 	RegisterVariables();
 	return(true);
