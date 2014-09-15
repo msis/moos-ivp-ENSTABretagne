@@ -19,17 +19,17 @@ CISCREA::CISCREA()
 {
   m_serial_port = "/dev/ttyUSB0";
 
-  m_frri_lo_dz = 100;
-  m_reri_lo_dz = 100;
-  m_frle_lo_dz = 100;
-  m_rele_lo_dz = 100;
-  m_vert_lo_dz = 100;
+  m_frri_lo_dz = 0;
+  m_reri_lo_dz = 0;
+  m_frle_lo_dz = 0;
+  m_rele_lo_dz = 0;
+  m_vert_lo_dz = 0;
 
-  m_frri_up_dz = 130;
-  m_reri_up_dz = 130;
-  m_frle_up_dz = 130;
-  m_rele_up_dz = 130;
-  m_vert_up_dz = 130;
+  m_frri_up_dz = 0;
+  m_reri_up_dz = 0;
+  m_frle_up_dz = 0;
+  m_rele_up_dz = 0;
+  m_vert_up_dz = 0;
 
   m_frri_sens = 1;
   m_reri_sens = 1;
@@ -108,9 +108,74 @@ bool CISCREA::Iterate()
 
   m_ciscrea->updateAll();
   Notify("DEPTH",m_ciscrea->getDepth()/100.0 + m_depth_offset);
+  Notify("CURRENT_BATT1",m_ciscrea->getI1());
+  Notify("CURRENT_BATT2",m_ciscrea->getI2());
+  Notify("VOLTAGE_BATT1",m_ciscrea->getU1()/1000.0);
+  Notify("VOLTAGE_BATT2",m_ciscrea->getU2()/1000.0);
+  Notify("CONSUMPTION_BATT1",m_ciscrea->getCapBat1());
+  Notify("CONSUMPTION_BATT2",m_ciscrea->getCapBat2());
+  Notify("HEADING",m_ciscrea->getDirec()/10.0);
+
+  sendCommands();
+
 
   AppCastingMOOSApp::PostReport();
   return(true);
+}
+
+void CISCREA::sendCommands()
+{
+  int frri_val=0,frle_val=0,rele_val=0,reri_val=0;
+
+  // thrust
+  frri_val = (-1)*m_frri_sens*m_desired_thrust;
+  reri_val = (+1)*m_reri_sens*m_desired_thrust;
+  rele_val = (+1)*m_rele_sens*m_desired_thrust;
+  frle_val = (-1)*m_frle_sens*m_desired_thrust;
+
+  // slide
+  frri_val += (-1)*m_frri_sens*m_desired_slide;
+  reri_val += (-1)*m_reri_sens*m_desired_slide;
+  rele_val += (+1)*m_rele_sens*m_desired_slide;
+  frle_val += (+1)*m_frle_sens*m_desired_slide;
+
+  // rotation
+  frri_val += (-1)*m_frri_sens*m_desired_rudder;
+  reri_val += (+1)*m_reri_sens*m_desired_rudder;
+  rele_val += (-1)*m_rele_sens*m_desired_rudder;
+  frle_val += (+1)*m_frle_sens*m_desired_rudder;
+
+  // depth
+  int vert_val = m_vert_sens*m_desired_elevator;
+
+  // deadzone corrections
+  if (frri_val>=0)
+    frri_val+=m_frri_up_dz;
+  else
+    frri_val-=m_frri_lo_dz;
+  if (frle_val>=0)
+    frle_val+=m_frle_up_dz;
+  else
+    frle_val-=m_frle_lo_dz;
+  if (reri_val>=0)
+    reri_val+=m_reri_up_dz;
+  else
+    reri_val-=m_reri_lo_dz;
+  if (rele_val>=0)
+    rele_val+=m_rele_up_dz;
+  else
+    rele_val-=m_rele_lo_dz;
+  if (vert_val>=0)
+    vert_val+=m_vert_up_dz;
+  else
+    vert_val-=m_vert_lo_dz;
+
+  m_ciscrea->setPropFrRi(frri_val);
+  m_ciscrea->setPropReRi(reri_val);
+  m_ciscrea->setPropReLe(rele_val);
+  m_ciscrea->setPropFrLe(frle_val);
+  m_ciscrea->setPropVert(vert_val);
+  m_ciscrea->updatePropulsors();
 }
 
 //---------------------------------------------------------
@@ -243,13 +308,20 @@ void CISCREA::registerVariables()
 bool CISCREA::buildReport() 
 {
   m_msgs << "============================================ \n";
-  m_msgs << "File:                                        \n";
+  m_msgs << "iCISCREA report\n";
   m_msgs << "============================================ \n";
 
-  ACTable actab(4);
-  actab << "Alpha | Bravo | Charlie | Delta";
+  ACTable actab(3);
+  actab << "Variable | Value | Unit";
   actab.addHeaderLines();
-  actab << "one" << "two" << "three" << "four";
+  actab << "DEPTH" << m_ciscrea->getDepth()/100.0 + m_depth_offset << "m";
+  actab << "CURRENT_BATT1" << m_ciscrea->getI1() << "mA";
+  actab << "CURRENT_BATT2" << m_ciscrea->getI2() << "mA";
+  actab << "VOLTAGE_BATT1" << m_ciscrea->getU1()/1000.0 << "V";
+  actab << "VOLTAGE_BATT2" << m_ciscrea->getU2()/1000.0 << "V";
+  actab << "CONSUMPTION_BATT1" << m_ciscrea->getCapBat1() << "W";
+  actab << "CONSUMPTION_BATT2" << m_ciscrea->getCapBat2() << "W";
+  actab << "HEADING" << m_ciscrea->getDirec()/10.0 << "Degrees";
   m_msgs << actab.getFormattedString();
 
   return(true);

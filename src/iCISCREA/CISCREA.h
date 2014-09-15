@@ -28,6 +28,7 @@ class CISCREA : public AppCastingMOOSApp
 
 	protected:
 		void registerVariables();
+		void sendCommands();
 
 	private: // Configuration variables
 		std::string m_serial_port;

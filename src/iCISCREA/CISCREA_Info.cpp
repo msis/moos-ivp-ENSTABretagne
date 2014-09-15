@@ -133,6 +133,15 @@ void showInterfaceAndExit()
   blk("PUBLICATIONS:                                                   ");
   blk("------------------------------------                            ");
   blk("  Publications are determined by the node message content.      ");
+  blk("  CISCREA_ON       = true/false");
+  blk("  DEPTH            = value in meters.");
+  blk("  CURRENT_BATT1    = Current of battery 1 in mA.");
+  blk("  CURRENT_BATT2    = Current of battery 2 in mA.");
+  blk("  VOLTAGE_BATT1    = Current of battery 1 in V.");
+  blk("  VOLTAGE_BATT2    = Current of battery 2 in V.");
+  blk("  CONSUMPTION_BATT1    = Consumption of battery 1 in W.");
+  blk("  CONSUMPTION_BATT2    = Consumption of battery 2 in W.");
+  blk("  HEADING          = Heading.");
   blk("                                                                ");
   exit(0);
 }
