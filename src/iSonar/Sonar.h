@@ -12,7 +12,7 @@
 #ifndef Sonar_HEADER
 #define Sonar_HEADER
 
-#include "../common/constantes.h"
+//#include "../common/constantes.h"
 #include "seanetmsg.h"
 
 #include <fstream>
